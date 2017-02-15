@@ -37,7 +37,8 @@ namespace HideAndSeek
 		public GameObject[] foodTiles;									//Array of food prefabs.
         public GameObject[] sodaTiles;                                  //Array of food prefabs.
         public GameObject[] enemyTiles;									//Array of enemy prefabs.
-		public GameObject[] outerWallTiles;								//Array of outer tile prefabs.
+        public GameObject[] strongEnemyTiles;                                 //Array of enemy prefabs.
+        public GameObject[] outerWallTiles;								//Array of outer tile prefabs.
 		
 		private Transform boardHolder;									//A variable to store a reference to the transform of our Board object.
 		private List <Vector3> gridPositions = new List <Vector3> ();	//A list of possible locations to place tiles.
@@ -141,21 +142,28 @@ namespace HideAndSeek
 			
 			//Instantiate a random number of wall tiles based on minimum and maximum, at randomized positions.
 			LayoutObjectAtRandom (wallTiles, wallCount.minimum, wallCount.maximum);
-			
-			//Instantiate a random number of food tiles based on minimum and maximum, at randomized positions.
-			LayoutObjectAtRandom(foodTiles, foodCount.minimum, foodCount.maximum);
-            LayoutObjectAtRandom(sodaTiles, sodaCount.minimum, sodaCount.maximum);
+
+            
+            int foodRate = (int)Mathf.Log(level, 2f);
+            int sodaRate = (int)Mathf.Log(level, 4f);
+            //Instantiate a random number of food tiles based on minimum and maximum, at randomized positions.
+            LayoutObjectAtRandom(foodTiles, foodCount.minimum, foodCount.maximum + foodRate);
+            LayoutObjectAtRandom(sodaTiles, sodaCount.minimum, sodaCount.maximum + sodaRate);
             
 
             //Determine number of enemies based on current level number, based on a logarithmic progression
             //            int enemyCount = 3;
-            int enemyCount = (int)Mathf.Log(level, 2f) + 1;
+            int enemyCount = (int)Mathf.Log(level, 2f);
 
             //Instantiate a random number of enemies based on minimum and maximum, at randomized positions.
-            LayoutObjectAtRandom (enemyTiles, enemyCount, enemyCount);
-			
-			//Instantiate the exit tile in the upper right hand corner of our game board
-			Instantiate (exit, new Vector3 (columns - 1, rows - 1, 0f), Quaternion.identity);
+            LayoutObjectAtRandom(enemyTiles, enemyCount, enemyCount);
+
+            int stronmgEnemyCount = (int)Mathf.Log(level, 4f);
+            LayoutObjectAtRandom(strongEnemyTiles, stronmgEnemyCount, stronmgEnemyCount);
+            
+
+            //Instantiate the exit tile in the upper right hand corner of our game board
+            Instantiate (exit, new Vector3 (columns - 1, rows - 1, 0f), Quaternion.identity);
 		}
 	}
 }

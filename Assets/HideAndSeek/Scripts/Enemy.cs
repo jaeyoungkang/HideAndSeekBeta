@@ -79,9 +79,10 @@ namespace HideAndSeek
 			AttemptMove <Player> (xDir, yDir);
 		}
 		
-        public void Show()
+        public void Show(bool hard)
         {
-            animator.SetTrigger("enemyShow");
+            if(hard) animator.SetTrigger("enemyShowQuick");
+            else animator.SetTrigger("enemyShow");
         }
 		
 		//OnCantMove is called if Enemy attempts to move into a space occupied by a Player, it overrides the OnCantMove function of MovingObject 

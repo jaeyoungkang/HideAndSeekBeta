@@ -11,7 +11,7 @@ namespace HideAndSeek
 	{
 		public float levelStartDelay = 2f;						//Time to wait before starting level, in seconds.
 		public float turnDelay = 0.1f;							//Delay between each Player turn.
-		public int playerFoodPoints = 100;						//Starting value for Player food points.
+		public int playerFoodPoints = 30;						//Starting value for Player food points.
         public int playerSodaPoints = 3;
         public static GameManager instance = null;				//Static instance of GameManager which allows it to be accessed by any other script.
 		[HideInInspector] public bool playersTurn = true;		//Boolean to check if it's players turn, hidden in inspector but public.
@@ -152,9 +152,10 @@ namespace HideAndSeek
           
         public void ShowEnemies()
         {
+            bool hard = level > 9;
             for (int i = 0; i < enemies.Count; i++)
             {
-                enemies[i].Show();
+                enemies[i].Show(hard);
             }
         }
 

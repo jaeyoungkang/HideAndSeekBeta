@@ -34,7 +34,7 @@ namespace HideAndSeek
             {
                 GameManager.instance.ShowEnemies();
                 soda--;
-                foodText.text = "Food: " + food + ", -1 Soda: " + soda;
+                foodText.text = "HP: " + food + ", -1 Soda: " + soda;
             }
         }
 		
@@ -58,7 +58,7 @@ namespace HideAndSeek
         {
             //Set the foodText to reflect the current player food total.
 //            foodText.text = "Food: " + food;
-            foodText.text = "Food: " + food + ", Soda: " + soda;
+            foodText.text = "HP: " + food + ", Soda: " + soda;
         }
 		
 		
@@ -215,7 +215,7 @@ namespace HideAndSeek
 				food += pointsPerFood;
 				
 				//Update foodText to represent current total and notify player that they gained points
-				foodText.text = "+" + pointsPerFood + " Food: " + food + ", Soda: " + soda;
+				foodText.text = "+" + pointsPerFood + " HP: " + food + ", Soda: " + soda;
 				
 				//Call the RandomizeSfx function of SoundManager and pass in two eating sounds to choose between to play the eating sound effect.
 				SoundManager.instance.RandomizeSfx (eatSound1, eatSound2);
@@ -232,7 +232,7 @@ namespace HideAndSeek
                 soda += 1;
 
                 //Update foodText to represent current total and notify player that they gained points
-                foodText.text = "Food: " + food + ",+ 1 Soda: " + soda;
+                foodText.text = "HP: " + food + ",+ 1 Soda: " + soda;
 				
 				//Call the RandomizeSfx function of SoundManager and pass in two drinking sounds to choose between to play the drinking sound effect.
 				SoundManager.instance.RandomizeSfx (drinkSound1, drinkSound2);
@@ -263,7 +263,7 @@ namespace HideAndSeek
 			food -= loss;
 			
 			//Update the food display with the new total.
-			foodText.text = "-"+ loss + " Food: " + food;
+			foodText.text = "-"+ loss + " HP: " + food;
 			
 			//Check to see if game has ended.
 			CheckIfGameOver ();

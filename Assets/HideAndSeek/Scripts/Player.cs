@@ -13,6 +13,8 @@ namespace HideAndSeek
 		public int pointsPerSoda = 20;				//Number of points to add to player food points when picking up a soda object.
 		public int wallDamage = 1;					//How much damage a player does to a wall when chopping it.
 		public Text foodText;						//UI Text to display current player food total.
+        public Button showBtn;
+
 		public AudioClip moveSound1;				//1 of 2 Audio clips to play when player moves.
 		public AudioClip moveSound2;				//2 of 2 Audio clips to play when player moves.
 		public AudioClip eatSound1;					//1 of 2 Audio clips to play when player collects a food object.
@@ -20,8 +22,9 @@ namespace HideAndSeek
 		public AudioClip drinkSound1;				//1 of 2 Audio clips to play when player collects a soda object.
 		public AudioClip drinkSound2;				//2 of 2 Audio clips to play when player collects a soda object.
 		public AudioClip gameOverSound;				//Audio clip to play when player dies.
-		
-		private Animator animator;					//Used to store a reference to the Player's animator component.
+        public AudioClip showSound;
+
+        private Animator animator;					//Used to store a reference to the Player's animator component.
 		private int food;                           //Used to store player food points total during level.
         private int soda;
 #if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
@@ -33,11 +36,12 @@ namespace HideAndSeek
             if (soda > 0)
             {
                 GameManager.instance.ShowEnemies();
+                SoundManager.instance.PlaySingle(showSound);
                 soda--;
                 foodText.text = "HP: " + food + ", -1 Soda: " + soda;
             }
         }
-		
+        		
 		//Start overrides the Start function of MovingObject
 		protected override void Start ()
 		{
@@ -49,6 +53,9 @@ namespace HideAndSeek
             soda = GameManager.instance.playerSodaPoints;
 
             SetFoodText();
+
+            showBtn.onClick.AddListener(UseSoda);
+
 
             //Call the Start function of the MovingObject base class.
             base.Start ();
@@ -75,13 +82,14 @@ namespace HideAndSeek
 		{
 			//If it's not the player's turn, exit the function.
 			if(!GameManager.instance.playersTurn) return;
+            if (food <= 0) return;
 
             if (Input.GetKeyUp(KeyCode.Space))
             {
                 UseSoda();
             }
 
-                int horizontal = 0;  	//Used to store the horizontal move direction.
+            int horizontal = 0;  	//Used to store the horizontal move direction.
 			int vertical = 0;		//Used to store the vertical move direction.
 			
 			//Check if we are running either in the Unity editor or in a standalone build.
@@ -263,7 +271,7 @@ namespace HideAndSeek
 			food -= loss;
 			
 			//Update the food display with the new total.
-			foodText.text = "-"+ loss + " HP: " + food;
+			foodText.text = "-"+ loss + " HP: " + food + " Soda: " + soda; ;
 			
 			//Check to see if game has ended.
 			CheckIfGameOver ();
@@ -272,20 +280,27 @@ namespace HideAndSeek
 		
 		//CheckIfGameOver checks if the player is out of food points and if so, ends the game.
 		private void CheckIfGameOver ()
-		{
+		{            
 			//Check if food point total is less than or equal to zero.
 			if (food <= 0) 
 			{
-				//Call the PlaySingle function of SoundManager and pass it the gameOverSound as the audio clip to play.
-				SoundManager.instance.PlaySingle (gameOverSound);
-				
-				//Stop the background music.
-				SoundManager.instance.musicSource.Stop();
-				
-				//Call the GameOver function of GameManager.
-				GameManager.instance.GameOver ();
+                StartCoroutine(GameEnd());
 			}
 		}
-	}
+        IEnumerator GameEnd()
+        {
+            yield return new WaitForSeconds(1);
+
+            //Call the PlaySingle function of SoundManager and pass it the gameOverSound as the audio clip to play.
+            SoundManager.instance.PlaySingle(gameOverSound);
+
+            //Stop the background music.
+            SoundManager.instance.musicSource.Stop();
+
+            //Call the GameOver function of GameManager.
+            GameManager.instance.GameOver();
+        }
+
+    }
 }
 

@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
+
 
 // Hi! This script presents the overlay info for our tutorial content, linking you back to the relevant page.
 public class TutorialInfo : MonoBehaviour 
@@ -13,6 +15,9 @@ public class TutorialInfo : MonoBehaviour
 
 	// store the GameObject which renders the overlay info
 	public GameObject overlay;
+
+	// store a reference to the audio listener in the scene, allowing for muting of the scene during the overlay
+	public AudioListener mainListener;
 
 	// store a reference to the UI toggle which allows users to switch it off for future plays
 	public Toggle showAtStartToggle;
@@ -49,8 +54,8 @@ public class TutorialInfo : MonoBehaviour
 	public void ShowLaunchScreen()
 	{
 		Time.timeScale = 0f;
-        AudioListener.volume = 0f;
-	    overlay.SetActive (true);
+		mainListener.enabled = false;
+		overlay.SetActive (true);
 	}
 
 	// open the stored URL for this content in a web browser
@@ -64,8 +69,8 @@ public class TutorialInfo : MonoBehaviour
 	public void StartGame()
 	{		
 		overlay.SetActive (false);
-        AudioListener.volume = 1f;
-        Time.timeScale = 1f;
+		mainListener.enabled = true;
+		Time.timeScale = 1f;
 	}
 
 	// set the boolean storing show at start status to equal the UI toggle's status

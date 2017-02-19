@@ -23,12 +23,10 @@ namespace HideAndSeek
 		private int level = 1;									//Current level number, expressed in game as "Day 1".
 		private List<Enemy> enemies;							//List of all Enemy units, used to issue them move commands.
 		private bool enemiesMoving;								//Boolean to check if enemies are moving.
-		private bool doingSetup = true;							//Boolean to check if we're setting up board, prevent Player from moving during setup.
-		
-		
-		
-		//Awake is always called before any Start functions
-		void Awake()
+		private bool doingSetup = true;                         //Boolean to check if we're setting up board, prevent Player from moving during setup.
+
+        //Awake is always called before any Start functions
+        void Awake()
 		{
             //Check if instance already exists
             if (instance == null)
@@ -50,10 +48,10 @@ namespace HideAndSeek
 			
 			//Get a component reference to the attached BoardManager script
 			boardScript = GetComponent<BoardManager>();
-			
-			//Call the InitGame function to initialize the first level 
-			InitGame();
-		}
+
+            //Call the InitGame function to initialize the first level 
+            InitGame();        
+        }
 
         //this is called only once, and the paramter tell it to be called only after the scene was loaded
         //(otherwise, our Scene Load callback would be called the very first load, and we don't want that)
@@ -70,7 +68,7 @@ namespace HideAndSeek
             if (instance != null)
             {
                 instance.level++;
-                instance.InitGame();
+                instance.InitGame();                
             }
         }
 
@@ -103,6 +101,8 @@ namespace HideAndSeek
 			boardScript.SetupScene(level);
 
             Invoke("ShowEnemies", levelStartDelay);
+
+            Camera.main.orthographicSize = Screen.height / 100;
         }
 		
 		
@@ -123,11 +123,11 @@ namespace HideAndSeek
             if (playersTurn || enemiesMoving || doingSetup)
 				
 				//If any of these are true, return and do not start MoveEnemies.
-				return;          
+				return;
 
             //Start moving enemies.
-            StartCoroutine (MoveEnemies ());
-		}
+            StartCoroutine (MoveEnemies ());            
+        }
 		
 		//Call this to add the passed in Enemy to the List of Enemy objects.
 		public void AddEnemyToList(Enemy script)

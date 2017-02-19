@@ -24,9 +24,8 @@ namespace HideAndSeek
 				maximum = max;
 			}
 		}
-		
-		
-		public int columns = 8; 										//Number of columns in our game board.
+
+        public int columns = 8; 										//Number of columns in our game board.
 		public int rows = 8;											//Number of rows in our game board.
 		public Count wallCount = new Count (3, 6);						//Lower and upper limit for our random number of walls per level.
 		public Count foodCount = new Count (0, 3);						//Lower and upper limit for our random number of food items per level.
@@ -41,14 +40,13 @@ namespace HideAndSeek
         public GameObject[] outerWallTiles;								//Array of outer tile prefabs.
 		
 		private Transform boardHolder;									//A variable to store a reference to the transform of our Board object.
-		private List <Vector3> gridPositions = new List <Vector3> ();	//A list of possible locations to place tiles.
-		
-		
-		//Clears our list gridPositions and prepares it to generate a new board.
-		void InitialiseList ()
-		{
-			//Clear our list gridPositions.
-			gridPositions.Clear ();
+		private List <Vector3> gridPositions = new List <Vector3> ();   //A list of possible locations to place tiles.
+
+        //Clears our list gridPositions and prepares it to generate a new board.
+        void InitialiseList ()
+		{ 
+            //Clear our list gridPositions.
+            gridPositions.Clear ();
 			
 			//Loop through x axis (columns).
 			for(int x = 1; x < columns-1; x++)
@@ -68,9 +66,9 @@ namespace HideAndSeek
 		{
 			//Instantiate Board and set boardHolder to its transform.
 			boardHolder = new GameObject ("Board").transform;
-			
-			//Loop along x axis, starting from -1 (to fill corner) with floor or outerwall edge tiles.
-			for(int x = -1; x < columns + 1; x++)
+
+            //Loop along x axis, starting from -1 (to fill corner) with floor or outerwall edge tiles.
+            for (int x = -1; x < columns + 1; x++)
 			{
 				//Loop along y axis, starting from -1 to place floor or outerwall tiles.
 				for(int y = -1; y < rows + 1; y++)
@@ -88,11 +86,10 @@ namespace HideAndSeek
 					
 					//Set the parent of our newly instantiated object instance to boardHolder, this is just organizational to avoid cluttering hierarchy.
 					instance.transform.SetParent (boardHolder);
-				}
+                }
 			}
-		}
-		
-		
+        }
+
 		//RandomPosition returns a random position from our list gridPositions.
 		Vector3 RandomPosition ()
 		{
@@ -124,9 +121,9 @@ namespace HideAndSeek
 				
 				//Choose a random tile from tileArray and assign it to tileChoice
 				GameObject tileChoice = tileArray[Random.Range (0, tileArray.Length)];
-				
-				//Instantiate tileChoice at the position returned by RandomPosition with no change in rotation
-				Instantiate(tileChoice, randomPosition, Quaternion.identity);
+
+                //Instantiate tileChoice at the position returned by RandomPosition with no change in rotation
+                Instantiate(tileChoice, randomPosition, Quaternion.identity);
 			}
 		}
 		
@@ -160,10 +157,9 @@ namespace HideAndSeek
 
             int stronmgEnemyCount = (int)Mathf.Log(level, 4f);
             LayoutObjectAtRandom(strongEnemyTiles, stronmgEnemyCount, stronmgEnemyCount);
-            
 
             //Instantiate the exit tile in the upper right hand corner of our game board
             Instantiate (exit, new Vector3 (columns - 1, rows - 1, 0f), Quaternion.identity);
-		}
-	}
+        }
+    }   
 }

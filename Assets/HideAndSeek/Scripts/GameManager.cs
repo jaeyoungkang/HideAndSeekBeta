@@ -102,7 +102,7 @@ namespace HideAndSeek
 
             Invoke("ShowEnemies", levelStartDelay);
 
-            Camera.main.orthographicSize = Screen.height / 100;
+//            Camera.main.orthographicSize = Screen.height / 100;
         }
 		
 		

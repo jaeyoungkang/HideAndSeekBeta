@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine.Analytics;
 
 namespace HideAndSeek
 {
@@ -15,8 +17,8 @@ namespace HideAndSeek
         public int playerSodaPoints = 3;
         public static GameManager instance = null;				//Static instance of GameManager which allows it to be accessed by any other script.
 		[HideInInspector] public bool playersTurn = true;		//Boolean to check if it's players turn, hidden in inspector but public.
-		
-		
+
+		private Text subTitleText;
 		private Text levelText;									//Text to display current level number.
 		private GameObject levelImage;							//Image to block out level as levels are being set up, background for levelText.
 		private BoardManager boardScript;						//Store a reference to our BoardManager which will set up the level.
@@ -24,6 +26,11 @@ namespace HideAndSeek
 		private List<Enemy> enemies;							//List of all Enemy units, used to issue them move commands.
 		private bool enemiesMoving;								//Boolean to check if enemies are moving.
 		private bool doingSetup = true;                         //Boolean to check if we're setting up board, prevent Player from moving during setup.
+		private bool gameOver = false;
+		private bool gameEnd = false;
+		private bool gameStart = true;
+
+		enum GAME_STATE { START, OVER, END };
 
         //Awake is always called before any Start functions
         void Awake()
@@ -50,7 +57,7 @@ namespace HideAndSeek
 			boardScript = GetComponent<BoardManager>();
 
             //Call the InitGame function to initialize the first level 
-            InitGame();        
+            InitGame();
         }
 
         //this is called only once, and the paramter tell it to be called only after the scene was loaded
@@ -68,32 +75,27 @@ namespace HideAndSeek
             if (instance != null)
             {
                 instance.level++;
-                instance.InitGame();                
+				instance.InitGame();                
             }
         }
 
-		
 		//Initializes the game for each level.
 		void InitGame()
 		{
+			if (level == 21)
+				EndGame ();
+			
 			//While doingSetup is true the player can't move, prevent player from moving while title card is up.
 			doingSetup = true;
-			
-			//Get a reference to our image LevelImage by finding it by name.
+
 			levelImage = GameObject.Find("LevelImage");
-			
+
 			//Get a reference to our text LevelText's text component by finding it by name and calling GetComponent.
 			levelText = GameObject.Find("LevelText").GetComponent<Text>();
-			
-			//Set the text of levelText to the string "Day" and append the current level number.
-			levelText.text = "Day " + level;
-			
-			//Set levelImage to active blocking player's view of the game board during setup.
-			levelImage.SetActive(true);
-			
-			//Call the HideLevelImage function with a delay in seconds of levelStartDelay.
-			Invoke("HideLevelImage", levelStartDelay);
-			
+			subTitleText = GameObject.Find("SubTitleText").GetComponent<Text>();
+		
+			ChangeTitleText ();
+
 			//Clear any Enemy objects in our List to prepare for next level.
 			enemies.Clear();
 			
@@ -101,12 +103,17 @@ namespace HideAndSeek
 			boardScript.SetupScene(level);
 
             Invoke("ShowEnemies", levelStartDelay);
+			levelImage.SetActive(true);
+			if(!gameStart && !gameEnd && !gameOver)
+				Invoke("HideLevelImage", levelStartDelay);
 
-//            Camera.main.orthographicSize = Screen.height / 100;
+            Analytics.CustomEvent("InitGame", new Dictionary<string, object>
+            {
+                { "level", level},
+                { "enemies", enemies.Count}
+            });
         }
-		
-		
-		//Hides black image used between levels
+
 		void HideLevelImage()
 		{
 			//Disable the levelImage gameObject.
@@ -115,10 +122,83 @@ namespace HideAndSeek
 			//Set doingSetup to false allowing player to move again.
 			doingSetup = false;
 		}
+
+		void ChangeTitleText ()
+		{
+			subTitleText.enabled = true;
+			if (gameOver)
+				levelText.text = "GAME OVER";
+			else if (gameEnd)
+				levelText.text = "All levels cleared!";
+			else if (gameStart)
+				levelText.text = "Hide and Seek beta";
+			else {
+				levelText.text = "Level " + level;
+				subTitleText.enabled = false;
+			}
+			
+		}
 		
 		//Update is called every frame.
 		void Update()
-		{                        
+		{
+			if (gameEnd) {
+#if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
+                bool touchReleased = false;
+                for (int i = 0; i < Input.touches.Length; i++)
+                {
+                    touchReleased = Input.touches[i].phase == TouchPhase.Ended;
+                    if (touchReleased) break;
+                }
+
+                if (touchReleased)
+#else
+                if (Input.GetKeyUp (KeyCode.Space))
+#endif
+                { 
+                    gameEnd = false;
+					gameStart = true;
+					ChangeTitleText ();
+				}
+			}
+			else if (gameOver) {
+#if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
+                bool touchReleased = false;
+                for (int i = 0; i < Input.touches.Length; i++)
+                {
+                    touchReleased = Input.touches[i].phase == TouchPhase.Ended;
+                    if (touchReleased) break;
+                }
+
+                if (touchReleased)
+#else
+                if (Input.GetKeyUp (KeyCode.Space)) 
+#endif
+                { 
+                    gameOver = false;
+					gameStart = true;
+					ChangeTitleText ();
+				}
+			}
+			else if (gameStart) {
+#if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
+                bool touchReleased = false;
+                for (int i = 0; i < Input.touches.Length; i++)
+                {
+                    touchReleased = Input.touches[i].phase == TouchPhase.Ended;
+                    if (touchReleased) break;
+                }
+
+                if (touchReleased)
+#else
+                if (Input.GetKeyUp (KeyCode.Space))
+#endif
+                {
+                    gameStart = false;
+					ChangeTitleText ();
+					Invoke("HideLevelImage", levelStartDelay);
+				}
+			}
             //Check that playersTurn or enemiesMoving or doingSetup are not currently true.
             if (playersTurn || enemiesMoving || doingSetup)
 				
@@ -140,14 +220,14 @@ namespace HideAndSeek
 		//GameOver is called when the player reaches 0 food points
 		public void GameOver()
 		{
-			//Set levelText to display number of levels passed and game over message
-			levelText.text = "After " + level + " days, you starved.";
-			
-			//Enable black background image gameObject.
-			levelImage.SetActive(true);
-			
-			//Disable this GameManager.
-			enabled = false;
+			level = 0;
+			gameOver = true;
+		}
+
+		public void EndGame()
+		{
+			level = 1;
+			gameEnd = true;
 		}
           
         public void ShowEnemies()

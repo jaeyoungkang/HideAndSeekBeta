@@ -2,6 +2,8 @@
 using System.Collections;
 using UnityEngine.UI;	//Allows us to use UI.
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
+using UnityEngine.Analytics;
 
 namespace HideAndSeek
 {
@@ -13,6 +15,7 @@ namespace HideAndSeek
 		public int pointsPerSoda = 20;				//Number of points to add to player food points when picking up a soda object.
 		public int wallDamage = 1;					//How much damage a player does to a wall when chopping it.
 		public Text foodText;                       //UI Text to display current player food total.
+		public Text messageText;
 
         public Button showBtn;
         public Button upBtn;
@@ -33,10 +36,7 @@ namespace HideAndSeek
         private Animator animator;					//Used to store a reference to the Player's animator component.
 		private int food;                           //Used to store player food points total during level.
         private int soda;
-#if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
-        private Vector2 touchOrigin = -Vector2.one;	//Used to store location of screen touch origin for mobile controls.
-#endif
-		
+                
         public void UseSoda()
         {
             if (soda > 0)
@@ -47,18 +47,27 @@ namespace HideAndSeek
                 foodText.text = "HP: " + food + ", -1 Soda: " + soda;
             }
         }
-        		
+
+		public void InitDatas()
+		{
+			food = GameManager.instance.playerFoodPoints;
+			soda = GameManager.instance.playerSodaPoints;
+		}
+
+		public void SetMessageText(string msg)
+		{
+			messageText.text = msg;
+			messageText.enabled = true;
+		}
+
 		//Start overrides the Start function of MovingObject
 		protected override void Start ()
 		{
-            //Get a component reference to the Player's animator component
             animator = GetComponent<Animator>();
             
-            //Get the current food point total stored in GameManager.instance between levels.
-            food = GameManager.instance.playerFoodPoints;
-            soda = GameManager.instance.playerSodaPoints;
-
-            SetFoodText();
+			InitDatas();
+			SetFoodText();
+			SetMessageText ("");
 
             showBtn.onClick.AddListener(UseSoda);
             upBtn.onClick.AddListener(MoveUp);
@@ -66,9 +75,14 @@ namespace HideAndSeek
             leftBtn.onClick.AddListener(MoveLeft);
             rightBtn.onClick.AddListener(MoveRight);
 
-            //Call the Start function of the MovingObject base class.
             base.Start ();
-		}
+
+            Analytics.CustomEvent("PlayerStart", new Dictionary<string, object>
+            {
+                { "Hp", food},
+                { "Soda", soda}
+            });
+        }
 
         void MoveUp()
         {
@@ -114,7 +128,7 @@ namespace HideAndSeek
 			if(!GameManager.instance.playersTurn) return;
             if (food <= 0) return;
 
-            if (Input.GetKeyUp(KeyCode.Space))
+			if (Input.GetKeyUp(KeyCode.U))
             {
                 UseSoda();
             }
@@ -209,14 +223,41 @@ namespace HideAndSeek
 			{
 				//Call RandomizeSfx of SoundManager to play the move sound, passing in two audio clips to choose from.
 				SoundManager.instance.RandomizeSfx (moveSound1, moveSound2);
+				SenseEnemy (xDir, yDir);
 			}
-			
+
 			//Since the player has moved and lost food points, check if the game has ended.
 			CheckIfGameOver ();
 			
 			//Set the playersTurn boolean of GameManager to false now that players turn is over.
 			GameManager.instance.playersTurn = false;            
         }
+
+		void SenseEnemy(int xDir, int yDir)
+		{
+			GameObject[] targets = GameObject.FindGameObjectsWithTag ("Enemy");
+			bool bEnemy = false;
+			bool bSmell = false;
+			foreach (GameObject target in targets) {
+				float x = transform.position.x + xDir;
+				float y = transform.position.y + yDir;
+				float distanceX = Mathf.Abs (target.transform.position.x - x);
+				float distanceY = Mathf.Abs (target.transform.position.y - y);
+				if (distanceX <= 2 && distanceY <= 2) {
+					if (distanceX <= 1 && distanceY <= 1)
+						bEnemy = true;
+					else
+						bSmell = true;
+				}				
+			}
+
+			if(bEnemy)
+				SetMessageText ("근처 무언가 있다!");
+			else if(bSmell)
+				SetMessageText ("썩은 냄새가 나는 것 같다...");
+			else
+				SetMessageText ("");
+		}
 
 
         //OnCantMove overrides the abstract function OnCantMove in MovingObject.
@@ -285,7 +326,8 @@ namespace HideAndSeek
 		//Restart reloads the scene when called.
 		private void Restart ()
 		{
-			//Load the last scene loaded, in this case Main, the only scene in the game. And we load it in "Single" mode so it replace the existing one
+			//Load the last scene loaded, in this case Main, the only scene in the game. 
+			//And we load it in "Single" mode so it replace the existing one
             //and not load all the scene object in the current scene.
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
 		}
@@ -315,22 +357,23 @@ namespace HideAndSeek
 			//Check if food point total is less than or equal to zero.
 			if (food <= 0) 
 			{
-                StartCoroutine(GameEnd());
+				GameOver();
 			}
 		}
-        IEnumerator GameEnd()
-        {
-            yield return new WaitForSeconds(1);
 
-            //Call the PlaySingle function of SoundManager and pass it the gameOverSound as the audio clip to play.
-            SoundManager.instance.PlaySingle(gameOverSound);
+		void GameOver()
+		{
+			//Call the PlaySingle function of SoundManager and pass it the gameOverSound as the audio clip to play.
+			SoundManager.instance.PlaySingle(gameOverSound);
 
-            //Stop the background music.
-            SoundManager.instance.musicSource.Stop();
-
-            //Call the GameOver function of GameManager.
-            GameManager.instance.GameOver();
-        }
+			//Stop the background music.
+//			SoundManager.instance.musicSource.Stop();
+			InitDatas ();
+			GameManager.instance.GameOver ();
+			//Invoke the Restart function to start the next level with a delay of restartLevelDelay (default 1 second).
+			Invoke ("Restart", restartLevelDelay);
+			enabled = false;
+		}
 
     }
 }

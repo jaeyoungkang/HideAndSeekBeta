@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Random = UnityEngine.Random;
 
 namespace HideAndSeek
 {
@@ -68,15 +69,32 @@ namespace HideAndSeek
 
             if(distanceY < rangeOfSense  && distanceX < rangeOfSense)
             {
-                if (distanceX < float.Epsilon)
-                    yDir = target.position.y > transform.position.y ? 1 : -1;
+                float value = Random.Range(0f, 1f);
+                if (value < 0.5f)
+                {
+                    if (distanceX < float.Epsilon)
+                        yDir = target.position.y > transform.position.y ? 1 : -1;
+                    else
+                        xDir = target.position.x > transform.position.x ? 1 : -1;
+                }                
                 else
-                    xDir = target.position.x > transform.position.x ? 1 : -1;
+                {
+                    if (distanceY < float.Epsilon)
+                        xDir = target.position.x > transform.position.x ? 1 : -1;
+                    else
+                        yDir = target.position.y > transform.position.y ? 1 : -1;
+                    
+                }                    
+
+                //if (distanceX < float.Epsilon)
+                //    yDir = target.position.y > transform.position.y ? 1 : -1;
+                //else
+                //    xDir = target.position.x > transform.position.x ? 1 : -1;
             }
-			
-			
-			//Call the AttemptMove function and pass in the generic parameter Player, because Enemy is moving and expecting to potentially encounter a Player
-			AttemptMove <Player> (xDir, yDir);
+
+
+            //Call the AttemptMove function and pass in the generic parameter Player, because Enemy is moving and expecting to potentially encounter a Player
+            AttemptMove <Player> (xDir, yDir);
 		}
 		
         public void Show(bool hard)

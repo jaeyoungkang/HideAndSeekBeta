@@ -101,9 +101,8 @@ namespace HideAndSeek
 			
 			//Call the SetupScene function of the BoardManager script, pass it current level number.
 			boardScript.SetupScene(level);
-
-            Invoke("ShowEnemies", levelStartDelay);
-			levelImage.SetActive(true);
+            
+            levelImage.SetActive(true);
 			if(!gameStart && !gameEnd && !gameOver)
 				Invoke("HideLevelImage", levelStartDelay);
 
@@ -121,7 +120,9 @@ namespace HideAndSeek
 			
 			//Set doingSetup to false allowing player to move again.
 			doingSetup = false;
-		}
+
+            ShowEnemies();
+        }
 
 		void ChangeTitleText ()
 		{

@@ -47,10 +47,7 @@ namespace HideAndSeek
                 SoundManager.instance.PlaySingle(showSound);
                 soda--;
                 foodText.text = "HP: " + food + ", -1 Soda: " + soda;
-				Analytics.CustomEvent("UseSoda", new Dictionary<string, object>
-				{
-						{ "UseSoda", soda}
-				});
+                GameManager.instance.playerSodaUse++;
             }
         }
 
@@ -293,10 +290,8 @@ namespace HideAndSeek
 			//Check if the tag of the trigger collided with is Exit.
 			if(other.tag == "Exit")
 			{
-				//Invoke the Restart function to start the next level with a delay of restartLevelDelay (default 1 second).
-				Invoke ("Restart", restartLevelDelay);
-				
-				//Disable the player object since level is over.
+                GameManager.instance.ShowEnemies();
+                Invoke ("Restart", restartLevelDelay);				
 				enabled = false;
 			}
 			
@@ -315,10 +310,7 @@ namespace HideAndSeek
 				//Disable the food object the player collided with.
 				other.gameObject.SetActive (false);
 
-				Analytics.CustomEvent("HaveFood", new Dictionary<string, object>
-				{
-						{ "HaveFood", food}
-				});
+                GameManager.instance.playerHPIncrease++;				
 			}
 			
 			//Check if the tag of the trigger collided with is Soda.
@@ -337,10 +329,7 @@ namespace HideAndSeek
 				//Disable the soda object the player collided with.
 				other.gameObject.SetActive (false);
 
-				Analytics.CustomEvent("HaveSoda", new Dictionary<string, object>
-				{
-						{ "HaveSoda", soda}
-				});
+                GameManager.instance.playerSodaGet++;				
 			}
 		}
 		
@@ -370,10 +359,7 @@ namespace HideAndSeek
 			//Update the food display with the new total.
 			foodText.text = "-"+ loss + " HP: " + food + " Soda: " + soda; ;
 
-			Analytics.CustomEvent("LoseFood", new Dictionary<string, object>
-			{
-					{ "LoseFood", food}
-			});
+            GameManager.instance.playerHPDecrease++;
 			
 			//Check to see if game has ended.
 			CheckIfGameOver ();

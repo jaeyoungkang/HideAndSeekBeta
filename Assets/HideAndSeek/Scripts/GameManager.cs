@@ -11,10 +11,25 @@ namespace HideAndSeek
 
     public class GameManager : MonoBehaviour
     {
-		public int playerHp = 0;
+        public int gameOverCount = 0;
+        public int gameEndCount = 0;
+
+        public int playerHPDecrease = 0;
+        public int playerHPIncrease = 0;
+
+        public int playerSodaUse = 0;
+        public int playerSodaGet = 0;
+
+        public int playerHp = 0;
 		public int playerSoda = 0;
+
 		public int moveTryCount = 0;
 		public int moveCount = 0;
+
+        int deltaTime = 0;
+
+        float prevTime = 0f;        
+
         public float levelStartDelay = 2f;                      //Time to wait before starting level, in seconds.
         public float turnDelay = 0.01f;                          //Delay between each Player turn.
         public int playerFoodPoints = 20;						//Starting value for Player food points.
@@ -72,12 +87,9 @@ namespace HideAndSeek
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
-		float prevTime = 0f;
-		float deltaTime = 0f;
-
 		public void writeLog()
 		{
-			deltaTime = Time.time - prevTime;
+			deltaTime = (int)(Time.time - prevTime);
 			prevTime = Time.time;
 			Analytics.CustomEvent("InitGame", new Dictionary<string, object>
 				{
@@ -86,21 +98,31 @@ namespace HideAndSeek
 					{ "move", moveCount},
 					{ "move try", moveTryCount},
 					{ "HP", playerHp},
-					{ "Soda", playerSoda},
-					{ "time", deltaTime}
+                    { "HP Inc", playerHPIncrease},
+                    { "HP Dec", playerHPDecrease},
+                    { "Soda", playerSoda},
+                    { "SodaUse", playerSodaUse},
+                    { "SodaGet", playerSodaGet},
+                    { "time", deltaTime}
 				});
 
 			string info = 
 				"Level: " + level.ToString () 
 				+ " Move: " + moveCount.ToString() 
 				+ " Move try: " + moveTryCount.ToString()
-				+ " Time: " +deltaTime.ToString () 
+				+ " Time: " + deltaTime.ToString () 
 				+ " HP: " + playerHp.ToString()
 				+ " Soda: " + playerSoda.ToString();
 			print (info);
 			moveCount = 0;
 			moveTryCount = 0;
-		}
+
+            playerHPDecrease = 0;
+            playerHPIncrease = 0;
+
+            playerSodaUse = 0;
+            playerSodaGet = 0;
+        }
 
 		public void setLevel()
 		{
@@ -233,13 +255,19 @@ namespace HideAndSeek
 
                 if (touchReleased)
 #else
-                if (Input.GetKeyUp (KeyCode.Space))
+                if (Input.GetKeyUp(KeyCode.Space))
 #endif
                 {
                     gameStart = false;
-					ChangeTitleText ();
-					Invoke("HideLevelImage", levelStartDelay);
-				}
+                    ChangeTitleText();
+                    Invoke("HideLevelImage", levelStartDelay);
+
+                    Analytics.CustomEvent("gameStart", new Dictionary<string, object>
+                    {
+                        { "GameOverCount", gameOverCount},
+                        { "GameEndCount", gameOverCount}
+                    });
+                }
 			}
             //Check that playersTurn or enemiesMoving or doingSetup are not currently true.
             if (playersTurn || enemiesMoving || doingSetup)
@@ -257,13 +285,15 @@ namespace HideAndSeek
 			//Add Enemy to List enemies.
 			enemies.Add(script);
 		}
-		
-		
-		//GameOver is called when the player reaches 0 food points
-		public void GameOver()
+
+    
+
+    //GameOver is called when the player reaches 0 food points
+    public void GameOver()
 		{
 			gameOver = true;
             playersTurn = false;
+            gameOverCount++;
         }
 
 		public void EndGame()
@@ -271,6 +301,7 @@ namespace HideAndSeek
 			level = 1;
 			gameEnd = true;
             playersTurn = false;
+            gameEndCount++;
         }
           
         public void ShowEnemies()

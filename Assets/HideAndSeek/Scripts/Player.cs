@@ -47,6 +47,10 @@ namespace HideAndSeek
                 SoundManager.instance.PlaySingle(showSound);
                 soda--;
                 foodText.text = "HP: " + food + ", -1 Soda: " + soda;
+				Analytics.CustomEvent("UseSoda", new Dictionary<string, object>
+				{
+						{ "UseSoda", soda}
+				});
             }
         }
 
@@ -78,12 +82,6 @@ namespace HideAndSeek
             rightBtn.onClick.AddListener(MoveRight);
 
             base.Start ();
-
-            Analytics.CustomEvent("PlayerStart", new Dictionary<string, object>
-            {
-                { "Hp", food},
-                { "Soda", soda}
-            });
         }
 
         void MoveUp()
@@ -213,6 +211,7 @@ namespace HideAndSeek
 		//AttemptMove takes a generic parameter T which for Player will be of the type Wall, it also takes integers for x and y direction to move in.
 		protected override void AttemptMove <T> (int xDir, int yDir)
 		{
+			GameManager.instance.moveTryCount++;
             //Every time player moves, subtract from food points total.
             //			food--;
 
@@ -231,6 +230,7 @@ namespace HideAndSeek
 				//Call RandomizeSfx of SoundManager to play the move sound, passing in two audio clips to choose from.
 				SoundManager.instance.RandomizeSfx (moveSound1, moveSound2);
 				SenseEnemy (xDir, yDir);
+				GameManager.instance.moveCount++;
 			}
 
 			//Since the player has moved and lost food points, check if the game has ended.
@@ -314,6 +314,11 @@ namespace HideAndSeek
 				
 				//Disable the food object the player collided with.
 				other.gameObject.SetActive (false);
+
+				Analytics.CustomEvent("HaveFood", new Dictionary<string, object>
+				{
+						{ "HaveFood", food}
+				});
 			}
 			
 			//Check if the tag of the trigger collided with is Soda.
@@ -331,6 +336,11 @@ namespace HideAndSeek
 				
 				//Disable the soda object the player collided with.
 				other.gameObject.SetActive (false);
+
+				Analytics.CustomEvent("HaveSoda", new Dictionary<string, object>
+				{
+						{ "HaveSoda", soda}
+				});
 			}
 		}
 		
@@ -338,6 +348,8 @@ namespace HideAndSeek
 		//Restart reloads the scene when called.
 		private void Restart ()
 		{
+			GameManager.instance.playerHp = food;
+			GameManager.instance.playerSoda = soda;
 			//Load the last scene loaded, in this case Main, the only scene in the game. 
 			//And we load it in "Single" mode so it replace the existing one
             //and not load all the scene object in the current scene.
@@ -357,6 +369,11 @@ namespace HideAndSeek
 			
 			//Update the food display with the new total.
 			foodText.text = "-"+ loss + " HP: " + food + " Soda: " + soda; ;
+
+			Analytics.CustomEvent("LoseFood", new Dictionary<string, object>
+			{
+					{ "LoseFood", food}
+			});
 			
 			//Check to see if game has ended.
 			CheckIfGameOver ();
@@ -378,8 +395,7 @@ namespace HideAndSeek
 			SoundManager.instance.PlaySingle(gameOverSound);
 
 			InitDatas ();
-            print("GameOver " + food.ToString() + " " + soda.ToString() + " " + GameManager.instance.playerFoodPoints.ToString());
-            GameManager.instance.GameOver ();
+			GameManager.instance.GameOver ();
 			//Invoke the Restart function to start the next level with a delay of restartLevelDelay (default 1 second).
 			Invoke ("Restart", restartLevelDelay);
 		}

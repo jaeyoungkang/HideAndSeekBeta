@@ -11,6 +11,10 @@ namespace HideAndSeek
 
     public class GameManager : MonoBehaviour
     {
+		public int playerHp = 0;
+		public int playerSoda = 0;
+		public int moveTryCount = 0;
+		public int moveCount = 0;
         public float levelStartDelay = 2f;                      //Time to wait before starting level, in seconds.
         public float turnDelay = 0.01f;                          //Delay between each Player turn.
         public int playerFoodPoints = 20;						//Starting value for Player food points.
@@ -56,7 +60,6 @@ namespace HideAndSeek
             //Get a component reference to the attached BoardManager script
             boardScript = GetComponent<BoardManager>();
 
-            //Call the InitGame function to initialize the first level 
             InitGame();
         }
 
@@ -69,17 +72,56 @@ namespace HideAndSeek
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
+		float prevTime = 0f;
+		float deltaTime = 0f;
+
+		public void writeLog()
+		{
+			deltaTime = Time.time - prevTime;
+			prevTime = Time.time;
+			Analytics.CustomEvent("InitGame", new Dictionary<string, object>
+				{
+					{ "level", level},
+					{ "enemies", enemies.Count},
+					{ "move", moveCount},
+					{ "move try", moveTryCount},
+					{ "HP", playerHp},
+					{ "Soda", playerSoda},
+					{ "time", deltaTime}
+				});
+
+			string info = 
+				"Level: " + level.ToString () 
+				+ " Move: " + moveCount.ToString() 
+				+ " Move try: " + moveTryCount.ToString()
+				+ " Time: " +deltaTime.ToString () 
+				+ " HP: " + playerHp.ToString()
+				+ " Soda: " + playerSoda.ToString();
+			print (info);
+			moveCount = 0;
+			moveTryCount = 0;
+		}
+
+		public void setLevel()
+		{
+			if (gameOver)
+				level = 1;
+			else 
+				instance.level++;
+		}
+
         //This is called each time a scene is loaded.
         static private void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)
         {
             if (instance != null)
             {
-                instance.level++;
+				instance.writeLog ();
+				instance.setLevel ();
                 instance.InitGame();
             }
         }
 
-        //Initializes the game for each level.
+		//Initializes the game for each level.
         void InitGame()
         {
             if (level == 11)
@@ -105,12 +147,6 @@ namespace HideAndSeek
             levelImage.SetActive(true);
             if (!gameStart && !gameEnd && !gameOver)
                 Invoke("HideLevelImage", levelStartDelay);
-
-            Analytics.CustomEvent("InitGame", new Dictionary<string, object>
-            {
-                { "level", level},
-                { "enemies", enemies.Count}
-            });
         }
 
         public bool Isplaying()
@@ -226,7 +262,6 @@ namespace HideAndSeek
 		//GameOver is called when the player reaches 0 food points
 		public void GameOver()
 		{
-			level = 0;
 			gameOver = true;
             playersTurn = false;
         }

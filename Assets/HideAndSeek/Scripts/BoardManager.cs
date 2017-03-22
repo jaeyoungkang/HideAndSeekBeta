@@ -139,7 +139,7 @@ namespace HideAndSeek
 
             int foodRate = 1;
             int sodaRate = 0;
-//            if (level == 1 || level % 5 == 0) foodRate = 3;
+			if (level % 2 == 0) foodRate = 2;
             if (level % 2 == 1) sodaRate = 1;
 
             LayoutObjectAtRandom(foodTiles, foodRate, foodRate);

@@ -7,7 +7,7 @@ namespace HideAndSeek
 	//Enemy inherits from MovingObject, our base class for objects that can move, Player also inherits from this.
 	public class Enemy : MovingObject
 	{
-		public int rangeOfSense = 3;
+		public int rangeOfSense = 1;
 		public int playerDamage; 							//The amount of food points to subtract from the player when attacking.
 		public AudioClip attackSound1;						//First of two audio clips to play when attacking the player.
 		public AudioClip attackSound2;						//Second of two audio clips to play when attacking the player.
@@ -67,7 +67,7 @@ namespace HideAndSeek
 			float distanceX = Mathf.Abs (target.position.x - transform.position.x);
 			float distanceY = Mathf.Abs (target.position.y - transform.position.y);
 
-            if(distanceY < rangeOfSense  && distanceX < rangeOfSense)
+            if(distanceY <= rangeOfSense  && distanceX <= rangeOfSense)
             {
                 float value = Random.Range(0f, 1f);
                 if (value < 0.5f)

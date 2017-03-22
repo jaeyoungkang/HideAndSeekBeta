@@ -134,20 +134,23 @@ namespace HideAndSeek
             InitialiseList();
 
             int wall = 0;
-            if (level > 10) wall = 6;
+//            if (level > 10) wall = 6;
             LayoutObjectAtRandom(wallTiles, wall, wall);
 
-            int foodRate = 0;
+            int foodRate = 1;
             int sodaRate = 0;
-            if (level == 1 || level % 5 == 0) foodRate = 3;
-            if (level == 1 || level % 5 == 0) sodaRate = 1;
+//            if (level == 1 || level % 5 == 0) foodRate = 3;
+            if (level % 2 == 1) sodaRate = 1;
 
             LayoutObjectAtRandom(foodTiles, foodRate, foodRate);
             LayoutObjectAtRandom(sodaTiles, sodaRate, sodaRate);
             
-            int enemyCount = level;
-            if (level > 10) enemyCount = 6;
+            int enemyCount = level+2;
+            if (level > 5) enemyCount = enemyCount - 8;
             LayoutObjectAtRandom(enemyTiles, enemyCount, enemyCount);
+
+            if (level > 5) LayoutObjectAtRandom(strongEnemyTiles, 3, 3);
+
             Instantiate(exit, new Vector3(columns - 1, rows - 1, 0f), Quaternion.identity);
         }
 		

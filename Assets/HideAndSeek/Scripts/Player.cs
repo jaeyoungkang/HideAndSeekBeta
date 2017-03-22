@@ -39,6 +39,8 @@ namespace HideAndSeek
                 
         public void UseSoda()
         {
+            if (!GameManager.instance.Isplaying()) return;
+
             if (soda > 0)
             {
                 GameManager.instance.ShowEnemies();
@@ -86,21 +88,25 @@ namespace HideAndSeek
 
         void MoveUp()
         {
+            if (!GameManager.instance.Isplaying()) return;
             AttemptMove<Wall>(0, 1);
         }
 
         void MoveDown()
         {
+            if (!GameManager.instance.Isplaying()) return;
             AttemptMove<Wall>(0, -1);
         }
 
         void MoveRight()
         {
+            if (!GameManager.instance.Isplaying()) return;
             AttemptMove<Wall>(1, 0);
         }
 
         void MoveLeft()
         {
+            if (!GameManager.instance.Isplaying()) return;
             AttemptMove<Wall>(-1, 0);
         }
 
@@ -126,6 +132,7 @@ namespace HideAndSeek
 		{
 			//If it's not the player's turn, exit the function.
 			if(!GameManager.instance.playersTurn) return;
+            if (!GameManager.instance.Isplaying()) return;
             if (food <= 0) return;
 
 			if (Input.GetKeyUp(KeyCode.U))
@@ -230,7 +237,7 @@ namespace HideAndSeek
 			CheckIfGameOver ();
 			
 			//Set the playersTurn boolean of GameManager to false now that players turn is over.
-			GameManager.instance.playersTurn = false;            
+			GameManager.instance.playersTurn = false;
         }
 
 		void SenseEnemy(int xDir, int yDir)
@@ -252,12 +259,17 @@ namespace HideAndSeek
 			}
 
 			if(bEnemy)
-				SetMessageText ("근처 무언가 있다!");
-			else if(bSmell)
-				SetMessageText ("썩은 냄새가 나는 것 같다...");
+                SetMessageText("썩은 냄새가 나는 것 같다...");
 			else
 				SetMessageText ("");
-		}
+
+            //if (bEnemy)
+            //    SetMessageText("근처 무언가 있다!");
+            //else if (bSmell)
+            //    SetMessageText("썩은 냄새가 나는 것 같다...");
+            //else
+            //    SetMessageText("");
+        }
 
 
         //OnCantMove overrides the abstract function OnCantMove in MovingObject.
@@ -363,16 +375,13 @@ namespace HideAndSeek
 
 		void GameOver()
 		{
-			//Call the PlaySingle function of SoundManager and pass it the gameOverSound as the audio clip to play.
 			SoundManager.instance.PlaySingle(gameOverSound);
 
-			//Stop the background music.
-//			SoundManager.instance.musicSource.Stop();
 			InitDatas ();
-			GameManager.instance.GameOver ();
+            print("GameOver " + food.ToString() + " " + soda.ToString() + " " + GameManager.instance.playerFoodPoints.ToString());
+            GameManager.instance.GameOver ();
 			//Invoke the Restart function to start the next level with a delay of restartLevelDelay (default 1 second).
 			Invoke ("Restart", restartLevelDelay);
-			enabled = false;
 		}
 
     }

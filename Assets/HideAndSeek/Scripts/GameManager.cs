@@ -105,8 +105,9 @@ namespace HideAndSeek
                     { "SodaGet", playerSodaGet},
                     { "time", deltaTime}
 				});
-
-			string info = 
+#if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
+#else
+            string info = 
 				"Level: " + level.ToString () 
 				+ " Move: " + moveCount.ToString() 
 				+ " Move try: " + moveTryCount.ToString()
@@ -114,6 +115,7 @@ namespace HideAndSeek
 				+ " HP: " + playerHp.ToString()
 				+ " Soda: " + playerSoda.ToString();
 			print (info);
+#endif
 			moveCount = 0;
 			moveTryCount = 0;
 
@@ -127,7 +129,7 @@ namespace HideAndSeek
 		public void setLevel()
 		{
 			if (gameOver)
-				level = 1;
+                instance.level = 1;
 			else 
 				instance.level++;
 		}
@@ -316,17 +318,17 @@ namespace HideAndSeek
         //Coroutine to move enemies in sequence.
         IEnumerator MoveEnemies()
 		{
+            float totalTime = 0.33f;
 			//While enemiesMoving is true player is unable to move.
 			enemiesMoving = true;
 			
-			//Wait for turnDelay seconds, defaults to .1 (100 ms).
-			yield return new WaitForSeconds(0.5f);
+			yield return new WaitForSeconds(0f);
 			
 			//If there are no enemies spawned (IE in first level):
 			if (enemies.Count == 0) 
 			{
 				//Wait for turnDelay seconds between moves, replaces delay caused by enemies moving when there are none.
-				yield return new WaitForSeconds(0);
+				yield return new WaitForSeconds(0.1f);
 			}
 			
 			//Loop through List of Enemy objects.
@@ -336,10 +338,13 @@ namespace HideAndSeek
 				enemies[i].MoveEnemy ();
 				
 				//Wait for Enemy's moveTime before moving next Enemy, 
-				yield return new WaitForSeconds(0.01f);
-			}
-			//Once Enemies are done moving, set playersTurn to true so player can move.
-			playersTurn = true;
+				yield return new WaitForSeconds(0.04f);
+                totalTime -= 0.04f;
+
+            }
+
+            yield return new WaitForSeconds(totalTime);
+            playersTurn = true;
 			
 			//Enemies are done moving, set enemiesMoving to false.
 			enemiesMoving = false;

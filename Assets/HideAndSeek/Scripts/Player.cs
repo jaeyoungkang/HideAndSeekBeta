@@ -53,8 +53,8 @@ namespace HideAndSeek
 
 		public void InitDatas()
 		{
-			food = GameManager.instance.playerFoodPoints;
-			soda = GameManager.instance.playerSodaPoints;
+			food = 20;
+			soda = 1;
 		}
 
 		public void SetMessageText(string msg)
@@ -316,17 +316,11 @@ namespace HideAndSeek
 			//Check if the tag of the trigger collided with is Soda.
 			else if(other.tag == "Soda")
 			{
-                //Add pointsPerSoda to players food points total
-                //				food += pointsPerSoda;
                 soda += 1;
-
-                //Update foodText to represent current total and notify player that they gained points
                 foodText.text = "HP: " + food + ",+ 1 Soda: " + soda;
-				
-				//Call the RandomizeSfx function of SoundManager and pass in two drinking sounds to choose between to play the drinking sound effect.
+			
 				SoundManager.instance.RandomizeSfx (drinkSound1, drinkSound2);
 				
-				//Disable the soda object the player collided with.
 				other.gameObject.SetActive (false);
 
                 GameManager.instance.playerSodaGet++;				
@@ -334,7 +328,6 @@ namespace HideAndSeek
 		}
 		
 		
-		//Restart reloads the scene when called.
 		private void Restart ()
 		{
 			GameManager.instance.playerHp = food;

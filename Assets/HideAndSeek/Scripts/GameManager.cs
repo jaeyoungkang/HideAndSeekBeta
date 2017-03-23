@@ -148,7 +148,7 @@ namespace HideAndSeek
 		//Initializes the game for each level.
         void InitGame()
         {
-            if (level == 11)
+            if (level == 14)
                 EndGame();
 
             //While doingSetup is true the player can't move, prevent player from moving while title card is up.
@@ -199,7 +199,11 @@ namespace HideAndSeek
 			else if (gameStart)
 				levelText.text = "Hide and Seek beta";
 			else {
-				levelText.text = "Level " + level;
+                if(level == 11) levelText.text = "Last Level 1/3";
+                else if (level == 12) levelText.text = "Last Level 2/3";
+                else if (level == 13) levelText.text = "Last Level 3/3";
+                else levelText.text = "Level " + level;
+
 				subTitleText.enabled = false;
 			}
 			

@@ -146,10 +146,13 @@ namespace HideAndSeek
             LayoutObjectAtRandom(sodaTiles, sodaRate, sodaRate);
             
             int enemyCount = level+2;
-            if (level > 5) enemyCount = enemyCount - 8;
+            if (level > 10) enemyCount = 3;
+            else if (level > 5) enemyCount = enemyCount - 8;
             LayoutObjectAtRandom(enemyTiles, enemyCount, enemyCount);
 
-            if (level > 5) LayoutObjectAtRandom(strongEnemyTiles, 3, 3);
+            if (level > 10) LayoutObjectAtRandom(strongEnemyTiles, 5, 5);
+            else if (level > 5) LayoutObjectAtRandom(strongEnemyTiles, 3, 3);
+            
 
             Instantiate(exit, new Vector3(columns - 1, rows - 1, 0f), Quaternion.identity);
         }

@@ -53,8 +53,8 @@ namespace HideAndSeek
 
 		public void InitDatas()
 		{
-			food = 20;
-			soda = 1;
+            food = GameManager.instance.playerFoodPoints;
+			soda = GameManager.instance.playerSodaPoints;
 		}
 
 		public void SetMessageText(string msg)
@@ -373,8 +373,10 @@ namespace HideAndSeek
 		{
 			SoundManager.instance.PlaySingle(gameOverSound);
 
-			InitDatas ();
-			GameManager.instance.GameOver ();
+            food = 20;
+            soda = 1;
+
+            GameManager.instance.GameOver ();
 			//Invoke the Restart function to start the next level with a delay of restartLevelDelay (default 1 second).
 			Invoke ("Restart", restartLevelDelay);
 		}

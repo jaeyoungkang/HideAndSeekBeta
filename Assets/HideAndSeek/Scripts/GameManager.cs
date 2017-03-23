@@ -91,7 +91,7 @@ namespace HideAndSeek
 		{
 			deltaTime = (int)(Time.time - prevTime);
 			prevTime = Time.time;
-			Analytics.CustomEvent("InitGame", new Dictionary<string, object>
+			Analytics.CustomEvent("Level info", new Dictionary<string, object>
 				{
 					{ "level", level},
 					{ "enemies", enemies.Count},
@@ -322,11 +322,11 @@ namespace HideAndSeek
         //Coroutine to move enemies in sequence.
         IEnumerator MoveEnemies()
 		{
-            float totalTime = 0.33f;
+            float totalTime = 0.2f;
 			//While enemiesMoving is true player is unable to move.
 			enemiesMoving = true;
 			
-			yield return new WaitForSeconds(0f);
+			yield return new WaitForSeconds(0.1f);
 			
 			//If there are no enemies spawned (IE in first level):
 			if (enemies.Count == 0) 
@@ -342,8 +342,8 @@ namespace HideAndSeek
 				enemies[i].MoveEnemy ();
 				
 				//Wait for Enemy's moveTime before moving next Enemy, 
-				yield return new WaitForSeconds(0.04f);
-                totalTime -= 0.04f;
+				yield return new WaitForSeconds(0.02f);
+                totalTime -= 0.02f;
 
             }
 

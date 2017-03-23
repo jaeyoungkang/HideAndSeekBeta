@@ -377,8 +377,8 @@ namespace HideAndSeek
             soda = 1;
 
             GameManager.instance.GameOver ();
-			//Invoke the Restart function to start the next level with a delay of restartLevelDelay (default 1 second).
-			Invoke ("Restart", restartLevelDelay);
+            GameManager.instance.ShowEnemies();
+            Invoke ("Restart", restartLevelDelay);
 		}
 
     }

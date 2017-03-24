@@ -3,6 +3,9 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Analytics;
+using System.IO;
+using System;
+
 
 namespace HideAndSeek
 {
@@ -49,21 +52,15 @@ namespace HideAndSeek
         private bool gameEnd = false;
         private bool gameStart = true;
 
-        enum GAME_STATE { START, OVER, END };
-
         //Awake is always called before any Start functions
         void Awake()
         {
             //Check if instance already exists
             if (instance == null)
-
-                //if not, set instance to this
+            {
                 instance = this;
-
-            //If instance already exists and it's not this:
+            }
             else if (instance != this)
-
-                //Then destroy this. This enforces our singleton pattern, meaning there can only ever be one instance of a GameManager.
                 Destroy(gameObject);
 
             //Sets this to not be destroyed when reloading scene
@@ -91,31 +88,58 @@ namespace HideAndSeek
 		{
 			deltaTime = (int)(Time.time - prevTime);
 			prevTime = Time.time;
-			Analytics.CustomEvent("Level info", new Dictionary<string, object>
-				{
-					{ "level", level},
-					{ "move", moveCount},
-					{ "move try", moveTryCount},
-					{ "HP", playerHp},
-                    { "HP Inc", playerHPIncrease},
-                    { "HP Dec", playerHPDecrease},
-                    { "Soda", playerSoda},
-                    { "SodaUse", playerSodaUse},
-                    { "SodaGet", playerSodaGet},
-                    { "time", deltaTime}
-				});
+            Dictionary<string, object> eventInfo = new Dictionary<string, object>
+                        {
+                            { "level", level},
+                            { "move", moveCount},
+                            { "move try", moveTryCount},
+                            { "HP", playerHp},
+                            { "HP Inc", playerHPIncrease},
+                            { "HP Dec", playerHPDecrease},
+                            { "Soda", playerSoda},
+                            { "SodaUse", playerSodaUse},
+                            { "SodaGet", playerSodaGet},
+                            { "time", deltaTime}
+                        };
+
+            Analytics.CustomEvent("Level info", eventInfo);
+
 #if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
 #else
-            string info = 
-				"Level: " + level.ToString () 
-				+ " Move: " + moveCount.ToString() 
-				+ " Move try: " + moveTryCount.ToString()
-				+ " Time: " + deltaTime.ToString () 
-				+ " HP: " + playerHp.ToString()
-				+ " Soda: " + playerSoda.ToString();
-			print (info);
+            string info =
+                "Level: " + level.ToString()
+                + " Move: " + moveCount.ToString()
+                + " Move try: " + moveTryCount.ToString()
+
+                + " HP: " + playerHp.ToString()
+                + " HP Inc: " + playerHPIncrease.ToString()
+                + " HP Dec: " + playerHPDecrease.ToString()
+
+                + " Soda: " + playerSoda.ToString()
+                + " Soda Use: " + playerSodaUse.ToString()
+                + " Soda Get: " + playerSodaGet.ToString()
+
+                + " Time: " + deltaTime.ToString();
+
+            string info1 =
+                level.ToString()
+                + "\t" + moveCount.ToString()
+                + "\t" + moveTryCount.ToString()
+
+                + "\t" + playerHp.ToString()
+                + "\t" + playerHPIncrease.ToString()
+                + "\t" + playerHPDecrease.ToString()
+
+                + "\t" + playerSoda.ToString()
+                + "\t" + playerSodaUse.ToString()
+                + "\t" + playerSodaGet.ToString()
+
+                + "\t" + deltaTime.ToString();
+
+            print (info);
+            WriteFile("gameLog.txt", info1);
 #endif
-			moveCount = 0;
+            moveCount = 0;
 			moveTryCount = 0;
 
             playerHPDecrease = 0;
@@ -123,6 +147,20 @@ namespace HideAndSeek
 
             playerSodaUse = 0;
             playerSodaGet = 0;
+        }
+
+        public void WriteFile(string fileName, string info)
+        {
+            if (File.Exists(fileName))
+            {
+                File.AppendAllText(fileName, info + Environment.NewLine);
+                return;
+            }
+
+            var sr = File.CreateText(fileName);
+            sr.WriteLine(info);
+//            sr.WriteLine("I can write ints {0} or floats {1}, and so on.", 1, 4.2);
+            sr.Close();
         }
 
 		public void setLevel()
@@ -272,6 +310,10 @@ namespace HideAndSeek
                         { "GameOverCount", gameOverCount},
                         { "GameEndCount", gameOverCount}
                     });
+#if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
+#else
+                    WriteFile("gameLog.txt", "GAME START");
+#endif
                 }
 			}
             //Check that playersTurn or enemiesMoving or doingSetup are not currently true.

@@ -94,7 +94,6 @@ namespace HideAndSeek
 			Analytics.CustomEvent("Level info", new Dictionary<string, object>
 				{
 					{ "level", level},
-					{ "enemies", enemies.Count},
 					{ "move", moveCount},
 					{ "move try", moveTryCount},
 					{ "HP", playerHp},

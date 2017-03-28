@@ -82,25 +82,26 @@ namespace HideAndSeek
                     if (distanceY < float.Epsilon)
                         xDir = target.position.x > transform.position.x ? 1 : -1;
                     else
-                        yDir = target.position.y > transform.position.y ? 1 : -1;
-                    
+                        yDir = target.position.y > transform.position.y ? 1 : -1;                    
                 }                    
-
-                //if (distanceX < float.Epsilon)
-                //    yDir = target.position.y > transform.position.y ? 1 : -1;
-                //else
-                //    xDir = target.position.x > transform.position.x ? 1 : -1;
             }
 
 
             //Call the AttemptMove function and pass in the generic parameter Player, because Enemy is moving and expecting to potentially encounter a Player
             AttemptMove <Player> (xDir, yDir);
 		}
-		
-        public void Show(bool bLong)
+
+        public bool bShowing = false;
+        public void Show(bool bShow)
         {
-            if(bLong) animator.SetTrigger("enemyShowLong");
-            else animator.SetTrigger("enemyShow");
+            bShowing = bShow;
+            SpriteRenderer sprite = GetComponent<SpriteRenderer>();
+
+            if (sprite)
+            {
+                if(bShow) sprite.sortingLayerName = "Units";
+                else sprite.sortingLayerName = "Hide";
+            }
         }
 		
 		//OnCantMove is called if Enemy attempts to move into a space occupied by a Player, it overrides the OnCantMove function of MovingObject 
@@ -112,12 +113,19 @@ namespace HideAndSeek
 			
 			//Call the LoseFood function of hitPlayer passing it playerDamage, the amount of foodpoints to be subtracted.
 			hitPlayer.LoseFood (playerDamage);
-			
-			//Set the attack trigger of animator to trigger Enemy attack animation.
-			animator.SetTrigger ("enemyAttack");
-			
-			//Call the RandomizeSfx function of SoundManager passing in the two audio clips to choose randomly between.
-			SoundManager.instance.RandomizeSfx (attackSound1, attackSound2);
+                        
+            animator.SetTrigger ("enemyAttack");
+            if (bShowing == false) StartCoroutine(ShowEnemyAttack());
+            
+            //Call the RandomizeSfx function of SoundManager passing in the two audio clips to choose randomly between.
+            SoundManager.instance.RandomizeSfx (attackSound1, attackSound2);
 		}
-	}
+
+        IEnumerator ShowEnemyAttack()
+        {            
+            Show(true);
+            yield return new WaitForSeconds(0.1f);
+            Show(false); 
+        }
+    }
 }

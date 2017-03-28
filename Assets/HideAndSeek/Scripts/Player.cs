@@ -43,7 +43,7 @@ namespace HideAndSeek
 
             if (soda > 0)
             {
-                if(GameManager.instance.ShowEnemies(true))
+                if(GameManager.instance.ShowEnemies(true, true))
                 {
                     SoundManager.instance.PlaySingle(showSound);
                     soda--;
@@ -210,10 +210,11 @@ namespace HideAndSeek
 		//AttemptMove takes a generic parameter T which for Player will be of the type Wall, it also takes integers for x and y direction to move in.
 		protected override void AttemptMove <T> (int xDir, int yDir)
 		{
-			GameManager.instance.gameInfo.moveTryCount++;
+            SetMessageText("");
+            GameManager.instance.gameInfo.moveTryCount++;
             if(GameManager.instance.gameInfo.moveTryCount%7 == 0)
             {
-                GameManager.instance.ShowEnemies();
+                GameManager.instance.ShowEnemies(true);
             }
 
             SetFoodText();
@@ -229,9 +230,16 @@ namespace HideAndSeek
 			{
 				//Call RandomizeSfx of SoundManager to play the move sound, passing in two audio clips to choose from.
 				SoundManager.instance.RandomizeSfx (moveSound1, moveSound2);
-				SenseEnemy (xDir, yDir);
+//				SenseEnemy (xDir, yDir);
 				GameManager.instance.gameInfo.moveCount++;
 			}
+            else
+            {
+                if (hit.collider.tag == "Enemy")
+                {
+                    SetMessageText("무언가에 막혀서 갈 수 없다...");
+                }
+            }
 
 			//Since the player has moved and lost food points, check if the game has ended.
 			CheckIfGameOver ();
@@ -258,7 +266,7 @@ namespace HideAndSeek
 			if(bEnemy)
                 SetMessageText("썩은 냄새가 나는 것 같다...");
 			else
-				SetMessageText ("");            
+				SetMessageText ("");
         }
 
 
@@ -274,20 +282,23 @@ namespace HideAndSeek
 			
 			//Set the attack trigger of the player's animation controller in order to play the player's attack animation.
 			animator.SetTrigger ("playerChop");
-		}
-		
-		
-		//OnTriggerEnter2D is sent when another object enters a trigger collider attached to this object (2D physics only).
-		private void OnTriggerEnter2D (Collider2D other)
+
+            
+        }            
+
+
+        //OnTriggerEnter2D is sent when another object enters a trigger collider attached to this object (2D physics only).
+        private void OnTriggerEnter2D (Collider2D other)
 		{
 			//Check if the tag of the trigger collided with is Exit.
 			if(other.tag == "Exit")
 			{
-                GameManager.instance.ShowEnemies();
+                GameManager.instance.ShowEnemies(true);
                 Invoke ("Restart", restartLevelDelay);				
 				enabled = false;
 			}
 			
+
 			//Check if the tag of the trigger collided with is Food.
 			else if(other.tag == "Food")
 			{
@@ -317,8 +328,8 @@ namespace HideAndSeek
 				other.gameObject.SetActive (false);
 
                 GameManager.instance.gameInfo.playerSodaGet++;				
-			}
-		}
+			}            
+        }
 		
 		
 		private void Restart ()
@@ -370,7 +381,7 @@ namespace HideAndSeek
             soda = 1;
 
             GameManager.instance.GameOver ();
-            GameManager.instance.ShowEnemies();
+            GameManager.instance.ShowEnemies(true);
             Invoke ("Restart", restartLevelDelay);
 		}
 

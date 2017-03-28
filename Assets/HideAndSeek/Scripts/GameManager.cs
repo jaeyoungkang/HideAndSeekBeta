@@ -238,7 +238,7 @@ namespace HideAndSeek
 			//Set doingSetup to false allowing player to move again.
 			doingSetup = false;
 
-            ShowEnemies();
+            ShowEnemies(true);
         }
 
 		void ChangeTitleText ()
@@ -323,21 +323,25 @@ namespace HideAndSeek
         }
 		
 		void Update()
-		{
-            showTimeText.text = "";
-
+		{            
             if (gameState != GAME_STATE.PLAY)
             {
                 TitlePageUpdate();
-                timer = 0;
+                visibleTimer = 0;
                 return;                
             }
 
-            if (timer > 0)
+            if (visibleTimer > 0)
             {
-                timer = timer - Time.deltaTime;
-                if (timer < 0) timer = 0;
-                showTimeText.text = Math.Ceiling(timer).ToString();
+                visibleTimer = visibleTimer - Time.deltaTime;                
+                showTimeText.text = Math.Ceiling(visibleTimer).ToString();                
+            }
+
+            if (visibleTimer < 0)
+            {
+                visibleTimer = 0;
+                showTimeText.text = "";
+                ShowEnemies(false);
             }
 
             if (playersTurn || enemiesMoving || doingSetup)
@@ -369,17 +373,20 @@ namespace HideAndSeek
             gameEndCount++;
         }
 
-        public float timer = 0;
+        public float visibleTimer = 0;
           
-        public bool ShowEnemies(bool blong = false)
+        public bool ShowEnemies(bool bShow, bool blong = false)
         {
-            if (timer > 0) return false;
-            timer = 2;
-            if (blong) timer = 5;
+            if(bShow)
+            {
+                if (visibleTimer > 0) return false;
+                visibleTimer = 2;
+                if (blong) visibleTimer = 5;
+            }           
 
             for (int i = 0; i < enemies.Count; i++)
             {
-                enemies[i].Show(blong);
+                enemies[i].Show(bShow);
             }
 
             return true;

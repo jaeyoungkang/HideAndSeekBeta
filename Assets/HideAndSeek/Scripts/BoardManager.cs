@@ -127,62 +127,34 @@ namespace HideAndSeek
 			}
 		}
 		
-        public void SetupScene2 (int level)
-        {
+
+		public void SetupScene (int level)
+		{
             BoardSetup();
 
             InitialiseList();
 
             int wall = 0;
-//            if (level > 10) wall = 6;
+            //            if (level > 10) wall = 6;
             LayoutObjectAtRandom(wallTiles, wall, wall);
 
             int foodRate = 1;
             int sodaRate = 0;
-			if (level % 2 == 0) foodRate = 2;
+            if (level % 2 == 0) foodRate = 2;
             if (level % 2 == 1) sodaRate = 1;
 
             LayoutObjectAtRandom(foodTiles, foodRate, foodRate);
             LayoutObjectAtRandom(sodaTiles, sodaRate, sodaRate);
-            
-            int enemyCount = level+2;
+
+            int enemyCount = level + 2;
             if (level > 10) enemyCount = 3;
             else if (level > 5) enemyCount = enemyCount - 8;
             LayoutObjectAtRandom(enemyTiles, enemyCount, enemyCount);
 
             if (level > 10) LayoutObjectAtRandom(strongEnemyTiles, 5, 5);
             else if (level > 5) LayoutObjectAtRandom(strongEnemyTiles, 3, 3);
-            
 
             Instantiate(exit, new Vector3(columns - 1, rows - 1, 0f), Quaternion.identity);
-        }
-		
-		//SetupScene initializes our level and calls the previous functions to lay out the game board
-		public void SetupScene (int level)
-		{
-            SetupScene2(level);
-            return; 
-            //Creates the outer walls and floor.
-            BoardSetup ();
-			
-			//Reset our list of gridpositions.
-			InitialiseList ();
-
-            LayoutObjectAtRandom (wallTiles, wallCount.minimum, wallCount.maximum);
-
-            int foodRate = (int)Mathf.Log(level, 2f);
-            int sodaRate = (int)Mathf.Log(level, 4f);
-                        
-            LayoutObjectAtRandom(foodTiles, foodCount.minimum, foodCount.maximum + foodRate);
-            LayoutObjectAtRandom(sodaTiles, sodaCount.minimum, sodaCount.maximum + sodaRate);
-            
-            int enemyCount = (int)Mathf.Log(level, 2f) + 1;
-            LayoutObjectAtRandom(enemyTiles, enemyCount, enemyCount);
-
-            int stronmgEnemyCount = (int)Mathf.Log(level, 4f);
-            LayoutObjectAtRandom(strongEnemyTiles, stronmgEnemyCount, stronmgEnemyCount);
-
-            Instantiate(exit, new Vector3 (columns - 1, rows - 1, 0f), Quaternion.identity);
         }
     }   
 }

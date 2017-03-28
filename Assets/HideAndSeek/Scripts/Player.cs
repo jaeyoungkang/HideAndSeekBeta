@@ -43,18 +43,20 @@ namespace HideAndSeek
 
             if (soda > 0)
             {
-                GameManager.instance.ShowEnemies();
-                SoundManager.instance.PlaySingle(showSound);
-                soda--;
-                foodText.text = "HP: " + food + ", -1 Soda: " + soda;
-                GameManager.instance.playerSodaUse++;
+                if(GameManager.instance.ShowEnemies(true))
+                {
+                    SoundManager.instance.PlaySingle(showSound);
+                    soda--;
+                    foodText.text = "HP: " + food + ", -1 Soda: " + soda;
+                    GameManager.instance.gameInfo.playerSodaUse++;
+                }                
             }
         }
 
 		public void InitDatas()
 		{
-            food = GameManager.instance.playerFoodPoints;
-			soda = GameManager.instance.playerSodaPoints;
+            food = GameManager.instance.playerHp;
+			soda = GameManager.instance.playerIp;
 		}
 
 		public void SetMessageText(string msg)
@@ -118,8 +120,8 @@ namespace HideAndSeek
 		private void OnDisable ()
 		{
 			//When Player object is disabled, store the current local food total in the GameManager so it can be re-loaded in next level.
-			GameManager.instance.playerFoodPoints = food;
-            GameManager.instance.playerSodaPoints = soda;
+			GameManager.instance.playerHp = food;
+            GameManager.instance.playerIp = soda;
         }
 		
 		
@@ -208,11 +210,12 @@ namespace HideAndSeek
 		//AttemptMove takes a generic parameter T which for Player will be of the type Wall, it also takes integers for x and y direction to move in.
 		protected override void AttemptMove <T> (int xDir, int yDir)
 		{
-			GameManager.instance.moveTryCount++;
-            //Every time player moves, subtract from food points total.
-            //			food--;
+			GameManager.instance.gameInfo.moveTryCount++;
+            if(GameManager.instance.gameInfo.moveTryCount%7 == 0)
+            {
+                GameManager.instance.ShowEnemies();
+            }
 
-            //Update food text display to reflect current score.
             SetFoodText();
             
             //Call the AttemptMove method of the base class, passing in the component T (in this case Wall) and x and y direction to move.
@@ -227,7 +230,7 @@ namespace HideAndSeek
 				//Call RandomizeSfx of SoundManager to play the move sound, passing in two audio clips to choose from.
 				SoundManager.instance.RandomizeSfx (moveSound1, moveSound2);
 				SenseEnemy (xDir, yDir);
-				GameManager.instance.moveCount++;
+				GameManager.instance.gameInfo.moveCount++;
 			}
 
 			//Since the player has moved and lost food points, check if the game has ended.
@@ -241,31 +244,21 @@ namespace HideAndSeek
 		{
 			GameObject[] targets = GameObject.FindGameObjectsWithTag ("Enemy");
 			bool bEnemy = false;
-			bool bSmell = false;
 			foreach (GameObject target in targets) {
 				float x = transform.position.x + xDir;
 				float y = transform.position.y + yDir;
 				float distanceX = Mathf.Abs (target.transform.position.x - x);
 				float distanceY = Mathf.Abs (target.transform.position.y - y);
-				if (distanceX <= 2 && distanceY <= 2) {
-					if (distanceX <= 1 && distanceY <= 1)
+
+                if (distanceX <= 1 && distanceY <= 1)
 						bEnemy = true;
-					else
-						bSmell = true;
-				}				
+				
 			}
 
 			if(bEnemy)
                 SetMessageText("썩은 냄새가 나는 것 같다...");
 			else
-				SetMessageText ("");
-
-            //if (bEnemy)
-            //    SetMessageText("근처 무언가 있다!");
-            //else if (bSmell)
-            //    SetMessageText("썩은 냄새가 나는 것 같다...");
-            //else
-            //    SetMessageText("");
+				SetMessageText ("");            
         }
 
 
@@ -310,7 +303,7 @@ namespace HideAndSeek
 				//Disable the food object the player collided with.
 				other.gameObject.SetActive (false);
 
-                GameManager.instance.playerHPIncrease++;				
+                GameManager.instance.gameInfo.playerHPIncrease++;				
 			}
 			
 			//Check if the tag of the trigger collided with is Soda.
@@ -323,15 +316,15 @@ namespace HideAndSeek
 				
 				other.gameObject.SetActive (false);
 
-                GameManager.instance.playerSodaGet++;				
+                GameManager.instance.gameInfo.playerSodaGet++;				
 			}
 		}
 		
 		
 		private void Restart ()
 		{
-			GameManager.instance.playerHp = food;
-			GameManager.instance.playerSoda = soda;
+			GameManager.instance.gameInfo.playerHp = food;
+			GameManager.instance.gameInfo.playerSoda = soda;
 			//Load the last scene loaded, in this case Main, the only scene in the game. 
 			//And we load it in "Single" mode so it replace the existing one
             //and not load all the scene object in the current scene.
@@ -352,7 +345,7 @@ namespace HideAndSeek
 			//Update the food display with the new total.
 			foodText.text = "-"+ loss + " HP: " + food + " Soda: " + soda; ;
 
-            GameManager.instance.playerHPDecrease++;
+            GameManager.instance.gameInfo.playerHPDecrease++;
 			
 			//Check to see if game has ended.
 			CheckIfGameOver ();

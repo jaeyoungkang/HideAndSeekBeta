@@ -97,9 +97,9 @@ namespace HideAndSeek
             AttemptMove <Player> (xDir, yDir);
 		}
 		
-        public void Show(bool hard)
+        public void Show(bool bLong)
         {
-            if(hard) animator.SetTrigger("enemyShowQuick");
+            if(bLong) animator.SetTrigger("enemyShowLong");
             else animator.SetTrigger("enemyShow");
         }
 		

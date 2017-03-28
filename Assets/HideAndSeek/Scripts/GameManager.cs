@@ -1,56 +1,79 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine.Analytics;
+using UnityEngine.UI;                   //Allows us to use UI.
+
+using System.Collections;
+using System.Collections.Generic;       //Allows us to use Lists. 
 using System.IO;
 using System;
 
 
 namespace HideAndSeek
 {
-	using System.Collections.Generic;		//Allows us to use Lists. 
-	using UnityEngine.UI;                   //Allows us to use UI.
+    public struct GAME_INFO
+    {
+        public int playerHPDecrease;
+        public int playerHPIncrease;
+
+        public int playerSodaUse;
+        public int playerSodaGet;
+
+        public int playerHp;
+        public int playerSoda;
+
+        public int moveTryCount;
+        public int moveCount;
+
+        public int deltaTime;
+
+        public void init()
+        {
+            playerHPDecrease = 0;
+            playerHPIncrease = 0;
+
+            playerSodaUse = 0;
+            playerSodaGet = 0;
+
+            playerHp = 0;
+            playerSoda = 0;
+
+            moveTryCount = 0;
+            moveCount = 0;
+
+            deltaTime = 0;
+        }
+
+    }	
 
     public class GameManager : MonoBehaviour
     {
+        public GAME_INFO gameInfo;
+
         public int gameOverCount = 0;
-        public int gameEndCount = 0;
-
-        public int playerHPDecrease = 0;
-        public int playerHPIncrease = 0;
-
-        public int playerSodaUse = 0;
-        public int playerSodaGet = 0;
-
-        public int playerHp = 0;
-		public int playerSoda = 0;
-
-		public int moveTryCount = 0;
-		public int moveCount = 0;
-
-        int deltaTime = 0;
+        public int gameEndCount = 0;        
 
         float prevTime = 0f;        
 
-        public float levelStartDelay = 2f;                      //Time to wait before starting level, in seconds.
-        public float turnDelay = 0.01f;                          //Delay between each Player turn.
-        public int playerFoodPoints = 20;						//Starting value for Player food points.
-        public int playerSodaPoints = 1;
+        public float levelStartDelay = 2f;
+        public int playerHp = 20;
+        public int playerIp = 1;
         public static GameManager instance = null;              //Static instance of GameManager which allows it to be accessed by any other script.
-        [HideInInspector] public bool playersTurn = true;       //Boolean to check if it's players turn, hidden in inspector but public.
+        [HideInInspector] public bool playersTurn = true;
+
+        private Text showTimeText;
 
         private Text subTitleText;
-        private Text levelText;                                 //Text to display current level number.
-        private GameObject levelImage;                          //Image to block out level as levels are being set up, background for levelText.
-        private BoardManager boardScript;                       //Store a reference to our BoardManager which will set up the level.
-        private int level = 1;                                  //Current level number, expressed in game as "Day 1".
+        private Text titleText;
+        private GameObject titleImage;
+        private BoardManager boardScript;
+        private int level = 1;
         private List<Enemy> enemies;                            //List of all Enemy units, used to issue them move commands.
         private bool enemiesMoving;                             //Boolean to check if enemies are moving.
         private bool doingSetup = true;                         //Boolean to check if we're setting up board, prevent Player from moving during setup.
-        private bool gameOver = false;
-        private bool gameEnd = false;
-        private bool gameStart = true;
+
+        private enum GAME_STATE { START, PLAY, END, OVER }
+        private GAME_STATE gameState = GAME_STATE.START;
 
         //Awake is always called before any Start functions
         void Awake()
@@ -59,6 +82,7 @@ namespace HideAndSeek
             if (instance == null)
             {
                 instance = this;
+                gameInfo.init();
             }
             else if (instance != this)
                 Destroy(gameObject);
@@ -66,7 +90,6 @@ namespace HideAndSeek
             //Sets this to not be destroyed when reloading scene
             DontDestroyOnLoad(gameObject);
 
-            //Assign enemies to a new List of Enemy objects.
             enemies = new List<Enemy>();
 
             //Get a component reference to the attached BoardManager script
@@ -86,20 +109,20 @@ namespace HideAndSeek
 
 		public void writeLog()
 		{
-			deltaTime = (int)(Time.time - prevTime);
+			gameInfo.deltaTime = (int)(Time.time - prevTime);
 			prevTime = Time.time;
             Dictionary<string, object> eventInfo = new Dictionary<string, object>
                         {
                             { "level", level},
-                            { "move", moveCount},
-                            { "move try", moveTryCount},
-                            { "HP", playerHp},
-                            { "HP Inc", playerHPIncrease},
-                            { "HP Dec", playerHPDecrease},
-                            { "Soda", playerSoda},
-                            { "SodaUse", playerSodaUse},
-                            { "SodaGet", playerSodaGet},
-                            { "time", deltaTime}
+                            { "move", gameInfo.moveCount},
+                            { "move try", gameInfo.moveTryCount},
+                            { "HP", gameInfo.playerHp},
+                            { "HP Inc", gameInfo.playerHPIncrease},
+                            { "HP Dec", gameInfo.playerHPDecrease},
+                            { "Soda", gameInfo.playerSoda},
+                            { "SodaUse", gameInfo.playerSodaUse},
+                            { "SodaGet", gameInfo.playerSodaGet},
+                            { "time", gameInfo.deltaTime}
                         };
 
             Analytics.CustomEvent("Level info", eventInfo);
@@ -108,45 +131,38 @@ namespace HideAndSeek
 #else
             string info =
                 "Level: " + level.ToString()
-                + " Move: " + moveCount.ToString()
-                + " Move try: " + moveTryCount.ToString()
+                + " Move: " + gameInfo.moveCount.ToString()
+                + " Move try: " + gameInfo.moveTryCount.ToString()
 
-                + " HP: " + playerHp.ToString()
-                + " HP Inc: " + playerHPIncrease.ToString()
-                + " HP Dec: " + playerHPDecrease.ToString()
+                + " HP: " + gameInfo.playerHp.ToString()
+                + " HP Inc: " + gameInfo.playerHPIncrease.ToString()
+                + " HP Dec: " + gameInfo.playerHPDecrease.ToString()
 
-                + " Soda: " + playerSoda.ToString()
-                + " Soda Use: " + playerSodaUse.ToString()
-                + " Soda Get: " + playerSodaGet.ToString()
+                + " Soda: " + gameInfo.playerSoda.ToString()
+                + " Soda Use: " + gameInfo.playerSodaUse.ToString()
+                + " Soda Get: " + gameInfo.playerSodaGet.ToString()
 
-                + " Time: " + deltaTime.ToString();
+                + " Time: " + gameInfo.deltaTime.ToString();
 
             string info1 =
                 level.ToString()
-                + "\t" + moveCount.ToString()
-                + "\t" + moveTryCount.ToString()
+                + "\t" + gameInfo.moveCount.ToString()
+                + "\t" + gameInfo.moveTryCount.ToString()
 
-                + "\t" + playerHp.ToString()
-                + "\t" + playerHPIncrease.ToString()
-                + "\t" + playerHPDecrease.ToString()
+                + "\t" + gameInfo.playerHp.ToString()
+                + "\t" + gameInfo.playerHPIncrease.ToString()
+                + "\t" + gameInfo.playerHPDecrease.ToString()
 
-                + "\t" + playerSoda.ToString()
-                + "\t" + playerSodaUse.ToString()
-                + "\t" + playerSodaGet.ToString()
+                + "\t" + gameInfo.playerSoda.ToString()
+                + "\t" + gameInfo.playerSodaUse.ToString()
+                + "\t" + gameInfo.playerSodaGet.ToString()
 
-                + "\t" + deltaTime.ToString();
+                + "\t" + gameInfo.deltaTime.ToString();
 
             print (info);
             WriteFile("gameLog.txt", info1);
 #endif
-            moveCount = 0;
-			moveTryCount = 0;
-
-            playerHPDecrease = 0;
-            playerHPIncrease = 0;
-
-            playerSodaUse = 0;
-            playerSodaGet = 0;
+            gameInfo.init();
         }
 
         public void WriteFile(string fileName, string info)
@@ -165,7 +181,7 @@ namespace HideAndSeek
 
 		public void setLevel()
 		{
-			if (gameOver)
+			if (gameState == GAME_STATE.OVER)
                 instance.level = 1;
 			else 
 				instance.level++;
@@ -191,34 +207,33 @@ namespace HideAndSeek
             //While doingSetup is true the player can't move, prevent player from moving while title card is up.
             doingSetup = true;
 
-            levelImage = GameObject.Find("LevelImage");
+            titleImage = GameObject.Find("LevelImage");
 
-            //Get a reference to our text LevelText's text component by finding it by name and calling GetComponent.
-            levelText = GameObject.Find("LevelText").GetComponent<Text>();
+            titleText = GameObject.Find("LevelText").GetComponent<Text>();
             subTitleText = GameObject.Find("SubTitleText").GetComponent<Text>();
+
+            showTimeText = GameObject.Find("ShowTimeText").GetComponent<Text>();
 
             ChangeTitleText();
 
-            //Clear any Enemy objects in our List to prepare for next level.
             enemies.Clear();
 
             //Call the SetupScene function of the BoardManager script, pass it current level number.
             boardScript.SetupScene(level);
 
-            levelImage.SetActive(true);
-            if (!gameStart && !gameEnd && !gameOver)
-                Invoke("HideLevelImage", levelStartDelay);
+            titleImage.SetActive(true);
+            if (gameState == GAME_STATE.PLAY)
+                Invoke("HideTitleImage", levelStartDelay);
         }
 
         public bool Isplaying()
         {
-            return (!gameStart && !gameEnd && !gameOver && !doingSetup);
+            return (gameState == GAME_STATE.PLAY && !doingSetup);
         }
 
-		void HideLevelImage()
+		void HideTitleImage()
 		{
-			//Disable the levelImage gameObject.
-			levelImage.SetActive(false);
+			titleImage.SetActive(false);
 			
 			//Set doingSetup to false allowing player to move again.
 			doingSetup = false;
@@ -229,81 +244,69 @@ namespace HideAndSeek
 		void ChangeTitleText ()
 		{
 			subTitleText.enabled = true;
-			if (gameOver)
-				levelText.text = "GAME OVER";
-			else if (gameEnd)
-				levelText.text = "All levels cleared!";
-			else if (gameStart)
-				levelText.text = "Hide and Seek beta";
-			else {
-                if(level == 11) levelText.text = "Last Level 1/3";
-                else if (level == 12) levelText.text = "Last Level 2/3";
-                else if (level == 13) levelText.text = "Last Level 3/3";
-                else levelText.text = "Level " + level;
+            switch(gameState)
+            {
+                case GAME_STATE.OVER:
+                    titleText.text = "GAME OVER";
+                    break;
 
-				subTitleText.enabled = false;
-			}
-			
+                case GAME_STATE.END:
+                    titleText.text = "All levels cleared!";
+                    break;
+
+                case GAME_STATE.START:
+                    titleText.text = "Hide and Seek beta";
+                    break;
+
+                case GAME_STATE.PLAY:
+                    if (level == 11) titleText.text = "Last Level 1/3";
+                    else if (level == 12) titleText.text = "Last Level 2/3";
+                    else if (level == 13) titleText.text = "Last Level 3/3";
+                    else titleText.text = "Level " + level;
+                    subTitleText.enabled = false;
+                    break;
+            }			
 		}
-		
-		//Update is called every frame.
-		void Update()
-		{
-			if (gameEnd) {
-#if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
-                bool touchReleased = false;
-                for (int i = 0; i < Input.touches.Length; i++)
-                {
-                    touchReleased = Input.touches[i].phase == TouchPhase.Ended;
-                    if (touchReleased) break;
-                }
 
-                if (touchReleased)
-#else
-                if (Input.GetKeyUp (KeyCode.Space))
-#endif
-                { 
-                    gameEnd = false;
-					gameStart = true;
-					ChangeTitleText ();
-				}
-			}
-			else if (gameOver) {
+        bool IsInput()
+        {
 #if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
-                bool touchReleased = false;
-                for (int i = 0; i < Input.touches.Length; i++)
-                {
-                    touchReleased = Input.touches[i].phase == TouchPhase.Ended;
-                    if (touchReleased) break;
-                }
+            bool touchReleased = false;
+            for (int i = 0; i < Input.touches.Length; i++)
+            {
+                touchReleased = Input.touches[i].phase == TouchPhase.Ended;
+                if (touchReleased) break;
+            }
 
-                if (touchReleased)
+            if (touchReleased)
 #else
-                if (Input.GetKeyUp (KeyCode.Space)) 
+            if (Input.GetKeyUp(KeyCode.Space))
 #endif
-                { 
-                    gameOver = false;
-					gameStart = true;
-					ChangeTitleText ();
-				}
-			}
-			else if (gameStart) {
-#if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
-                bool touchReleased = false;
-                for (int i = 0; i < Input.touches.Length; i++)
-                {
-                    touchReleased = Input.touches[i].phase == TouchPhase.Ended;
-                    if (touchReleased) break;
-                }
+                return true;
+            else
+                return false;
+        }
 
-                if (touchReleased)
-#else
-                if (Input.GetKeyUp(KeyCode.Space))
-#endif
-                {
-                    gameStart = false;
+        void TitlePageUpdate()
+        {
+            if (IsInput() == false) return;
+
+            switch(gameState)
+            {
+                case GAME_STATE.END:
+                    gameState = GAME_STATE.START;
                     ChangeTitleText();
-                    Invoke("HideLevelImage", levelStartDelay);
+                    break;
+                case GAME_STATE.OVER:
+                    gameState = GAME_STATE.START;
+                    ChangeTitleText();
+                    break;
+
+                case GAME_STATE.START:
+                    gameState = GAME_STATE.PLAY;
+                    ChangeTitleText();
+
+                    Invoke("HideTitleImage", levelStartDelay);
 
                     Analytics.CustomEvent("gameStart", new Dictionary<string, object>
                     {
@@ -314,22 +317,37 @@ namespace HideAndSeek
 #else
                     WriteFile("gameLog.txt", "GAME START");
 #endif
-                }
-			}
-            //Check that playersTurn or enemiesMoving or doingSetup are not currently true.
-            if (playersTurn || enemiesMoving || doingSetup)
-				
-				//If any of these are true, return and do not start MoveEnemies.
-				return;
+                    break;
+            }
 
-            //Start moving enemies.
-            StartCoroutine (MoveEnemies ());            
         }
 		
-		//Call this to add the passed in Enemy to the List of Enemy objects.
+		void Update()
+		{
+            showTimeText.text = "";
+
+            if (gameState != GAME_STATE.PLAY)
+            {
+                TitlePageUpdate();
+                timer = 0;
+                return;                
+            }
+
+            if (timer > 0)
+            {
+                timer = timer - Time.deltaTime;
+                if (timer < 0) timer = 0;
+                showTimeText.text = Math.Ceiling(timer).ToString();
+            }
+
+            if (playersTurn || enemiesMoving || doingSetup)
+                return;
+
+            StartCoroutine(MoveEnemies());
+        }
+		
 		public void AddEnemyToList(Enemy script)
 		{
-			//Add Enemy to List enemies.
 			enemies.Add(script);
 		}
 
@@ -338,7 +356,7 @@ namespace HideAndSeek
     //GameOver is called when the player reaches 0 food points
     public void GameOver()
 		{
-			gameOver = true;
+            gameState = GAME_STATE.OVER;
             playersTurn = false;
             gameOverCount++;
         }
@@ -346,44 +364,45 @@ namespace HideAndSeek
 		public void EndGame()
 		{
 			level = 1;
-			gameEnd = true;
+            gameState = GAME_STATE.END;
             playersTurn = false;
             gameEndCount++;
         }
+
+        public float timer = 0;
           
-        public void ShowEnemies()
+        public bool ShowEnemies(bool blong = false)
         {
-            bool hard = false;
+            if (timer > 0) return false;
+            timer = 2;
+            if (blong) timer = 5;
+
             for (int i = 0; i < enemies.Count; i++)
             {
-                enemies[i].Show(hard);
+                enemies[i].Show(blong);
             }
+
+            return true;
         }
 
-        //Coroutine to move enemies in sequence.
+
         IEnumerator MoveEnemies()
 		{
-            float totalTime = 0.2f;
-			//While enemiesMoving is true player is unable to move.
+            float totalTime = 0.3f;
 			enemiesMoving = true;
 			
 			yield return new WaitForSeconds(0.1f);
 			
-			//If there are no enemies spawned (IE in first level):
 			if (enemies.Count == 0) 
 			{
-				//Wait for turnDelay seconds between moves, replaces delay caused by enemies moving when there are none.
 				yield return new WaitForSeconds(0.1f);
 			}
 			
-			//Loop through List of Enemy objects.
 			for (int i = 0; i < enemies.Count; i++)
 			{
-				//Call the MoveEnemy function of Enemy at index i in the enemies List.
-				enemies[i].MoveEnemy ();
-				
-				//Wait for Enemy's moveTime before moving next Enemy, 
-				yield return new WaitForSeconds(0.02f);
+                enemies[i].MoveEnemy ();
+
+                yield return new WaitForSeconds(0.02f);
                 totalTime -= 0.02f;
 
             }
@@ -391,7 +410,6 @@ namespace HideAndSeek
             yield return new WaitForSeconds(totalTime);
             playersTurn = true;
 			
-			//Enemies are done moving, set enemiesMoving to false.
 			enemiesMoving = false;
 		}
 	}

@@ -31,13 +31,14 @@ namespace HideAndSeek
 		public Count foodCount = new Count (0, 3);						//Lower and upper limit for our random number of food items per level.
         public Count sodaCount = new Count(0, 1);                       //Lower and upper limit for our random number of food items per level.
         public GameObject exit;											//Prefab to spawn for exit.
-		public GameObject[] floorTiles;									//Array of floor prefabs.
-		public GameObject[] wallTiles;									//Array of wall prefabs.
-		public GameObject[] foodTiles;									//Array of food prefabs.
-        public GameObject[] sodaTiles;                                  //Array of food prefabs.
-        public GameObject[] enemyTiles;									//Array of enemy prefabs.
-        public GameObject[] strongEnemyTiles;                                 //Array of enemy prefabs.
-        public GameObject[] outerWallTiles;								//Array of outer tile prefabs.
+		public GameObject[] floorTiles;
+		public GameObject[] wallTiles;
+		public GameObject[] foodTiles;
+        public GameObject[] sodaTiles;
+        public GameObject[] goldATiles;
+        public GameObject[] enemyTiles;
+        public GameObject[] strongEnemyTiles;
+        public GameObject[] outerWallTiles;
 		
 		private Transform boardHolder;									//A variable to store a reference to the transform of our Board object.
 		private List <Vector3> gridPositions = new List <Vector3> ();   //A list of possible locations to place tiles.
@@ -45,17 +46,16 @@ namespace HideAndSeek
         //Clears our list gridPositions and prepares it to generate a new board.
         void InitialiseList ()
 		{ 
-            //Clear our list gridPositions.
             gridPositions.Clear ();
 			
-			//Loop through x axis (columns).
-			for(int x = 1; x < columns-1; x++)
+			for(int x = 0; x < columns; x++)
 			{
-				//Within each column, loop through y axis (rows).
-				for(int y = 1; y < rows-1; y++)
+				for(int y = 0; y < rows; y++)
 				{
-					//At each index add a new Vector3 to our list with the x and y coordinates of that position.
-					gridPositions.Add (new Vector3(x, y, 0f));
+                    if (x == 0 && y == 0) continue;
+                    if (x == columns-1 && y == rows-1) continue;
+
+                    gridPositions.Add (new Vector3(x, y, 0f));
 				}
 			}
 		}
@@ -126,35 +126,165 @@ namespace HideAndSeek
                 Instantiate(tileChoice, randomPosition, Quaternion.identity);
 			}
 		}
-		
 
-		public void SetupScene (int level)
+        void LayoutEnemiesAtRandom(GameObject[] tileArray, int minimum, int maximum)
+        {
+            int objectCount = Random.Range(minimum, maximum + 1);
+            float value = Random.Range(0f, 1f);
+
+            for (int i = 0; i < objectCount; i++)
+            {
+                Vector3 randomPosition = RandomPosition();
+                while (0 == randomPosition.x || randomPosition.x == 7 || randomPosition.y == 0 || randomPosition.y == 7)
+                {
+                    randomPosition = RandomPosition();
+                }
+                                
+                GameObject tileChoice = tileArray[Random.Range(0, tileArray.Length)];
+
+                Instantiate(tileChoice, randomPosition, Quaternion.identity);
+            }
+        }
+
+
+        public void SetupScene (int level)
 		{
             BoardSetup();
 
             InitialiseList();
+            if (level < 4) SetupBeginnerLevel(level);
+            else SetupLevelRandom(level);
+            Instantiate(exit, new Vector3(columns - 1, rows - 1, 0f), Quaternion.identity);
+        }
 
-            int wall = 0;
-            //            if (level > 10) wall = 6;
-            LayoutObjectAtRandom(wallTiles, wall, wall);
-
-            int foodRate = 1;
-            int sodaRate = 0;
-            if (level % 2 == 0) foodRate = 2;
-            if (level % 2 == 1) sodaRate = 1;
+        public void SetupLevelRandom(int level)
+        {
+            int foodRate = 2;
+            int strongFoodRate = 0;
+            int sodaRate = 4;
+            int strongSodaRate = 0;
+            int goldRate = level;
+            int strongGoldRate = 0;
+            if (goldRate > 5) goldRate = 5;
+                        
+            int enemyCount = 0;
+            int strrongEnemyCount = 0;
+            if (3 < level && level < 7) // 4,5,6
+            {
+                enemyCount = level + 2; // 6,7,8
+                strrongEnemyCount = 0;
+            }
+            else if (6 < level && level < 10) // 7,8,9
+            {
+                enemyCount = level - 3; // 4,5,6
+                strrongEnemyCount = 1;
+            }
+            else if (9 < level && level < 13) // 10,11,12
+            {
+                enemyCount = level - 7; // 3,4,5
+                strrongEnemyCount = 2;
+            }
+            else if (12 < level && level < 16) // 13,14,15
+            {
+                enemyCount = level - 11; // 2,3,4
+                strrongEnemyCount = 3;
+            }
+            else if (15 < level && level < 19) // 16,17,18
+            {
+                enemyCount = 4; // 3,3,3
+                strrongEnemyCount = 4;
+            }
 
             LayoutObjectAtRandom(foodTiles, foodRate, foodRate);
             LayoutObjectAtRandom(sodaTiles, sodaRate, sodaRate);
+            LayoutObjectAtRandom(goldATiles, goldRate, goldRate);
+            LayoutEnemiesAtRandom(enemyTiles, enemyCount, enemyCount);
+            LayoutEnemiesAtRandom(strongEnemyTiles, strrongEnemyCount, strrongEnemyCount);            
+        }
 
-            int enemyCount = level + 2;
-            if (level > 10) enemyCount = 3;
-            else if (level > 5) enemyCount = enemyCount - 8;
-            LayoutObjectAtRandom(enemyTiles, enemyCount, enemyCount);
+        enum TILE_TYPE { FOOD, SODA, ENEMY_A, ENEMY_B, GOLD_A, GOLD_B, GOLD_C }
 
-            if (level > 10) LayoutObjectAtRandom(strongEnemyTiles, 5, 5);
-            else if (level > 5) LayoutObjectAtRandom(strongEnemyTiles, 3, 3);
+        struct TILE_INFO
+        {
+            public TILE_TYPE type;
+            public int x;
+            public int y;
+        }
 
-            Instantiate(exit, new Vector3(columns - 1, rows - 1, 0f), Quaternion.identity);
+        GameObject GetTile(TILE_TYPE tileType)
+        {
+            switch(tileType)
+            {
+                case TILE_TYPE.FOOD:
+                    return foodTiles[Random.Range(0, foodTiles.Length)];
+
+                case TILE_TYPE.ENEMY_A:
+                    return enemyTiles[Random.Range(0, enemyTiles.Length)];
+
+                case TILE_TYPE.SODA:
+                    return sodaTiles[Random.Range(0, sodaTiles.Length)];
+
+                case TILE_TYPE.GOLD_A:
+                    return goldATiles[Random.Range(0, goldATiles.Length)];
+            }
+
+            return null;
+        }
+
+        void LayoutTiles(List<TILE_INFO> tiles)
+        {
+            foreach(TILE_INFO tile in tiles)
+            {
+                Vector3 tilePosition = new Vector3(tile.x, tile.y, 0);
+                GameObject tileChoice = GetTile(tile.type);
+                Instantiate(tileChoice, tilePosition, Quaternion.identity);
+            }            
+        }
+
+        public void SetupBeginnerLevel(int level)
+        {
+            List<TILE_INFO> tiles = new List<TILE_INFO>();
+            // level, type, posx, posy &
+            String[] infos1 = { "food,4,4", "food,4,3",
+                                "EnemyA,1,1", "EnemyA,6,6", "EnemyA,3,3",
+                                "soda,5,1", "soda,1,5", "soda,6,4", "soda,4,7",
+                                "goldA,7,0"};
+
+            String[] infos2 = { "food,4,4", "food,4,3",
+                                "EnemyA,1,1", "EnemyA,6,6", "EnemyA,3,3", "EnemyA,4,1",
+                                "soda,5,1", "soda,1,5", "soda,6,4", "soda,4,7",
+                                "goldA,7,0", "goldA,2,7"};
+
+            String[] infos3 = { "food,4,4", "food,4,3",
+                                "EnemyA,2,1", "EnemyA,6,7", "EnemyA,3,4", "EnemyA,6,2", "EnemyA,0,7",
+                                "soda,5,1", "soda,1,5", "soda,6,4", "soda,4,7",
+                                "goldA,7,0", "goldA,2,7", "goldA,6,6"};
+            String[] infos;
+
+            if (level == 1) infos = infos1;
+            else if (level == 2) infos = infos2;
+            else if (level == 3) infos = infos3;
+            else infos = infos1;            
+
+            for (int i=0; i< infos.Length; i++)
+            {
+                String[] info = infos[i].Split(',');
+                TILE_INFO tileInfo = new TILE_INFO();
+                tileInfo.x = Int32.Parse(info[1]);
+                tileInfo.y = Int32.Parse(info[2]);
+                if (info[0] == "food")
+                    tileInfo.type = TILE_TYPE.FOOD;
+                else if (info[0] == "EnemyA")
+                    tileInfo.type = TILE_TYPE.ENEMY_A;
+                else if (info[0] == "soda")
+                    tileInfo.type = TILE_TYPE.SODA;
+                else if (info[0] == "goldA")
+                    tileInfo.type = TILE_TYPE.GOLD_A;
+
+                tiles.Add(tileInfo);
+            }
+
+            LayoutTiles(tiles);
         }
     }   
 }

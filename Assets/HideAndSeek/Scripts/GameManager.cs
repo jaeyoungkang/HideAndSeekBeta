@@ -56,8 +56,10 @@ namespace HideAndSeek
         float prevTime = 0f;        
 
         public float levelStartDelay = 2f;
-        public int playerHp = 20;
+        public int playerHp = 30;
         public int playerIp = 1;
+        public int playerGold = 0;
+        public int playerCoin = 1;
         public static GameManager instance = null;              //Static instance of GameManager which allows it to be accessed by any other script.
         [HideInInspector] public bool playersTurn = true;
 
@@ -201,7 +203,7 @@ namespace HideAndSeek
 		//Initializes the game for each level.
         void InitGame()
         {
-            if (level == 14)
+            if (level == 19)
                 EndGame();
 
             //While doingSetup is true the player can't move, prevent player from moving while title card is up.
@@ -259,10 +261,10 @@ namespace HideAndSeek
                     break;
 
                 case GAME_STATE.PLAY:
-                    if (level == 11) titleText.text = "Last Level 1/3";
-                    else if (level == 12) titleText.text = "Last Level 2/3";
-                    else if (level == 13) titleText.text = "Last Level 3/3";
-                    else titleText.text = "Level " + level;
+                    if (level == 16) titleText.text = "Last Level 1/3";
+                    else if (level == 17) titleText.text = "Last Level 2/3";
+                    else if (level == 18) titleText.text = "Last Level 3/3";
+                    else titleText.text = "Level " + level +"/15";
                     subTitleText.enabled = false;
                     break;
             }			
@@ -357,15 +359,23 @@ namespace HideAndSeek
 
     
 
-    //GameOver is called when the player reaches 0 food points
-    public void GameOver()
+        //GameOver is called when the player reaches 0 food points
+        public void GameOver()
 		{
             gameState = GAME_STATE.OVER;
             playersTurn = false;
             gameOverCount++;
         }
 
-		public void EndGame()
+        public void GameContinue()
+        {
+            gameState = GAME_STATE.PLAY;
+            playersTurn = false;
+            level--;
+        }
+
+
+        public void EndGame()
 		{
 			level = 1;
             gameState = GAME_STATE.END;
@@ -379,9 +389,12 @@ namespace HideAndSeek
         {
             if(bShow)
             {
-                if (visibleTimer > 0) return false;
-                visibleTimer = 2;
-                if (blong) visibleTimer = 5;
+                if (visibleTimer > 0) visibleTimer += 2;
+                else
+                {
+                    visibleTimer = 2;
+                    if (blong) visibleTimer = 5;
+                }                
             }           
 
             for (int i = 0; i < enemies.Count; i++)

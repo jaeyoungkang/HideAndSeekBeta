@@ -12,10 +12,16 @@ namespace HideAndSeek
 	{
 		public float restartLevelDelay = 1f;		//Delay time in seconds to restart level.
 		public int pointsPerFood = 10;				//Number of points to add to player food points when picking up a food object.
-		public int pointsPerSoda = 20;				//Number of points to add to player food points when picking up a soda object.
 		public int wallDamage = 1;					//How much damage a player does to a wall when chopping it.
-		public Text foodText;                       //UI Text to display current player food total.
-		public Text messageText;
+        
+		public Text foodText;
+        public Text ScoreText;
+        public Text messageText;
+        public Text gameEndText;
+
+        public Canvas EndGroup;
+        public Button yesBtn;
+        public Button noBtn;
 
         public Button showBtn;
         public Button upBtn;
@@ -24,19 +30,22 @@ namespace HideAndSeek
         public Button leftBtn;
         enum MOVE_DIR { UP, DOWN, RIGHT, LEFT };
 
-        public AudioClip moveSound1;				//1 of 2 Audio clips to play when player moves.
-		public AudioClip moveSound2;				//2 of 2 Audio clips to play when player moves.
-		public AudioClip eatSound1;					//1 of 2 Audio clips to play when player collects a food object.
-		public AudioClip eatSound2;					//2 of 2 Audio clips to play when player collects a food object.
-		public AudioClip drinkSound1;				//1 of 2 Audio clips to play when player collects a soda object.
-		public AudioClip drinkSound2;				//2 of 2 Audio clips to play when player collects a soda object.
-		public AudioClip gameOverSound;				//Audio clip to play when player dies.
+        public AudioClip moveSound1;
+		public AudioClip moveSound2;
+		public AudioClip eatSound1;
+		public AudioClip eatSound2;
+		public AudioClip drinkSound1;
+		public AudioClip drinkSound2;
+		public AudioClip gameOverSound;
         public AudioClip showSound;
+        public AudioClip goldASound;
+        public AudioClip levelClearSound;
 
-        private Animator animator;					//Used to store a reference to the Player's animator component.
-		private int food;                           //Used to store player food points total during level.
+        private Animator animator;
+		private int food;
         private int soda;
-                
+        private int Gold;
+        private int Coin;
         public void UseSoda()
         {
             if (!GameManager.instance.Isplaying()) return;
@@ -57,7 +66,10 @@ namespace HideAndSeek
 		{
             food = GameManager.instance.playerHp;
 			soda = GameManager.instance.playerIp;
-		}
+            Gold = GameManager.instance.playerGold;
+            Coin = GameManager.instance.playerCoin;
+
+        }
 
 		public void SetMessageText(string msg)
 		{
@@ -68,17 +80,23 @@ namespace HideAndSeek
 		//Start overrides the Start function of MovingObject
 		protected override void Start ()
 		{
-            animator = GetComponent<Animator>();
-            
+            animator = GetComponent<Animator>();            
+
 			InitDatas();
 			SetFoodText();
-			SetMessageText ("");
+            ScoreText.text = Gold.ToString();            
+            SetMessageText ("");
+
+            EndGroup.enabled = false;
 
             showBtn.onClick.AddListener(UseSoda);
             upBtn.onClick.AddListener(MoveUp);
             downBtn.onClick.AddListener(MoveDown);
             leftBtn.onClick.AddListener(MoveLeft);
             rightBtn.onClick.AddListener(MoveRight);
+
+            yesBtn.onClick.AddListener(Continue);
+            noBtn.onClick.AddListener(Restart);
 
             base.Start ();
         }
@@ -122,6 +140,8 @@ namespace HideAndSeek
 			//When Player object is disabled, store the current local food total in the GameManager so it can be re-loaded in next level.
 			GameManager.instance.playerHp = food;
             GameManager.instance.playerIp = soda;
+            GameManager.instance.playerGold = Gold;
+            GameManager.instance.playerCoin = Coin;
         }
 		
 		
@@ -212,10 +232,10 @@ namespace HideAndSeek
 		{
             SetMessageText("");
             GameManager.instance.gameInfo.moveTryCount++;
-            if(GameManager.instance.gameInfo.moveTryCount%7 == 0)
-            {
-                GameManager.instance.ShowEnemies(true);
-            }
+            //if(GameManager.instance.gameInfo.moveTryCount%7 == 0)
+            //{
+            //    GameManager.instance.ShowEnemies(true);
+            //}
 
             SetFoodText();
             
@@ -269,96 +289,70 @@ namespace HideAndSeek
 				SetMessageText ("");
         }
 
-
-        //OnCantMove overrides the abstract function OnCantMove in MovingObject.
-        //It takes a generic parameter T which in the case of Player is a Wall which the player can attack and destroy.
         protected override void OnCantMove <T> (T component)
 		{
-			//Set hitWall to equal the component passed in as a parameter.
 			Wall hitWall = component as Wall;
-			
-			//Call the DamageWall function of the Wall we are hitting.
-			hitWall.DamageWall (wallDamage);
-			
-			//Set the attack trigger of the player's animation controller in order to play the player's attack animation.
-			animator.SetTrigger ("playerChop");
-
-            
+            hitWall.DamageWall (wallDamage);			
+			animator.SetTrigger ("playerChop");          
         }            
 
 
         //OnTriggerEnter2D is sent when another object enters a trigger collider attached to this object (2D physics only).
         private void OnTriggerEnter2D (Collider2D other)
 		{
-			//Check if the tag of the trigger collided with is Exit.
-			if(other.tag == "Exit")
-			{
+            if (other.tag == "Exit")
+            {
+                SoundManager.instance.RandomizeSfx(levelClearSound, levelClearSound);                
                 GameManager.instance.ShowEnemies(true);
-                Invoke ("Restart", restartLevelDelay);				
-				enabled = false;
-			}
-			
+                Invoke("Restart", restartLevelDelay);
+                enabled = false;
+            }
+            else if (other.tag == "Food")
+            {
+                food += pointsPerFood;
+                foodText.text = "+" + pointsPerFood + " HP: " + food + ", Soda: " + soda;
+                SoundManager.instance.RandomizeSfx(eatSound1, eatSound2);
+                SetMessageText("체력을 회복했다!");
+                other.gameObject.SetActive(false);
 
-			//Check if the tag of the trigger collided with is Food.
-			else if(other.tag == "Food")
-			{
-				//Add pointsPerFood to the players current food total.
-				food += pointsPerFood;
-				
-				//Update foodText to represent current total and notify player that they gained points
-				foodText.text = "+" + pointsPerFood + " HP: " + food + ", Soda: " + soda;
-				
-				//Call the RandomizeSfx function of SoundManager and pass in two eating sounds to choose between to play the eating sound effect.
-				SoundManager.instance.RandomizeSfx (eatSound1, eatSound2);
-				
-				//Disable the food object the player collided with.
-				other.gameObject.SetActive (false);
+                GameManager.instance.gameInfo.playerHPIncrease++;
+            }
+            else if (other.tag == "Soda")
+            {
+                GameManager.instance.ShowEnemies(true);
+                SoundManager.instance.RandomizeSfx(showSound, showSound);
+                SetMessageText("괴물들이 보인다!");
+                other.gameObject.SetActive(false);
+            }
+            else if (other.tag == "Gold")
+            {
+                SoundManager.instance.RandomizeSfx(goldASound, goldASound);
+                other.gameObject.SetActive(false);
+                SetMessageText("골드를 획득했다!");
+                Gold += 10;
 
-                GameManager.instance.gameInfo.playerHPIncrease++;				
-			}
-			
-			//Check if the tag of the trigger collided with is Soda.
-			else if(other.tag == "Soda")
-			{
-                soda += 1;
-                foodText.text = "HP: " + food + ",+ 1 Soda: " + soda;
-			
-				SoundManager.instance.RandomizeSfx (drinkSound1, drinkSound2);
-				
-				other.gameObject.SetActive (false);
-
-                GameManager.instance.gameInfo.playerSodaGet++;				
-			}            
-        }
-		
+                ScoreText.text = Gold.ToString();
+            }
+        }		
 		
 		private void Restart ()
 		{
 			GameManager.instance.gameInfo.playerHp = food;
 			GameManager.instance.gameInfo.playerSoda = soda;
-			//Load the last scene loaded, in this case Main, the only scene in the game. 
-			//And we load it in "Single" mode so it replace the existing one
-            //and not load all the scene object in the current scene.
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
 		}
 		
 		
-		//LoseFood is called when an enemy attacks the player.
-		//It takes a parameter loss which specifies how many points to lose.
 		public void LoseFood (int loss)
 		{
-			//Set the trigger for the player animator to transition to the playerHit animation.
 			animator.SetTrigger ("playerHit");
 			
-			//Subtract lost food points from the players total.
 			food -= loss;
 			
-			//Update the food display with the new total.
 			foodText.text = "-"+ loss + " HP: " + food + " Soda: " + soda; ;
 
             GameManager.instance.gameInfo.playerHPDecrease++;
 			
-			//Check to see if game has ended.
 			CheckIfGameOver ();
 		}
 		
@@ -369,21 +363,38 @@ namespace HideAndSeek
 			//Check if food point total is less than or equal to zero.
 			if (food <= 0) 
 			{
-				GameOver();
+				ShowContiue();
 			}
 		}
 
-		void GameOver()
-		{
-			SoundManager.instance.PlaySingle(gameOverSound);
-
-            food = 20;
+        void Continue()
+        {
+            if (Coin == 0) return;
+            food = 40;
             soda = 1;
+            Coin--;
+            GameManager.instance.GameContinue();
+            Restart();
+        }
 
-            GameManager.instance.GameOver ();
-            GameManager.instance.ShowEnemies(true);
-            Invoke ("Restart", restartLevelDelay);
-		}
+        void GameOver()
+        {            
+            food = 40;
+            soda = 1;
+            Gold = 0;
+
+            GameManager.instance.GameOver();
+            Restart();
+        }
+
+		void ShowContiue()
+		{
+            EndGroup.enabled = true;
+            gameEndText.text = "Game Over!\n\ncontinue?";
+
+            SoundManager.instance.PlaySingle(gameOverSound);
+            GameManager.instance.ShowEnemies(true);  
+        }
 
     }
 }

@@ -41,18 +41,17 @@ namespace HideAndSeek
 		protected override void AttemptMove <T> (int xDir, int yDir)
 		{
 			//Check if skipMove is true, if so set it to false and skip this turn.
-			if(skipMove)
-			{
-				skipMove = false;
-				return;
-				
-			}
+			//if(skipMove)
+			//{
+			//	skipMove = false;
+			//	return;				
+			//}
 			
 			//Call the AttemptMove function from MovingObject.
 			base.AttemptMove <T> (xDir, yDir);
 			
 			//Now that Enemy has moved, set skipMove to true to skip next move.
-			skipMove = true;
+//			skipMove = true;
 		}
 		
 		
@@ -67,8 +66,9 @@ namespace HideAndSeek
 			float distanceX = Mathf.Abs (target.position.x - transform.position.x);
 			float distanceY = Mathf.Abs (target.position.y - transform.position.y);
 
-            if(distanceY <= rangeOfSense  && distanceX <= rangeOfSense)
-            {
+            //            if(distanceY <= rangeOfSense && distanceX <= rangeOfSense)
+            if( (distanceY <= rangeOfSense && distanceX < rangeOfSense) || (distanceY < rangeOfSense && distanceX <= rangeOfSense) )
+            {                
                 float value = Random.Range(0f, 1f);
                 if (value < 0.5f)
                 {
@@ -83,7 +83,8 @@ namespace HideAndSeek
                         xDir = target.position.x > transform.position.x ? 1 : -1;
                     else
                         yDir = target.position.y > transform.position.y ? 1 : -1;                    
-                }                    
+                }
+                print(distanceX.ToString() + " " + distanceY.ToString() + " " + xDir.ToString() + " " + yDir.ToString());
             }
 
 

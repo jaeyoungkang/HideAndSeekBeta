@@ -42,36 +42,26 @@ namespace HideAndSeek
         public AudioClip levelClearSound;
 
         private Animator animator;
-		private int food;
-        private int soda;
+		private int hitPoint;
         private int Gold;
-        private int Coin;
-        public void UseSoda()
-        {
-            if (!GameManager.instance.Isplaying()) return;
-
-            if (soda > 0)
-            {
-                if(GameManager.instance.ShowEnemies(true, true))
-                {
-                    SoundManager.instance.PlaySingle(showSound);
-                    soda--;
-                    foodText.text = "HP: " + food + ", -1 Soda: " + soda;
-                    GameManager.instance.gameInfo.playerSodaUse++;
-                }                
-            }
-        }
+        private int Coin;        
 
 		public void InitDatas()
 		{
-            food = GameManager.instance.playerHp;
-			soda = GameManager.instance.playerIp;
+            hitPoint = GameManager.instance.playerHp;
             Gold = GameManager.instance.playerGold;
             Coin = GameManager.instance.playerCoin;
 
         }
 
-		public void SetMessageText(string msg)
+        public void SetGoldText(Color gColor)
+        {
+            ScoreText.text = "Gold: " + Gold.ToString();
+            ScoreText.color = gColor;
+        }
+
+
+        public void SetMessageText(string msg)
 		{
 			messageText.text = msg;
 			messageText.enabled = true;
@@ -83,13 +73,13 @@ namespace HideAndSeek
             animator = GetComponent<Animator>();            
 
 			InitDatas();
-			SetFoodText();
-            ScoreText.text = Gold.ToString();            
+			SetHPText(Color.white);
+            SetGoldText(Color.white);
             SetMessageText ("");
 
             EndGroup.enabled = false;
 
-            showBtn.onClick.AddListener(UseSoda);
+//            showBtn.onClick.AddListener(UseSoda);
             upBtn.onClick.AddListener(MoveUp);
             downBtn.onClick.AddListener(MoveDown);
             leftBtn.onClick.AddListener(MoveLeft);
@@ -126,20 +116,17 @@ namespace HideAndSeek
         }
 
 
-        private void SetFoodText()
+        private void SetHPText(Color msgColor)
         {
-            //Set the foodText to reflect the current player food total.
-//            foodText.text = "Food: " + food;
-            foodText.text = "HP: " + food + ", Soda: " + soda;
+            foodText.text = "HP: " + hitPoint;
+            foodText.color = msgColor;
         }
 		
 		
 		//This function is called when the behaviour becomes disabled or inactive.
 		private void OnDisable ()
 		{
-			//When Player object is disabled, store the current local food total in the GameManager so it can be re-loaded in next level.
-			GameManager.instance.playerHp = food;
-            GameManager.instance.playerIp = soda;
+			GameManager.instance.playerHp = hitPoint;
             GameManager.instance.playerGold = Gold;
             GameManager.instance.playerCoin = Coin;
         }
@@ -150,12 +137,7 @@ namespace HideAndSeek
 			//If it's not the player's turn, exit the function.
 			if(!GameManager.instance.playersTurn) return;
             if (!GameManager.instance.Isplaying()) return;
-            if (food <= 0) return;
-
-			if (Input.GetKeyUp(KeyCode.U))
-            {
-                UseSoda();
-            }
+            if (hitPoint <= 0) return;
 
             int horizontal = 0;  	//Used to store the horizontal move direction.
 			int vertical = 0;		//Used to store the vertical move direction.
@@ -232,25 +214,14 @@ namespace HideAndSeek
 		{
             SetMessageText("");
             GameManager.instance.gameInfo.moveTryCount++;
-            //if(GameManager.instance.gameInfo.moveTryCount%7 == 0)
-            //{
-            //    GameManager.instance.ShowEnemies(true);
-            //}
+            SetHPText(Color.white);
+            SetGoldText(Color.white);            
 
-            SetFoodText();
-            
-            //Call the AttemptMove method of the base class, passing in the component T (in this case Wall) and x and y direction to move.
             base.AttemptMove <T> (xDir, yDir);
-			
-			//Hit allows us to reference the result of the Linecast done in Move.
 			RaycastHit2D hit;
-			
-			//If Move returns true, meaning Player was able to move into an empty space.
 			if (Move (xDir, yDir, out hit)) 
 			{
-				//Call RandomizeSfx of SoundManager to play the move sound, passing in two audio clips to choose from.
 				SoundManager.instance.RandomizeSfx (moveSound1, moveSound2);
-//				SenseEnemy (xDir, yDir);
 				GameManager.instance.gameInfo.moveCount++;
 			}
             else
@@ -261,10 +232,8 @@ namespace HideAndSeek
                 }
             }
 
-			//Since the player has moved and lost food points, check if the game has ended.
 			CheckIfGameOver ();
 			
-			//Set the playersTurn boolean of GameManager to false now that players turn is over.
 			GameManager.instance.playersTurn = false;
         }
 
@@ -309,8 +278,9 @@ namespace HideAndSeek
             }
             else if (other.tag == "Food")
             {
-                food += pointsPerFood;
-                foodText.text = "+" + pointsPerFood + " HP: " + food + ", Soda: " + soda;
+                hitPoint += pointsPerFood;
+
+                SetHPText(Color.green);
                 SoundManager.instance.RandomizeSfx(eatSound1, eatSound2);
                 SetMessageText("체력을 회복했다!");
                 other.gameObject.SetActive(false);
@@ -331,26 +301,24 @@ namespace HideAndSeek
                 SetMessageText("골드를 획득했다!");
                 Gold += 10;
 
-                ScoreText.text = Gold.ToString();
+                SetGoldText(Color.yellow);
             }
         }		
 		
 		private void Restart ()
 		{
-			GameManager.instance.gameInfo.playerHp = food;
-			GameManager.instance.gameInfo.playerSoda = soda;
+			GameManager.instance.gameInfo.playerHp = hitPoint;
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
 		}
 		
 		
 		public void LoseFood (int loss)
 		{
-			animator.SetTrigger ("playerHit");
-			
-			food -= loss;
-			
-			foodText.text = "-"+ loss + " HP: " + food + " Soda: " + soda; ;
+			animator.SetTrigger ("playerHit");			
+			hitPoint -= loss;
 
+            SetHPText(Color.red);
+            SetMessageText("으악!");
             GameManager.instance.gameInfo.playerHPDecrease++;
 			
 			CheckIfGameOver ();
@@ -361,7 +329,7 @@ namespace HideAndSeek
 		private void CheckIfGameOver ()
 		{            
 			//Check if food point total is less than or equal to zero.
-			if (food <= 0) 
+			if (hitPoint <= 0) 
 			{
 				ShowContiue();
 			}
@@ -370,17 +338,15 @@ namespace HideAndSeek
         void Continue()
         {
             if (Coin == 0) return;
-            food = 40;
-            soda = 1;
+            hitPoint = 40;
             Coin--;
             GameManager.instance.GameContinue();
             Restart();
         }
 
         void GameOver()
-        {            
-            food = 40;
-            soda = 1;
+        {
+            hitPoint = 40;
             Gold = 0;
 
             GameManager.instance.GameOver();

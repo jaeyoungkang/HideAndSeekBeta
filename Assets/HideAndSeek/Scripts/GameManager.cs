@@ -336,13 +336,15 @@ namespace HideAndSeek
             if (visibleTimer > 0)
             {
                 visibleTimer = visibleTimer - Time.deltaTime;                
-                showTimeText.text = Math.Ceiling(visibleTimer).ToString();                
+                showTimeText.text = "Show: " + Math.Ceiling(visibleTimer).ToString();
+                showTimeText.color = Color.blue;
             }
 
             if (visibleTimer < 0)
             {
                 visibleTimer = 0;
-                showTimeText.text = "";
+                showTimeText.text = "Show: 0";
+                showTimeText.color = Color.white;
                 ShowEnemies(false);
             }
 

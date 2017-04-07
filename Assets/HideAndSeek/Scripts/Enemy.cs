@@ -10,8 +10,7 @@ namespace HideAndSeek
 		public int rangeOfSense = 1;
 		public int playerDamage; 							//The amount of food points to subtract from the player when attacking.
 		public AudioClip attackSound1;						//First of two audio clips to play when attacking the player.
-		public AudioClip attackSound2;						//Second of two audio clips to play when attacking the player.
-		
+		public AudioClip attackSound2;						//Second of two audio clips to play when attacking the player.		
 		
 		private Animator animator;							//Variable of type Animator to store a reference to the enemy's Animator component.
 		private Transform target;							//Transform to attempt to move toward each turn.
@@ -116,9 +115,7 @@ namespace HideAndSeek
 			hitPlayer.LoseFood (playerDamage);
                         
             animator.SetTrigger ("enemyAttack");
-            if (bShowing == false) StartCoroutine(ShowEnemyAttack());
-            
-            //Call the RandomizeSfx function of SoundManager passing in the two audio clips to choose randomly between.
+            if (bShowing == false) StartCoroutine(ShowEnemyAttack());            
             SoundManager.instance.RandomizeSfx (attackSound1, attackSound2);
 		}
 

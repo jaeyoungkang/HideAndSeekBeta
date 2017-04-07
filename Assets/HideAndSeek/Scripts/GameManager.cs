@@ -77,6 +77,36 @@ namespace HideAndSeek
         private enum GAME_STATE { START, PLAY, END, OVER }
         private GAME_STATE gameState = GAME_STATE.START;
 
+        public List<GameObject> goldsOnStage = new List<GameObject>();
+        public List<GameObject> trapsOnStage = new List<GameObject>();
+
+        public GameObject IsTrap(float x, float y)
+        {
+            foreach (GameObject obj in trapsOnStage)
+            {
+                if (obj.transform.position.x == x && obj.transform.position.y == y) return obj;
+            }
+
+            return null;
+        }
+
+        public void ShowObjects(bool bShow)
+        {
+            foreach (GameObject aGold in goldsOnStage)
+            {
+                if (aGold == null) continue;
+                Renderer renderer = aGold.GetComponent<SpriteRenderer>();
+                if (renderer) renderer.enabled = bShow;
+            }
+
+            foreach (GameObject obj in trapsOnStage)
+            {
+                if (obj == null) continue;
+                Renderer renderer = obj.GetComponent<SpriteRenderer>();
+                if (renderer) renderer.enabled = bShow;
+            }
+        }
+
         //Awake is always called before any Start functions
         void Awake()
         {
@@ -239,8 +269,6 @@ namespace HideAndSeek
 			
 			//Set doingSetup to false allowing player to move again.
 			doingSetup = false;
-
-            ShowEnemies(true);
         }
 
 		void ChangeTitleText ()
@@ -329,23 +357,7 @@ namespace HideAndSeek
             if (gameState != GAME_STATE.PLAY)
             {
                 TitlePageUpdate();
-                visibleTimer = 0;
                 return;                
-            }
-
-            if (visibleTimer > 0)
-            {
-                visibleTimer = visibleTimer - Time.deltaTime;                
-                showTimeText.text = "Show: " + Math.Ceiling(visibleTimer).ToString();
-                showTimeText.color = Color.blue;
-            }
-
-            if (visibleTimer < 0)
-            {
-                visibleTimer = 0;
-                showTimeText.text = "Show: 0";
-                showTimeText.color = Color.white;
-                ShowEnemies(false);
             }
 
             if (playersTurn || enemiesMoving || doingSetup)
@@ -358,10 +370,7 @@ namespace HideAndSeek
 		{
 			enemies.Add(script);
 		}
-
-    
-
-        //GameOver is called when the player reaches 0 food points
+        
         public void GameOver()
 		{
             gameState = GAME_STATE.OVER;
@@ -375,8 +384,7 @@ namespace HideAndSeek
             playersTurn = false;
             level--;
         }
-
-
+        
         public void EndGame()
 		{
 			level = 1;
@@ -385,24 +393,14 @@ namespace HideAndSeek
             gameEndCount++;
         }
 
-        public float visibleTimer = 0;
-          
         public bool ShowEnemies(bool bShow, bool blong = false)
         {
-            if(bShow)
-            {
-                if (visibleTimer > 0) visibleTimer += 2;
-                else
-                {
-                    visibleTimer = 2;
-                    if (blong) visibleTimer = 5;
-                }                
-            }           
-
             for (int i = 0; i < enemies.Count; i++)
             {
                 enemies[i].Show(bShow);
             }
+
+            ShowObjects(bShow);
 
             return true;
         }

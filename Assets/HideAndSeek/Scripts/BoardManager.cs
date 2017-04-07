@@ -13,11 +13,9 @@ namespace HideAndSeek
 		[Serializable]
 		public class Count
 		{
-			public int minimum; 			//Minimum value for our Count class.
-			public int maximum; 			//Maximum value for our Count class.
-			
-			
-			//Assignment constructor.
+			public int minimum;
+			public int maximum;
+
 			public Count (int min, int max)
 			{
 				minimum = min;
@@ -27,10 +25,7 @@ namespace HideAndSeek
 
         public int columns = 8; 										//Number of columns in our game board.
 		public int rows = 8;											//Number of rows in our game board.
-		public Count wallCount = new Count (3, 6);						//Lower and upper limit for our random number of walls per level.
-		public Count foodCount = new Count (0, 3);						//Lower and upper limit for our random number of food items per level.
-        public Count sodaCount = new Count(0, 1);                       //Lower and upper limit for our random number of food items per level.
-        public GameObject exit;											//Prefab to spawn for exit.
+        public GameObject exit;
 		public GameObject[] floorTiles;
 		public GameObject[] wallTiles;
 		public GameObject[] foodTiles;
@@ -39,8 +34,10 @@ namespace HideAndSeek
         public GameObject[] enemyTiles;
         public GameObject[] strongEnemyTiles;
         public GameObject[] outerWallTiles;
-		
-		private Transform boardHolder;									//A variable to store a reference to the transform of our Board object.
+
+        public GameObject[] trapTiles;
+
+        private Transform boardHolder;									//A variable to store a reference to the transform of our Board object.
 		private List <Vector3> gridPositions = new List <Vector3> ();   //A list of possible locations to place tiles.
 
         //Clears our list gridPositions and prepares it to generate a new board.
@@ -83,9 +80,24 @@ namespace HideAndSeek
 					//Instantiate the GameObject instance using the prefab chosen for toInstantiate at the Vector3 corresponding to current grid position in loop, cast it to GameObject.
 					GameObject instance =
 						Instantiate (toInstantiate, new Vector3 (x, y, 0f), Quaternion.identity) as GameObject;
-					
-					//Set the parent of our newly instantiated object instance to boardHolder, this is just organizational to avoid cluttering hierarchy.
-					instance.transform.SetParent (boardHolder);
+                    bool bShow = false;
+                    if (x == 0 && y == 0) bShow = true;
+                    else if (x == 7 && y == 7) bShow = true;
+                    else if (x == 1 && y == 4) bShow = true;
+                    else if (x == 2 && y == 1) bShow = true;
+                    else if (x == 2 && y == 6) bShow = true;
+                    else if (x == 4 && y == 7) bShow = true;
+                    else if (x == 5 && y == 0) bShow = true;
+                    else if (x == 5 && y == 5) bShow = true;
+                    else if (x == 6 && y == 3) bShow = true;
+                    if (bShow)
+                    {
+                        Color lerpedColor = instance.GetComponent<Renderer>().material.color;
+                        lerpedColor = Color.Lerp(lerpedColor, Color.red, 0.1f);
+                        instance.GetComponent<Renderer>().material.color = lerpedColor;
+                    }
+                    //Set the parent of our newly instantiated object instance to boardHolder, this is just organizational to avoid cluttering hierarchy.
+                    instance.transform.SetParent (boardHolder);
                 }
 			}
         }
@@ -127,6 +139,34 @@ namespace HideAndSeek
 			}
 		}
 
+        void LayoutTrapsAtRandom(GameObject[] tileArray, int minimum, int maximum)
+        {
+            GameManager.instance.trapsOnStage.Clear();
+            int objectCount = Random.Range(minimum, maximum + 1);
+
+            for (int i = 0; i < objectCount; i++)
+            {
+                Vector3 randomPosition = RandomPosition();
+                GameObject tileChoice = tileArray[Random.Range(0, tileArray.Length)];
+                GameObject instance = Instantiate(tileChoice, randomPosition, Quaternion.identity);
+                GameManager.instance.trapsOnStage.Add(instance);
+            }
+        }
+
+        void LayoutGoldsAtRandom(GameObject[] tileArray, int minimum, int maximum)
+        {
+            GameManager.instance.goldsOnStage.Clear();
+            int objectCount = Random.Range(minimum, maximum + 1);
+
+            for (int i = 0; i < objectCount; i++)
+            {
+                Vector3 randomPosition = RandomPosition();         
+                GameObject tileChoice = tileArray[Random.Range(0, tileArray.Length)];         
+                GameObject instance = Instantiate(tileChoice, randomPosition, Quaternion.identity);
+                GameManager.instance.goldsOnStage.Add(instance);
+            }
+        }
+
         void LayoutEnemiesAtRandom(GameObject[] tileArray, int minimum, int maximum)
         {
             int objectCount = Random.Range(minimum, maximum + 1);
@@ -152,8 +192,10 @@ namespace HideAndSeek
             BoardSetup();
 
             InitialiseList();
-            if (level < 4) SetupBeginnerLevel(level);
-            else SetupLevelRandom(level);
+
+            SetupLevelRandom(level);
+            //if (level < 4) SetupBeginnerLevel(level);
+            //else SetupLevelRandom(level);
             Instantiate(exit, new Vector3(columns - 1, rows - 1, 0f), Quaternion.identity);
         }
 
@@ -161,7 +203,7 @@ namespace HideAndSeek
         {
             int foodRate = 2;
             int strongFoodRate = 0;
-            int sodaRate = 4;
+            int sodaRate = 0;
             int strongSodaRate = 0;
             int goldRate = level;
             int strongGoldRate = 0;
@@ -194,10 +236,11 @@ namespace HideAndSeek
                 enemyCount = 4; // 3,3,3
                 strrongEnemyCount = 4;
             }
-
+                        
             LayoutObjectAtRandom(foodTiles, foodRate, foodRate);
-            LayoutObjectAtRandom(sodaTiles, sodaRate, sodaRate);
-            LayoutObjectAtRandom(goldATiles, goldRate, goldRate);
+            //            LayoutObjectAtRandom(sodaTiles, sodaRate, sodaRate);
+            LayoutGoldsAtRandom(goldATiles, goldRate, goldRate);
+            LayoutTrapsAtRandom(trapTiles, 3, 3);
             LayoutEnemiesAtRandom(enemyTiles, enemyCount, enemyCount);
             LayoutEnemiesAtRandom(strongEnemyTiles, strrongEnemyCount, strrongEnemyCount);            
         }
@@ -229,35 +272,38 @@ namespace HideAndSeek
             }
 
             return null;
-        }
+        }        
 
         void LayoutTiles(List<TILE_INFO> tiles)
         {
             foreach(TILE_INFO tile in tiles)
             {
                 Vector3 tilePosition = new Vector3(tile.x, tile.y, 0);
+                
                 GameObject tileChoice = GetTile(tile.type);
-                Instantiate(tileChoice, tilePosition, Quaternion.identity);
+                GameObject instance = Instantiate(tileChoice, tilePosition, Quaternion.identity);
+
+                if (tile.type == TILE_TYPE.GOLD_A)
+                {
+                    GameManager.instance.goldsOnStage.Add(instance);
+                }
             }            
-        }
+        }       
 
         public void SetupBeginnerLevel(int level)
-        {
+        {               
             List<TILE_INFO> tiles = new List<TILE_INFO>();
             // level, type, posx, posy &
             String[] infos1 = { "food,4,4", "food,4,3",
                                 "EnemyA,1,1", "EnemyA,6,6", "EnemyA,3,3",
-                                "soda,5,1", "soda,1,5", "soda,6,4", "soda,4,7",
                                 "goldA,7,0"};
 
             String[] infos2 = { "food,4,4", "food,4,3",
                                 "EnemyA,1,1", "EnemyA,6,6", "EnemyA,3,3", "EnemyA,4,1",
-                                "soda,5,1", "soda,1,5", "soda,6,4", "soda,4,7",
                                 "goldA,7,0", "goldA,2,7"};
 
             String[] infos3 = { "food,4,4", "food,4,3",
                                 "EnemyA,2,1", "EnemyA,6,7", "EnemyA,3,4", "EnemyA,6,2", "EnemyA,0,7",
-                                "soda,5,1", "soda,1,5", "soda,6,4", "soda,4,7",
                                 "goldA,7,0", "goldA,2,7", "goldA,6,6"};
             String[] infos;
 
@@ -286,5 +332,5 @@ namespace HideAndSeek
 
             LayoutTiles(tiles);
         }
-    }   
+    }    
 }

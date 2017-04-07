@@ -16,7 +16,6 @@ namespace HideAndSeek
         
 		public Text foodText;
         public Text ScoreText;
-        public Text messageText;
         public Text gameEndText;
 
         public Canvas EndGroup;
@@ -30,6 +29,8 @@ namespace HideAndSeek
         public Button leftBtn;
         enum MOVE_DIR { UP, DOWN, RIGHT, LEFT };
 
+        public AudioClip attackedSound1;
+        public AudioClip attackedSound2;
         public AudioClip moveSound1;
 		public AudioClip moveSound2;
 		public AudioClip eatSound1;
@@ -51,7 +52,6 @@ namespace HideAndSeek
             hitPoint = GameManager.instance.playerHp;
             Gold = GameManager.instance.playerGold;
             Coin = GameManager.instance.playerCoin;
-
         }
 
         public void SetGoldText(Color gColor)
@@ -59,13 +59,6 @@ namespace HideAndSeek
             ScoreText.text = "Gold: " + Gold.ToString();
             ScoreText.color = gColor;
         }
-
-
-        public void SetMessageText(string msg)
-		{
-			messageText.text = msg;
-			messageText.enabled = true;
-		}
 
 		//Start overrides the Start function of MovingObject
 		protected override void Start ()
@@ -75,7 +68,6 @@ namespace HideAndSeek
 			InitDatas();
 			SetHPText(Color.white);
             SetGoldText(Color.white);
-            SetMessageText ("");
 
             EndGroup.enabled = false;
 
@@ -207,15 +199,34 @@ namespace HideAndSeek
                 
             }
 		}
-		
-		//AttemptMove overrides the AttemptMove function in the base class MovingObject
-		//AttemptMove takes a generic parameter T which for Player will be of the type Wall, it also takes integers for x and y direction to move in.
-		protected override void AttemptMove <T> (int xDir, int yDir)
+
+        bool checkPos(int xDir, int yDir)
+        {
+            bool bShow = false;
+            float nextPosX = transform.position.x + xDir;
+            float nextPosY = transform.position.y + yDir;
+
+            if (nextPosX == 0 && nextPosY == 0) bShow = true;
+            else if (nextPosX == 7 && nextPosY == 7) bShow = true;
+            else if (nextPosX == 1 && nextPosY == 4) bShow = true;
+            else if (nextPosX == 2 && nextPosY == 1) bShow = true;
+            else if (nextPosX == 2 && nextPosY == 6) bShow = true;
+            else if (nextPosX == 4 && nextPosY == 7) bShow = true;
+            else if (nextPosX == 5 && nextPosY == 0) bShow = true;
+            else if (nextPosX == 5 && nextPosY == 5) bShow = true;
+            else if (nextPosX == 6 && nextPosY == 3) bShow = true;
+
+            return bShow;
+        }
+
+        //AttemptMove overrides the AttemptMove function in the base class MovingObject
+        //AttemptMove takes a generic parameter T which for Player will be of the type Wall, it also takes integers for x and y direction to move in.
+        protected override void AttemptMove <T> (int xDir, int yDir)
 		{
-            SetMessageText("");
             GameManager.instance.gameInfo.moveTryCount++;
             SetHPText(Color.white);
             SetGoldText(Color.white);            
+            GameManager.instance.ShowEnemies(false);
 
             base.AttemptMove <T> (xDir, yDir);
 			RaycastHit2D hit;
@@ -223,18 +234,29 @@ namespace HideAndSeek
 			{
 				SoundManager.instance.RandomizeSfx (moveSound1, moveSound2);
 				GameManager.instance.gameInfo.moveCount++;
-			}
-            else
-            {
-                if (hit.collider.tag == "Enemy")
-                {
-                    SetMessageText("무언가에 막혀서 갈 수 없다...");
-                }
+                if(checkPos(xDir, yDir)) GameManager.instance.ShowEnemies(true);
+                CheckTrap(xDir, yDir);
             }
 
 			CheckIfGameOver ();
 			
 			GameManager.instance.playersTurn = false;
+        }
+
+        void CheckTrap(int xDir, int yDir)
+        {
+            float nextPosX = transform.position.x + xDir;
+            float nextPosY = transform.position.y + yDir;
+
+            GameObject trap = GameManager.instance.IsTrap(nextPosX, nextPosY);
+
+            if (trap)
+            {
+                Renderer renderer = trap.GetComponent<SpriteRenderer>();
+                if (renderer) renderer.enabled = true;
+                LoseFood(10);
+                SoundManager.instance.RandomizeSfx(attackedSound1, attackedSound2);
+            }
         }
 
 		void SenseEnemy(int xDir, int yDir)
@@ -248,14 +270,8 @@ namespace HideAndSeek
 				float distanceY = Mathf.Abs (target.transform.position.y - y);
 
                 if (distanceX <= 1 && distanceY <= 1)
-						bEnemy = true;
-				
+						bEnemy = true;				
 			}
-
-			if(bEnemy)
-                SetMessageText("썩은 냄새가 나는 것 같다...");
-			else
-				SetMessageText ("");
         }
 
         protected override void OnCantMove <T> (T component)
@@ -263,16 +279,15 @@ namespace HideAndSeek
 			Wall hitWall = component as Wall;
             hitWall.DamageWall (wallDamage);			
 			animator.SetTrigger ("playerChop");          
-        }            
+        }
 
 
         //OnTriggerEnter2D is sent when another object enters a trigger collider attached to this object (2D physics only).
-        private void OnTriggerEnter2D (Collider2D other)
-		{
+        private void OnTriggerEnter2D(Collider2D other)
+        {
             if (other.tag == "Exit")
             {
-                SoundManager.instance.RandomizeSfx(levelClearSound, levelClearSound);                
-                GameManager.instance.ShowEnemies(true);
+                SoundManager.instance.RandomizeSfx(levelClearSound, levelClearSound);
                 Invoke("Restart", restartLevelDelay);
                 enabled = false;
             }
@@ -282,30 +297,36 @@ namespace HideAndSeek
 
                 SetHPText(Color.green);
                 SoundManager.instance.RandomizeSfx(eatSound1, eatSound2);
-                SetMessageText("체력을 회복했다!");
                 other.gameObject.SetActive(false);
 
                 GameManager.instance.gameInfo.playerHPIncrease++;
             }
             else if (other.tag == "Soda")
             {
-                GameManager.instance.ShowEnemies(true);
-                SoundManager.instance.RandomizeSfx(showSound, showSound);
-                SetMessageText("괴물들이 보인다!");
-                other.gameObject.SetActive(false);
+                //SoundManager.instance.RandomizeSfx(showSound, showSound);
+                //other.gameObject.SetActive(false);
             }
             else if (other.tag == "Gold")
             {
-                SoundManager.instance.RandomizeSfx(goldASound, goldASound);
-                other.gameObject.SetActive(false);
-                SetMessageText("골드를 획득했다!");
+                Renderer renderer = other.gameObject.GetComponent<SpriteRenderer>();
+                if (renderer) renderer.enabled = true;
+                SoundManager.instance.RandomizeSfx(goldASound, goldASound);                
                 Gold += 10;
 
                 SetGoldText(Color.yellow);
+
+                StartCoroutine(HideAni(other.gameObject));
             }
-        }		
-		
-		private void Restart ()
+        }
+
+        IEnumerator HideAni(GameObject obj)
+        {
+            yield return new WaitForSeconds(0.1f);
+
+            obj.SetActive(false);
+        }
+
+        private void Restart ()
 		{
 			GameManager.instance.gameInfo.playerHp = hitPoint;
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
@@ -314,14 +335,14 @@ namespace HideAndSeek
 		
 		public void LoseFood (int loss)
 		{
-			animator.SetTrigger ("playerHit");			
+            SoundManager.instance.RandomizeSfx(moveSound1, moveSound2);
+            animator.SetTrigger ("playerHit");			
 			hitPoint -= loss;
 
             SetHPText(Color.red);
-            SetMessageText("으악!");
             GameManager.instance.gameInfo.playerHPDecrease++;
-			
-			CheckIfGameOver ();
+            
+            CheckIfGameOver ();
 		}
 		
 		

@@ -10,19 +10,19 @@ namespace HideAndSeek
 	//Player inherits from MovingObject, our base class for objects that can move, Enemy also inherits from this.
 	public class Player : MovingObject
 	{
-		public float restartLevelDelay = 1f;		//Delay time in seconds to restart level.
-		public int pointsPerFood = 10;				//Number of points to add to player food points when picking up a food object.
-		public int wallDamage = 1;					//How much damage a player does to a wall when chopping it.
+		public float restartLevelDelay = 1f;
+		public int pointsPerFood = 10;
+        public int pointsPerSoda = 20;
+        public int wallDamage = 1;					//How much damage a player does to a wall when chopping it.
         
 		public Text foodText;
         public Text ScoreText;
         public Text gameEndText;
 
         public Canvas EndGroup;
-        public Button yesBtn;
-        public Button noBtn;
+        public Button OBtn;
+        public Button XBtn;
 
-        public Button showBtn;
         public Button upBtn;
         public Button downBtn;
         public Button rightBtn;
@@ -34,9 +34,7 @@ namespace HideAndSeek
         public AudioClip moveSound1;
 		public AudioClip moveSound2;
 		public AudioClip eatSound1;
-		public AudioClip eatSound2;
 		public AudioClip drinkSound1;
-		public AudioClip drinkSound2;
 		public AudioClip gameOverSound;
         public AudioClip showSound;
         public AudioClip goldASound;
@@ -45,9 +43,11 @@ namespace HideAndSeek
         private Animator animator;
 		private int hitPoint;
         private int Gold;
-        private int Coin;        
+        private int Coin;
 
-		public void InitDatas()
+        public float prevTime = 0;
+
+        public void InitDatas()
 		{
             hitPoint = GameManager.instance.playerHp;
             Gold = GameManager.instance.playerGold;
@@ -63,6 +63,8 @@ namespace HideAndSeek
 		//Start overrides the Start function of MovingObject
 		protected override void Start ()
 		{
+            prevTime = Time.time;
+            GameManager.instance.waitTimes.Clear();
             animator = GetComponent<Animator>();            
 
 			InitDatas();
@@ -71,14 +73,13 @@ namespace HideAndSeek
 
             EndGroup.enabled = false;
 
-//            showBtn.onClick.AddListener(UseSoda);
             upBtn.onClick.AddListener(MoveUp);
             downBtn.onClick.AddListener(MoveDown);
             leftBtn.onClick.AddListener(MoveLeft);
             rightBtn.onClick.AddListener(MoveRight);
 
-            yesBtn.onClick.AddListener(Continue);
-            noBtn.onClick.AddListener(Restart);
+            OBtn.onClick.AddListener(Continue);
+            XBtn.onClick.AddListener(Restart);
 
             base.Start ();
         }
@@ -208,22 +209,27 @@ namespace HideAndSeek
 
             if (nextPosX == 0 && nextPosY == 0) bShow = true;
             else if (nextPosX == 7 && nextPosY == 7) bShow = true;
-            else if (nextPosX == 1 && nextPosY == 4) bShow = true;
-            else if (nextPosX == 2 && nextPosY == 1) bShow = true;
-            else if (nextPosX == 2 && nextPosY == 6) bShow = true;
-            else if (nextPosX == 4 && nextPosY == 7) bShow = true;
-            else if (nextPosX == 5 && nextPosY == 0) bShow = true;
-            else if (nextPosX == 5 && nextPosY == 5) bShow = true;
-            else if (nextPosX == 6 && nextPosY == 3) bShow = true;
+            else if (nextPosX == 0 && nextPosY == 7) bShow = true;
+            else if (nextPosX == 7 && nextPosY == 0) bShow = true;
+
+            //else if (nextPosX == 1 && nextPosY == 4) bShow = true;
+            //else if (nextPosX == 2 && nextPosY == 1) bShow = true;
+            //else if (nextPosX == 2 && nextPosY == 6) bShow = true;
+            //else if (nextPosX == 4 && nextPosY == 7) bShow = true;
+            //else if (nextPosX == 5 && nextPosY == 0) bShow = true;
+            //else if (nextPosX == 5 && nextPosY == 5) bShow = true;
+            //else if (nextPosX == 6 && nextPosY == 3) bShow = true;
 
             return bShow;
         }
-
-        //AttemptMove overrides the AttemptMove function in the base class MovingObject
-        //AttemptMove takes a generic parameter T which for Player will be of the type Wall, it also takes integers for x and y direction to move in.
+                
+        
         protected override void AttemptMove <T> (int xDir, int yDir)
 		{
-            GameManager.instance.gameInfo.moveTryCount++;
+            int deltaTime = (int)(Time.time - prevTime);            
+            prevTime = Time.time;
+            GameManager.instance.waitTimes.Add(deltaTime);
+
             SetHPText(Color.white);
             SetGoldText(Color.white);            
             GameManager.instance.ShowEnemies(false);
@@ -296,15 +302,24 @@ namespace HideAndSeek
                 hitPoint += pointsPerFood;
 
                 SetHPText(Color.green);
-                SoundManager.instance.RandomizeSfx(eatSound1, eatSound2);
+                SoundManager.instance.PlaySingle(eatSound1);
                 other.gameObject.SetActive(false);
 
                 GameManager.instance.gameInfo.playerHPIncrease++;
+
+                StartCoroutine(HideAni(other.gameObject));
             }
             else if (other.tag == "Soda")
             {
-                //SoundManager.instance.RandomizeSfx(showSound, showSound);
-                //other.gameObject.SetActive(false);
+                hitPoint += pointsPerSoda;
+
+                SetHPText(Color.green);
+                SoundManager.instance.PlaySingle(drinkSound1);
+                other.gameObject.SetActive(false);
+
+                GameManager.instance.gameInfo.playerHPIncrease++;
+
+                StartCoroutine(HideAni(other.gameObject));
             }
             else if (other.tag == "Gold")
             {
@@ -327,8 +342,8 @@ namespace HideAndSeek
         }
 
         private void Restart ()
-		{
-			GameManager.instance.gameInfo.playerHp = hitPoint;
+		{            
+            GameManager.instance.gameInfo.playerHp = hitPoint;
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
 		}
 		

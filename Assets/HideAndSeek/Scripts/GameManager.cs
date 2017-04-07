@@ -16,31 +16,17 @@ namespace HideAndSeek
         public int playerHPDecrease;
         public int playerHPIncrease;
 
-        public int playerSodaUse;
-        public int playerSodaGet;
-
         public int playerHp;
-        public int playerSoda;
-
-        public int moveTryCount;
         public int moveCount;
 
-        public int deltaTime;
+        public float deltaTime;        
 
         public void init()
         {
             playerHPDecrease = 0;
             playerHPIncrease = 0;
-
-            playerSodaUse = 0;
-            playerSodaGet = 0;
-
             playerHp = 0;
-            playerSoda = 0;
-
-            moveTryCount = 0;
             moveCount = 0;
-
             deltaTime = 0;
         }
 
@@ -48,7 +34,12 @@ namespace HideAndSeek
 
     public class GameManager : MonoBehaviour
     {
+        public int VERSION = 2;
+        public string fileName;
+
         public GAME_INFO gameInfo;
+
+        public List<int> waitTimes = new List<int>();
 
         public int gameOverCount = 0;
         public int gameEndCount = 0;        
@@ -63,8 +54,6 @@ namespace HideAndSeek
         public static GameManager instance = null;              //Static instance of GameManager which allows it to be accessed by any other script.
         [HideInInspector] public bool playersTurn = true;
 
-        private Text showTimeText;
-
         private Text subTitleText;
         private Text titleText;
         private GameObject titleImage;
@@ -76,9 +65,9 @@ namespace HideAndSeek
 
         private enum GAME_STATE { START, PLAY, END, OVER }
         private GAME_STATE gameState = GAME_STATE.START;
-
-        public List<GameObject> goldsOnStage = new List<GameObject>();
+                
         public List<GameObject> trapsOnStage = new List<GameObject>();
+        public List<GameObject> objsOnStage = new List<GameObject>();
 
         public GameObject IsTrap(float x, float y)
         {
@@ -91,11 +80,11 @@ namespace HideAndSeek
         }
 
         public void ShowObjects(bool bShow)
-        {
-            foreach (GameObject aGold in goldsOnStage)
+        {            
+            foreach (GameObject obj in objsOnStage)
             {
-                if (aGold == null) continue;
-                Renderer renderer = aGold.GetComponent<SpriteRenderer>();
+                if (obj == null) continue;
+                Renderer renderer = obj.GetComponent<SpriteRenderer>();
                 if (renderer) renderer.enabled = bShow;
             }
 
@@ -109,12 +98,13 @@ namespace HideAndSeek
 
         //Awake is always called before any Start functions
         void Awake()
-        {
+        {            
             //Check if instance already exists
             if (instance == null)
             {
                 instance = this;
                 gameInfo.init();
+                fileName = "log/gameLog_" + DateTime.Now.ToString("M_d_hh_mm") + "_VER_" + VERSION.ToString() + ".txt";
             }
             else if (instance != this)
                 Destroy(gameObject);
@@ -127,7 +117,7 @@ namespace HideAndSeek
             //Get a component reference to the attached BoardManager script
             boardScript = GetComponent<BoardManager>();
 
-            InitGame();
+            InitGame();           
         }
 
         //this is called only once, and the paramter tell it to be called only after the scene was loaded
@@ -141,20 +131,16 @@ namespace HideAndSeek
 
 		public void writeLog()
 		{
-			gameInfo.deltaTime = (int)(Time.time - prevTime);
+            gameInfo.deltaTime = Time.time - prevTime;
 			prevTime = Time.time;
             Dictionary<string, object> eventInfo = new Dictionary<string, object>
                         {
                             { "level", level},
                             { "move", gameInfo.moveCount},
-                            { "move try", gameInfo.moveTryCount},
                             { "HP", gameInfo.playerHp},
                             { "HP Inc", gameInfo.playerHPIncrease},
                             { "HP Dec", gameInfo.playerHPDecrease},
-                            { "Soda", gameInfo.playerSoda},
-                            { "SodaUse", gameInfo.playerSodaUse},
-                            { "SodaGet", gameInfo.playerSodaGet},
-                            { "time", gameInfo.deltaTime}
+                            { "time", (int)gameInfo.deltaTime}
                         };
 
             Analytics.CustomEvent("Level info", eventInfo);
@@ -164,35 +150,26 @@ namespace HideAndSeek
             string info =
                 "Level: " + level.ToString()
                 + " Move: " + gameInfo.moveCount.ToString()
-                + " Move try: " + gameInfo.moveTryCount.ToString()
-
                 + " HP: " + gameInfo.playerHp.ToString()
                 + " HP Inc: " + gameInfo.playerHPIncrease.ToString()
                 + " HP Dec: " + gameInfo.playerHPDecrease.ToString()
-
-                + " Soda: " + gameInfo.playerSoda.ToString()
-                + " Soda Use: " + gameInfo.playerSodaUse.ToString()
-                + " Soda Get: " + gameInfo.playerSodaGet.ToString()
-
-                + " Time: " + gameInfo.deltaTime.ToString();
+                + " Time: " + ((int)gameInfo.deltaTime).ToString();
+            print(info);
 
             string info1 =
                 level.ToString()
                 + "\t" + gameInfo.moveCount.ToString()
-                + "\t" + gameInfo.moveTryCount.ToString()
-
                 + "\t" + gameInfo.playerHp.ToString()
                 + "\t" + gameInfo.playerHPIncrease.ToString()
                 + "\t" + gameInfo.playerHPDecrease.ToString()
-
-                + "\t" + gameInfo.playerSoda.ToString()
-                + "\t" + gameInfo.playerSodaUse.ToString()
-                + "\t" + gameInfo.playerSodaGet.ToString()
-
-                + "\t" + gameInfo.deltaTime.ToString();
-
-            print (info);
-            WriteFile("gameLog.txt", info1);
+                + "\t" + ((int)gameInfo.deltaTime).ToString();
+            WriteFile(fileName, info1);
+            string times = "WaitTimes: ";
+            foreach(int time in waitTimes)
+            {
+                times += time.ToString() + " ";
+            }
+            WriteFile(fileName, times);
 #endif
             gameInfo.init();
         }
@@ -207,7 +184,6 @@ namespace HideAndSeek
 
             var sr = File.CreateText(fileName);
             sr.WriteLine(info);
-//            sr.WriteLine("I can write ints {0} or floats {1}, and so on.", 1, 4.2);
             sr.Close();
         }
 
@@ -243,8 +219,6 @@ namespace HideAndSeek
 
             titleText = GameObject.Find("LevelText").GetComponent<Text>();
             subTitleText = GameObject.Find("SubTitleText").GetComponent<Text>();
-
-            showTimeText = GameObject.Find("ShowTimeText").GetComponent<Text>();
 
             ChangeTitleText();
 
@@ -345,7 +319,7 @@ namespace HideAndSeek
                     });
 #if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
 #else
-                    WriteFile("gameLog.txt", "GAME START");
+                    WriteFile(fileName, "GAME START");
 #endif
                     break;
             }
@@ -380,6 +354,7 @@ namespace HideAndSeek
 
         public void GameContinue()
         {
+            writeLog();
             gameState = GAME_STATE.PLAY;
             playersTurn = false;
             level--;

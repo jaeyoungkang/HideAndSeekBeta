@@ -65,7 +65,7 @@ namespace HideAndSeek
 			float distanceX = Mathf.Abs (target.position.x - transform.position.x);
 			float distanceY = Mathf.Abs (target.position.y - transform.position.y);
 
-            //            if(distanceY <= rangeOfSense && distanceX <= rangeOfSense)
+            //if(distanceY <= rangeOfSense && distanceX <= rangeOfSense)
             if( (distanceY <= rangeOfSense && distanceX < rangeOfSense) || (distanceY < rangeOfSense && distanceX <= rangeOfSense) )
             {                
                 float value = Random.Range(0f, 1f);
@@ -83,11 +83,8 @@ namespace HideAndSeek
                     else
                         yDir = target.position.y > transform.position.y ? 1 : -1;                    
                 }
-                print(distanceX.ToString() + " " + distanceY.ToString() + " " + xDir.ToString() + " " + yDir.ToString());
             }
 
-
-            //Call the AttemptMove function and pass in the generic parameter Player, because Enemy is moving and expecting to potentially encounter a Player
             AttemptMove <Player> (xDir, yDir);
 		}
 

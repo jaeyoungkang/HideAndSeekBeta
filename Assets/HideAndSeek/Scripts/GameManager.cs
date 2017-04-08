@@ -34,7 +34,7 @@ namespace HideAndSeek
 
     public class GameManager : MonoBehaviour
     {
-        public int VERSION = 2;
+        public int Version = 3;
         public string fileName;
 
         public GAME_INFO gameInfo;
@@ -126,7 +126,7 @@ namespace HideAndSeek
             {
                 instance = this;
                 gameInfo.init();
-                fileName = "log/gameLog_" + DateTime.Now.ToString("M_d_hh_mm") + "_VER_" + VERSION.ToString() + ".txt";
+                fileName = "log/gameLog_" + DateTime.Now.ToString("M_d_hh_mm") + "_VER_" + Version.ToString() + ".txt";
             }
             else if (instance != this)
                 Destroy(gameObject);

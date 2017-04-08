@@ -68,6 +68,7 @@ namespace HideAndSeek
                 
         public List<GameObject> trapsOnStage = new List<GameObject>();
         public List<GameObject> objsOnStage = new List<GameObject>();
+        public List<GameObject> tilesOnStage = new List<GameObject>();
 
         public GameObject IsTrap(float x, float y)
         {
@@ -94,6 +95,27 @@ namespace HideAndSeek
                 Renderer renderer = obj.GetComponent<SpriteRenderer>();
                 if (renderer) renderer.enabled = bShow;
             }
+
+            foreach (GameObject obj in tilesOnStage)
+            {
+                if (obj == null) continue;
+                Renderer renderer = obj.GetComponent<SpriteRenderer>();
+                if (renderer)
+                {
+                    if (bShow)
+                    {
+                        Color color = renderer.material.color;
+                        color.a = 1f;
+                        renderer.material.color = color;
+                    }
+                    else
+                    {
+                        Color color = renderer.material.color;
+                        color.a = 0.6f;
+                        renderer.material.color = color;
+                    }
+                }
+            }            
         }
 
         //Awake is always called before any Start functions

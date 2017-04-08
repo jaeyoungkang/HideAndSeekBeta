@@ -58,65 +58,45 @@ namespace HideAndSeek
         }
 
 
-        //Sets up the outer walls and floor (background) of the game board.
         void BoardSetup()
         {
-            //Instantiate Board and set boardHolder to its transform.
-            boardHolder = new GameObject("Board").transform;
+            boardHolder = new GameObject("Board").transform;            
 
-            //Loop along x axis, starting from -1 (to fill corner) with floor or outerwall edge tiles.
             for (int x = -1; x < columns + 1; x++)
             {
-                //Loop along y axis, starting from -1 to place floor or outerwall tiles.
                 for (int y = -1; y < rows + 1; y++)
                 {
-                    //Choose a random tile from our array of floor tile prefabs and prepare to instantiate it.
                     GameObject toInstantiate = floorTiles[Random.Range(0, floorTiles.Length)];
 
-                    //Check if we current position is at board edge, if so choose a random outer wall prefab from our array of outer wall tiles.
                     if (x == -1 || x == columns || y == -1 || y == rows)
                         toInstantiate = outerWallTiles[Random.Range(0, outerWallTiles.Length)];
 
-                    //Instantiate the GameObject instance using the prefab chosen for toInstantiate at the Vector3 corresponding to current grid position in loop, cast it to GameObject.
-                    GameObject instance =
-                        Instantiate(toInstantiate, new Vector3(x, y, 0f), Quaternion.identity) as GameObject;
+                    GameObject instance = Instantiate(toInstantiate, new Vector3(x, y, 0f), Quaternion.identity) as GameObject;
                     bool bShow = false;
                     if (x == 0 && y == 0) bShow = true;
                     else if (x == 7 && y == 7) bShow = true;
                     else if (x == 7 && y == 0) bShow = true;
                     else if (x == 0 && y == 7) bShow = true;
-                    //else if (x == 1 && y == 4) bShow = true;
-                    //else if (x == 2 && y == 1) bShow = true;
-                    //else if (x == 2 && y == 6) bShow = true;
-                    //else if (x == 4 && y == 7) bShow = true;
-                    //else if (x == 5 && y == 0) bShow = true;
-                    //else if (x == 5 && y == 5) bShow = true;
-                    //else if (x == 6 && y == 3) bShow = true;
+
                     if (bShow)
                     {
                         Color lerpedColor = instance.GetComponent<Renderer>().material.color;
                         lerpedColor = Color.Lerp(lerpedColor, Color.red, 0.1f);
                         instance.GetComponent<Renderer>().material.color = lerpedColor;
                     }
-                    //Set the parent of our newly instantiated object instance to boardHolder, this is just organizational to avoid cluttering hierarchy.
+
                     instance.transform.SetParent(boardHolder);
+
+                    GameManager.instance.tilesOnStage.Add(instance);
                 }
             }
         }
 
-        //RandomPosition returns a random position from our list gridPositions.
         Vector3 RandomPosition()
         {
-            //Declare an integer randomIndex, set it's value to a random number between 0 and the count of items in our List gridPositions.
             int randomIndex = Random.Range(0, gridPositions.Count);
-
-            //Declare a variable of type Vector3 called randomPosition, set it's value to the entry at randomIndex from our List gridPositions.
             Vector3 randomPosition = gridPositions[randomIndex];
-
-            //Remove the entry at randomIndex from the list so that it can't be re-used.
             gridPositions.RemoveAt(randomIndex);
-
-            //Return the randomly selected Vector3 position.
             return randomPosition;
         }
 
@@ -168,14 +148,18 @@ namespace HideAndSeek
 
         public void SetupScene(int level)
         {
+            GameManager.instance.tilesOnStage.Clear();
+            GameManager.instance.objsOnStage.Clear();
+            GameManager.instance.trapsOnStage.Clear();
+
             BoardSetup();
 
             InitialiseList();
 
             SetupLevelRandom(level);
-            //if (level < 4) SetupBeginnerLevel(level);
-            //else SetupLevelRandom(level);
-            Instantiate(exit, new Vector3(columns - 1, rows - 1, 0f), Quaternion.identity);
+
+            GameObject instance = Instantiate(exit, new Vector3(columns - 1, rows - 1, 0f), Quaternion.identity);
+            GameManager.instance.tilesOnStage.Add(instance);
         }
 
         public void SetupLevelRandom(int level)
@@ -247,12 +231,12 @@ namespace HideAndSeek
                 sodaRate = 1;
             }
 
-            GameManager.instance.objsOnStage.Clear();
+            
             LayoutObjectAtRandom(foodTiles, foodRate, foodRate);
             LayoutObjectAtRandom(sodaTiles, sodaRate, sodaRate);
             LayoutObjectAtRandom(goldATiles, goldRate, goldRate);
 
-            GameManager.instance.trapsOnStage.Clear();
+            
             LayoutTrapsAtRandom(trapTiles, trapCount, trapCount);
 
             LayoutEnemiesAtRandom(enemyTiles, enemyCount, enemyCount);

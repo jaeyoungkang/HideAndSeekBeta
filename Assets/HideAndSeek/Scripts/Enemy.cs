@@ -96,8 +96,13 @@ namespace HideAndSeek
 
             if (sprite)
             {
-                if(bShow) sprite.sortingLayerName = "Units";
-                else sprite.sortingLayerName = "Hide";
+                Color color = sprite.material.color;
+                if (bShow) color.a = 1.0f;
+                else color.a = 0f;
+
+                sprite.material.color = color;
+                //if (bShow) sprite.sortingLayerName = "Units";
+                //else sprite.sortingLayerName = "Hide";
             }
         }
 		

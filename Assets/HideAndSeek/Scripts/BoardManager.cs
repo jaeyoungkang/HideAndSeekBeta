@@ -28,9 +28,11 @@ namespace HideAndSeek
         public GameObject exit;
         public GameObject[] floorTiles;
         public GameObject[] wallTiles;
-        public GameObject[] foodTiles;
-        public GameObject[] sodaTiles;
+        public GameObject[] potionATiles;
+        public GameObject[] potionBTiles;
         public GameObject[] goldATiles;
+        public GameObject[] gemTiles;
+        public GameObject[] thiefTiles;
         public GameObject[] enemyTiles;
         public GameObject[] strongEnemyTiles;
         public GameObject[] outerWallTiles;
@@ -164,24 +166,26 @@ namespace HideAndSeek
 
         public void SetupLevelRandom(int level)
         {
-            int foodRate = 0;
-            int sodaRate = 0;
+            int potionARate = 0;
+            int potionBRate = 0;
             int goldRate = 0;
+            int gemRate = 0;
 
             int enemyCount = 0;
             int strongEnemyCount = 0;
+            int thiefCount = 1;
 
             int trapCount = 0;
             if (level < 4) // 1,2,3
             {
-                if (level == 3) foodRate = 1;
+                if (level == 3) potionARate  = 1;
                 trapCount = level + 6;
                 goldRate = level;
             }
             else if (3 < level && level < 7) // 4,5,6
             {
-                if (level == 6) foodRate = 2;
-                else foodRate = 1;
+                if (level == 6) potionARate  = 2;
+                else potionARate  = 1;
 
                 trapCount = level + 1;
                 goldRate = 3;
@@ -191,56 +195,63 @@ namespace HideAndSeek
             {
                 enemyCount = 2;
                 trapCount = level - 2;
-                goldRate = 3;
+                goldRate = 2;
+                gemRate = 1;
 
                 if (level == 9)
                 {
-                    foodRate = 1;
-                    sodaRate = 1;
+                    potionARate  = 1;
+                    potionBRate  = 1;
                 }
                 else
                 {
-                    foodRate = 2;
+                    potionARate  = 2;
                 }
 
             }
             else if (9 < level && level < 13) // 10,11,12
             {
+                thiefCount = 1;
                 enemyCount = 3;
                 trapCount = level - 5;
                 goldRate = 3;
-                foodRate = 1;
-                sodaRate = 1;
+                gemRate = 1;
+                potionARate  = 1;
+                potionBRate  = 1;
             }
             else if (12 < level && level < 16) // 13,14,15
             {
-                enemyCount = level - 13;
+                thiefCount = 1;
+                enemyCount = 2;                
                 strongEnemyCount = 1;
-                trapCount = 7;
-                goldRate = 3;
-                foodRate = 2;
-                sodaRate = 1;
+                trapCount = 6;
+                goldRate = 2;
+                gemRate = 2;
+                potionARate  = 2;
+                potionBRate  = 1;
             }
             else if (15 < level && level < 19) // 16,17,18
             {
-                enemyCount = level - 16;
+                enemyCount = 2;
                 strongEnemyCount = 2;
-                trapCount = 7;
+                trapCount = 6;
                 goldRate = 3;
-                foodRate = 3;
-                sodaRate = 1;
+                gemRate = 2;
+                potionARate  = 2;
+                potionBRate  = 2;
             }
 
             
-            LayoutObjectAtRandom(foodTiles, foodRate, foodRate);
-            LayoutObjectAtRandom(sodaTiles, sodaRate, sodaRate);
+            LayoutObjectAtRandom(potionATiles, potionARate , potionARate );
+            LayoutObjectAtRandom(potionBTiles, potionBRate , potionBRate );
             LayoutObjectAtRandom(goldATiles, goldRate, goldRate);
+            LayoutObjectAtRandom(gemTiles, gemRate, gemRate);
 
-            
             LayoutTrapsAtRandom(trapTiles, trapCount, trapCount);
-
+                        
             LayoutEnemiesAtRandom(enemyTiles, enemyCount, enemyCount);
             LayoutEnemiesAtRandom(strongEnemyTiles, strongEnemyCount, strongEnemyCount);
+            LayoutEnemiesAtRandom(thiefTiles, thiefCount, thiefCount);
         }
     }
 }

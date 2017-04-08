@@ -297,7 +297,7 @@ namespace HideAndSeek
                 Invoke("Restart", restartLevelDelay);
                 enabled = false;
             }
-            else if (other.tag == "Food")
+            else if (other.tag == "potionA")
             {
                 hitPoint += pointsPerFood;
 
@@ -306,10 +306,9 @@ namespace HideAndSeek
                 other.gameObject.SetActive(false);
 
                 GameManager.instance.gameInfo.playerHPIncrease++;
-
                 StartCoroutine(HideAni(other.gameObject));
             }
-            else if (other.tag == "Soda")
+            else if (other.tag == "potionB")
             {
                 hitPoint += pointsPerSoda;
 
@@ -327,6 +326,17 @@ namespace HideAndSeek
                 if (renderer) renderer.enabled = true;
                 SoundManager.instance.RandomizeSfx(goldASound, goldASound);                
                 Gold += 10;
+
+                SetGoldText(Color.yellow);
+
+                StartCoroutine(HideAni(other.gameObject));
+            }
+            else if (other.tag == "Gem")
+            {
+                Renderer renderer = other.gameObject.GetComponent<SpriteRenderer>();
+                if (renderer) renderer.enabled = true;
+                SoundManager.instance.RandomizeSfx(goldASound, goldASound);
+                Gold += 30;
 
                 SetGoldText(Color.yellow);
 

@@ -1,0 +1,2 @@
+GAME START
+Level: 0	Move: 4	HP: 20	HP Inc: 0	HP Dec: 2	Show: 0	Wait: 1	Time: 6

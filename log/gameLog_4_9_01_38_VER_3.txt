@@ -1,0 +1,18 @@
+GAME START
+Level: 1	Move: 16	HP: 20	HP Inc: 0	HP Dec: 0	Show: 0	Wait: 3	Time: 14
+Level: 2	Move: 16	HP: 20	HP Inc: 0	HP Dec: 0	Show: 0	Wait: 2	Time: 13
+Level: 3	Move: 22	HP: 20	HP Inc: 1	HP Dec: 1	Show: 0	Wait: 3	Time: 25
+Level: 4	Move: 14	HP: 30	HP Inc: 1	HP Dec: 0	Show: 0	Wait: 1	Time: 12
+Level: 5	Move: 18	HP: 30	HP Inc: 2	HP Dec: 2	Show: 0	Wait: 2	Time: 19
+Level: 6	Move: 28	HP: 40	HP Inc: 2	HP Dec: 1	Show: 0	Wait: 4	Time: 28
+Level: 7	Move: 30	HP: 50	HP Inc: 2	HP Dec: 1	Show: 0	Wait: 2	Time: 21
+Level: 8	Move: 14	HP: 70	HP Inc: 2	HP Dec: 0	Show: 0	Wait: 1	Time: 14
+Level: 9	Move: 34	HP: 60	HP Inc: 2	HP Dec: 4	Show: 0	Wait: 3	Time: 28
+Level: 10	Move: 18	HP: 90	HP Inc: 2	HP Dec: 0	Show: 0	Wait: 4	Time: 26
+Level: 11	Move: 20	HP: 50	HP Inc: 0	HP Dec: 4	Show: 0	Wait: 2	Time: 22
+Level: 12	Move: 32	HP: 50	HP Inc: 1	HP Dec: 1	Show: 0	Wait: 3	Time: 34
+Level: 13	Move: 16	HP: 60	HP Inc: 1	HP Dec: 0	Show: 0	Wait: 3	Time: 17
+Level: 14	Move: 16	HP: 70	HP Inc: 1	HP Dec: 0	Show: 0	Wait: 2	Time: 18
+Level: 15	Move: 18	HP: 70	HP Inc: 1	HP Dec: 1	Show: 0	Wait: 2	Time: 20
+Level: 16	Move: 22	HP: 100	HP Inc: 2	HP Dec: 0	Show: 0	Wait: 2	Time: 21
+GAME START

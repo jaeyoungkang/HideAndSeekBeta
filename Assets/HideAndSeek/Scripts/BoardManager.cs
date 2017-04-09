@@ -171,8 +171,8 @@ namespace HideAndSeek
             int goldRate = 0;
             int gemRate = 0;
 
-            int enemyCount = 2;
-            int strongEnemyCount = 2;
+            int enemyCount = 0;
+            int strongEnemyCount = 0;
             int thiefCount = 0;
 
             int trapCount = 0;

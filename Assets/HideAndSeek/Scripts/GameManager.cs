@@ -15,31 +15,66 @@ namespace HideAndSeek
     {
         public int playerHPDecrease;
         public int playerHPIncrease;
-
+                
         public int playerHp;
         public int moveCount;
         public int showCount;
         public int waitCount;
 
-        public float deltaTime;        
+        public int gold;
+        public int goldGet;
 
-        public void init()
+        public int skillHP;
+        public int skillTime;
+        public int skillShow;
+        public int skillDestroy;
+
+        public int totalSkillHP;
+        public int totalSkillTime;
+        public int totalSkillShow;
+        public int totalSkillDestroy;
+
+        public float totalTime;
+        public float averageTime;
+
+        public float deltaTime;
+
+        public void ResetLevelInfo()
         {
             playerHPDecrease = 0;
             playerHPIncrease = 0;
+
             playerHp = 0;
             moveCount = 0;
             showCount = 0;
             waitCount = 0;
 
-            deltaTime = 0;            
+            gold = 0;
+            goldGet = 0;
+
+            skillHP = 0;
+            skillTime = 0;
+            skillShow = 0;
+            skillDestroy = 0;
+
+            deltaTime = 0;
         }
 
+        public void Init()
+        {
+            ResetLevelInfo();
+            totalSkillHP = 0;
+            totalSkillTime = 0;
+            totalSkillShow = 0;
+            totalSkillDestroy = 0;
+            totalTime = 0;
+            averageTime = 0;
+        }
     }	
 
     public class GameManager : MonoBehaviour
     {
-        public int Version = 3;
+        public int Version = 4;
         public string fileName;
 
         public GAME_INFO gameInfo;
@@ -130,7 +165,7 @@ namespace HideAndSeek
             if (instance == null)
             {
                 instance = this;
-                gameInfo.init();
+                gameInfo.Init();
                 fileName = "log/gameLog_" + DateTime.Now.ToString("M_d_hh_mm") + "_VER_" + Version.ToString() + ".txt";
             }
             else if (instance != this)
@@ -164,6 +199,12 @@ namespace HideAndSeek
             {
                 if (time > 0) gameInfo.waitCount++;
             }
+            gameInfo.totalTime += gameInfo.deltaTime;
+            gameInfo.averageTime += gameInfo.totalTime / level;
+            gameInfo.totalSkillHP += gameInfo.skillHP;
+            gameInfo.totalSkillShow += gameInfo.skillShow;
+            gameInfo.totalSkillTime += gameInfo.skillTime;
+            gameInfo.totalSkillDestroy += gameInfo.skillDestroy;
 
             Dictionary<string, object> eventInfo = new Dictionary<string, object>
                         {
@@ -172,6 +213,8 @@ namespace HideAndSeek
                             { "HP", gameInfo.playerHp},
                             { "HP Inc", gameInfo.playerHPIncrease},
                             { "HP Dec", gameInfo.playerHPDecrease},
+                            { "Gold", gameInfo.gold},
+                            { "GoldGet", gameInfo.goldGet},
                             { "show", gameInfo.showCount},                            
                             { "Wait", gameInfo.waitCount},
                             { "time", (int)gameInfo.deltaTime}
@@ -179,6 +222,16 @@ namespace HideAndSeek
 
             Analytics.CustomEvent("Level info", eventInfo);
 
+            Dictionary<string, object> skillInfo = new Dictionary<string, object>
+                        {
+                            { "level", level},
+                            { "Skill HP", gameInfo.skillHP},
+                            { "Skill Time", gameInfo.skillTime},
+                            { "Skill Show", gameInfo.skillShow},
+                            { "Skill Destory", gameInfo.skillDestroy}
+                         };
+            Analytics.CustomEvent("Skill info", skillInfo);
+            
 #if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
 #else
             string info =
@@ -187,12 +240,18 @@ namespace HideAndSeek
                 + "\tHP: " + gameInfo.playerHp.ToString()
                 + "\tHP Inc: " + gameInfo.playerHPIncrease.ToString()
                 + "\tHP Dec: " + gameInfo.playerHPDecrease.ToString()
+                + "\tGold: " + gameInfo.gold.ToString()
+                + "\tGoldGet: " + gameInfo.goldGet.ToString()
                 + "\tShow: " + gameInfo.showCount.ToString()
                 + "\tWait: " + gameInfo.waitCount.ToString()
+                + "\tSkill HP: " + gameInfo.skillHP.ToString()
+                + "\tSkill Time: " + gameInfo.skillTime.ToString()
+                + "\tSkill Show: " + gameInfo.skillShow.ToString()
+                + "\tSkill Destroy: " + gameInfo.skillDestroy.ToString()
                 + "\tTime: " + ((int)gameInfo.deltaTime).ToString();            
-            WriteFile(fileName, info);
+            WriteFile(fileName, info);            
 #endif
-            gameInfo.init();
+            gameInfo.ResetLevelInfo();
         }
 
         public void WriteFile(string fileName, string info)
@@ -217,8 +276,7 @@ namespace HideAndSeek
         static private void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)
         {
             if (instance != null)
-            {
-				instance.writeLog ();
+            {				
 				instance.setLevel ();
                 instance.InitGame();
             }
@@ -367,33 +425,70 @@ namespace HideAndSeek
 		{
 			enemies.Add(script);
 		}
+
+        public void saveTotalInfo()
+        {
+            Dictionary<string, object> TotalInfo = new Dictionary<string, object>
+                        {
+                            { "Last Level", level},
+                            { "Total Skill HP", gameInfo.totalSkillHP},
+                            { "Total Skill Time", gameInfo.totalSkillTime},
+                            { "Total Skill Show", gameInfo.totalSkillShow},
+                            { "Total Skill Destory", gameInfo.totalSkillDestroy},
+                            { "Total Time", gameInfo.totalTime},
+                            { "Total Average Time", gameInfo.averageTime}
+                         };
+            Analytics.CustomEvent("Total info", TotalInfo);
+#if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
+#else
+            string info = "Last Level " + level.ToString()
+              + "Total Skill HP: " + gameInfo.totalSkillHP.ToString()
+              + "\tTotal Skill Time: " + gameInfo.totalSkillTime.ToString()
+              + "\tTotal Skill Show: " + gameInfo.totalSkillShow.ToString()
+              + "\tTotal Skill Destroy: " + gameInfo.totalSkillDestroy.ToString()
+              + "\tTotal Time: " + ((int)gameInfo.totalTime).ToString()
+              + "\tAverage Time: " + ((int)gameInfo.averageTime).ToString();
+            WriteFile(fileName, info);
+#endif
+        }
         
         public void GameOver()
 		{
+            writeLog();
+            saveTotalInfo();
+            gameInfo.Init();
+
             gameState = GAME_STATE.OVER;
             playersTurn = false;
             gameOverCount++;
-            level = 0;
+            level = 0;            
         }        
         
         public void EndGame()
 		{
-			level = 1;
+            writeLog();
+            saveTotalInfo();
+            gameInfo.Init();
+            level = 1;
             gameState = GAME_STATE.END;
             playersTurn = false;
             gameEndCount++;
         }
 
-        public bool ShowEnemies(bool bShow, bool blong = false)
+        public void ShowMap(bool bShow)
+        {
+            ShowEnemies(bShow);
+            ShowObjects(bShow);
+            gameInfo.showCount++;
+            gameInfo.Init();
+        }
+
+        public void ShowEnemies(bool bShow)
         {
             for (int i = 0; i < enemies.Count; i++)
             {
                 enemies[i].Show(bShow);
             }
-
-            ShowObjects(bShow);
-
-            return true;
         }
 
         public void DestoryEnemies()
@@ -403,22 +498,15 @@ namespace HideAndSeek
 
         IEnumerator DestroyEffect()
         {
-            for (int i = 0; i < enemies.Count; i++)
-            {
-                enemies[i].Show(true);
-            }
+            ShowEnemies(true);
             yield return new WaitForSeconds(0.1f);
-
-            for (int i = 0; i < enemies.Count; i++)
-            {
-                enemies[i].Show(false);
-            }
+            ShowEnemies(false);
             yield return new WaitForSeconds(0.1f);
-
-            for (int i = 0; i < enemies.Count; i++)
-            {
-                enemies[i].Show(true);
-            }
+            ShowEnemies(true);
+            yield return new WaitForSeconds(0.05f);
+            ShowEnemies(false);
+            yield return new WaitForSeconds(0.05f);
+            ShowEnemies(true);
             yield return new WaitForSeconds(0.1f);
             for (int i = 0; i < enemies.Count; i++)
             {

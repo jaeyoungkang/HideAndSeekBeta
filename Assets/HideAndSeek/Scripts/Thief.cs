@@ -9,16 +9,14 @@ namespace HideAndSeek
     public class Thief : Enemy
     {
         public GameObject targetObj;
-        public GameObject[] Golds;
-        public GameObject[] Gems;
         public List<GameObject> Objs = new List<GameObject>();
 
         protected override void Start()
         {
             Objs.Clear();
-            GameObject[] Golds = GameObject.FindGameObjectsWithTag("Gold");
+//            GameObject[] Golds = GameObject.FindGameObjectsWithTag("Gold");
             GameObject[] Gems = GameObject.FindGameObjectsWithTag("Gem");
-            Objs.AddRange(Golds);
+//            Objs.AddRange(Golds);
             Objs.AddRange(Gems);
 
             SetTarget();
@@ -50,10 +48,20 @@ namespace HideAndSeek
             if (targetObj == null) targetObj = GameObject.FindGameObjectWithTag("Exit");
         }
 
+        private bool bSkip = false;
         public override void MoveEnemy()
         {
+            if (bSkip)
+            {
+                bSkip = false;
+                return;
+            }
             if (enabled == false) return;
-            if (targetObj.activeSelf == false) SetTarget();
+            if (targetObj.activeSelf == false)
+            {
+                bSkip = true;
+                SetTarget();
+            }
 
             int xDir = 0;
             int yDir = 0;

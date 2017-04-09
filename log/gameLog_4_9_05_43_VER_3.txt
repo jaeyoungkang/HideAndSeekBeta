@@ -1,0 +1,7 @@
+GAME START
+GAME START
+Level: 1	Move: 14	HP: 0	HP Inc: 0	HP Dec: 0	Gold: 0	GoldGet: 1	Show: 15	Wait: 1	Skill HP: 0	Skill Time: 0	Skill Show: 0	Skill Destroy: 0	Time: 12
+Level: 2	Move: 16	HP: 20	HP Inc: 0	HP Dec: 10	Gold: 1	GoldGet: 1	Show: 18	Wait: 2	Skill HP: 0	Skill Time: 0	Skill Show: 0	Skill Destroy: 0	Time: 16
+Level: 3	Move: 22	HP: 10	HP Inc: 0	HP Dec: 0	Gold: 2	GoldGet: 1	Show: 24	Wait: 2	Skill HP: 0	Skill Time: 0	Skill Show: 0	Skill Destroy: 0	Time: 18
+Level: 4	Move: 26	HP: 10	HP Inc: 0	HP Dec: 0	Gold: 3	GoldGet: 2	Show: 28	Wait: 2	Skill HP: 0	Skill Time: 0	Skill Show: 0	Skill Destroy: 0	Time: 27
+Level: 5	Move: 18	HP: 10	HP Inc: 10	HP Dec: 0	Gold: 5	GoldGet: 2	Show: 21	Wait: 4	Skill HP: 1	Skill Time: 1	Skill Show: 0	Skill Destroy: 0	Time: 24

@@ -166,53 +166,32 @@ namespace HideAndSeek
 
         public void SetupLevelRandom(int level)
         {
-            int potionARate = 0;
-            int potionBRate = 0;
-            int goldRate = 0;
             int gemRate = 0;
-
             int enemyCount = 0;
             int strongEnemyCount = 0;
             int thiefCount = 0;
-
             int trapCount = 0;
             if (level < 4) // 1,2,3
             {
-                if (level == 3) potionARate  = 1;
                 trapCount = level + 6;
-                goldRate = level;
+                gemRate = 1;
             }
             else if (3 < level && level < 7) // 4,5,6
             {
-                if (level == 6) potionARate  = 2;
-                else potionARate  = 1;
-
                 trapCount = level + 1;
-                goldRate = 3;
                 enemyCount = 1;
+                gemRate = 2;
             }
             else if (6 < level && level < 10) // 7,8,9
             {
                 enemyCount = 2;
                 trapCount = level - 2;
-                goldRate = 2;
-                gemRate = 1;
+                gemRate = 3;
 
                 if (Random.Range(0f, 1f) < 0.2f)
                 {
                     thiefCount = 1;
                 }
-
-                if (level == 9)
-                {
-                    potionARate  = 1;
-                    potionBRate  = 1;
-                }
-                else
-                {
-                    potionARate  = 2;
-                }
-
             }
             else if (9 < level && level < 13) // 10,11,12
             {
@@ -224,10 +203,7 @@ namespace HideAndSeek
                 thiefCount = 1;
                 enemyCount = 3;
                 trapCount = level - 5;
-                goldRate = 3;
-                gemRate = 1;
-                potionARate  = 1;
-                potionBRate  = 1;
+                gemRate = 4;
             }
             else if (12 < level && level < 16) // 13,14,15
             {
@@ -239,10 +215,7 @@ namespace HideAndSeek
                 enemyCount = 2;                
                 strongEnemyCount = 1;
                 trapCount = 6;
-                goldRate = 2;
-                gemRate = 2;
-                potionARate  = 2;
-                potionBRate  = 1;
+                gemRate = 5;
             }
             else if (15 < level && level < 19) // 16,17,18
             {
@@ -253,16 +226,9 @@ namespace HideAndSeek
                 enemyCount = 2;
                 strongEnemyCount = 2;
                 trapCount = 6;
-                goldRate = 3;
-                gemRate = 2;
-                potionARate  = 2;
-                potionBRate  = 2;
+                gemRate = 6;
             }
 
-            
-            LayoutObjectAtRandom(potionATiles, potionARate , potionARate );
-            LayoutObjectAtRandom(potionBTiles, potionBRate , potionBRate );
-            LayoutObjectAtRandom(goldATiles, goldRate, goldRate);
             LayoutObjectAtRandom(gemTiles, gemRate, gemRate);
 
             LayoutTrapsAtRandom(trapTiles, trapCount, trapCount);

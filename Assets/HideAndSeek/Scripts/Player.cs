@@ -23,7 +23,6 @@ namespace HideAndSeek
         public Canvas EndGroup;
 
         public Button HealBtn;
-        public Button TimeBtn;
         public Button DestroyBtn;
         public Button ShowBtn;
 
@@ -47,8 +46,7 @@ namespace HideAndSeek
 
         private Animator animator;
 		private int hitPoint;
-        private int Gold;
-        private int Coin;
+        private int gem;
         
         public float prevTime = 0;
         float timeLimit = 60;
@@ -56,13 +54,12 @@ namespace HideAndSeek
         public void InitDatas()
 		{
             hitPoint = GameManager.instance.playerHp;
-            Gold = GameManager.instance.playerGold;
-            Coin = GameManager.instance.playerCoin;
+            gem = GameManager.instance.playerGem;
         }
 
-        public void SetGoldText(Color gColor)
+        public void SetScoreText(Color gColor)
         {
-            ScoreText.text = "Gold:" + Gold.ToString();
+            ScoreText.text = "Gem:" + gem.ToString();
             ScoreText.color = gColor;
         }                 
         
@@ -75,7 +72,7 @@ namespace HideAndSeek
 
 			InitDatas();
 			SetHPText(Color.white);
-            SetGoldText(Color.white);
+            SetScoreText(Color.white);
 
             EndGroup.enabled = false;
 
@@ -85,7 +82,6 @@ namespace HideAndSeek
             rightBtn.onClick.AddListener(MoveRight);
 
             HealBtn.onClick.AddListener(UseHPRecover);
-            TimeBtn.onClick.AddListener(AddTime);
             DestroyBtn.onClick.AddListener(DestoryEnemy);
             ShowBtn.onClick.AddListener(ShowMap);
 
@@ -128,15 +124,19 @@ namespace HideAndSeek
 		private void OnDisable ()
 		{
 			GameManager.instance.playerHp = hitPoint;
-            GameManager.instance.playerGold = Gold;
-            GameManager.instance.playerCoin = Coin;
+            GameManager.instance.playerGem = gem;
         }
 
         private void Update ()
 		{
-            if (!GameManager.instance.Isplaying())
+            if (GameManager.instance.IsGameOver() && GameManager.instance.IsInput())
             {
-                if (GameManager.instance.IsGameOver() && GameManager.instance.IsInput()) Restart();
+                GameManager.instance.StartGame();
+                Restart();
+            }
+            
+            if (!GameManager.instance.Isplaying())
+            {                
                 return;
             }
             else
@@ -259,7 +259,7 @@ namespace HideAndSeek
             GameManager.instance.waitTimes.Add(deltaTime);
 
             SetHPText(Color.white);
-            SetGoldText(Color.white);            
+            SetScoreText(Color.white);            
             GameManager.instance.ShowMap(false);
 
             base.AttemptMove <T> (xDir, yDir);
@@ -273,7 +273,7 @@ namespace HideAndSeek
             }
             else
             {
-                if (hit.collider.tag == "Enemy")
+                if (hit.collider.tag == "Enemy" || hit.collider.tag == "Thief")
                 {
                     SpriteRenderer sprite = hit.collider.GetComponent<SpriteRenderer>();
                     if (sprite)
@@ -282,7 +282,22 @@ namespace HideAndSeek
                         color.a = 1.0f;
                         sprite.material.color = color;
                     }
+
+                    if (hit.collider.tag == "Thief")
+                    {
+                        Animator thiefAnimator = hit.collider.GetComponent<Animator>();
+                        if (thiefAnimator) thiefAnimator.SetTrigger("playerHit");
+                        animator.SetTrigger("playerChop");
+                        SoundManager.instance.RandomizeSfx(attackedSound1, attackedSound2);
+                        GetGold(5);
+                        SoundManager.instance.RandomizeSfx(goldASound, goldASound);
+                        Analytics.CustomEvent("Attack Thief", new Dictionary<string, object>
+                        {
+                            { "Attack Thief", 1},
+                        });
+                    }
                 }
+                
             }
 
 			CheckIfGameOver ();
@@ -311,7 +326,7 @@ namespace HideAndSeek
 		{
 			Wall hitWall = component as Wall;
             hitWall.DamageWall (wallDamage);			
-			animator.SetTrigger ("playerChop");          
+			animator.SetTrigger ("playerChop");
         }
 
 
@@ -325,44 +340,29 @@ namespace HideAndSeek
                 enabled = false;
                 GameManager.instance.writeLog();
             }
-            else if (other.tag == "potionA")
+            else if (other.tag == "Gem")
             {
-                RecoverHP(potionA);
-                SoundManager.instance.PlaySingle(eatSound1);
-                other.gameObject.SetActive(false);
+                Renderer renderer = other.gameObject.GetComponent<SpriteRenderer>();
+                if (renderer) renderer.enabled = true;
+                SoundManager.instance.RandomizeSfx(goldASound, goldASound);
+                GetGold(1);
                 StartCoroutine(HideAni(other.gameObject));
             }
-            else if (other.tag == "potionB")
-            {
-                RecoverHP(potionB);
-                SoundManager.instance.PlaySingle(drinkSound1);
-                other.gameObject.SetActive(false);
-
-
-                StartCoroutine(HideAni(other.gameObject));
-            }
-            else if (other.tag == "Gold")
+            else if (other.tag == "Thief")
             {
                 Renderer renderer = other.gameObject.GetComponent<SpriteRenderer>();
                 if (renderer) renderer.enabled = true;
                 SoundManager.instance.RandomizeSfx(goldASound, goldASound);
                 GetGold(10);
                 StartCoroutine(HideAni(other.gameObject));
+                
             }
-            else if (other.tag == "Gem")
-            {
-                Renderer renderer = other.gameObject.GetComponent<SpriteRenderer>();
-                if (renderer) renderer.enabled = true;
-                SoundManager.instance.RandomizeSfx(goldASound, goldASound);
-                GetGold(30);
-                StartCoroutine(HideAni(other.gameObject));
-            }            
         }
 
         void GetGold(int count)
         {
-            Gold += count;
-            SetGoldText(Color.yellow);
+            gem += count;
+            SetScoreText(Color.green);
             GameManager.instance.gameInfo.goldGet += count;
         }
 
@@ -375,7 +375,7 @@ namespace HideAndSeek
 
         private void Restart ()
 		{
-            GameManager.instance.gameInfo.gold = Gold;
+            GameManager.instance.gameInfo.gold = gem;
             GameManager.instance.gameInfo.playerHp = hitPoint;
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
 		}
@@ -383,7 +383,7 @@ namespace HideAndSeek
 		
 		public void LoseFood (int loss)
 		{
-            animator.SetTrigger ("playerHit");			
+            animator.SetTrigger ("playerHit");
 			hitPoint -= loss;
 
             SetHPText(Color.red);
@@ -403,18 +403,22 @@ namespace HideAndSeek
 			}
 		}
 
-        void UseGold(int count)
+        void UseGem(int count)
         {
-            Gold -= count;
-            SetGoldText(Color.red);
+            gem -= count;
+            SetScoreText(Color.red);
         }
+
+        public int costShow = 5;
+        public int costDestroy = 10;
+        public int costHP = 3;
 
         void ShowMap()
         {
-            if (Gold >= 50)
+            if (gem >= costShow)
             {
                 GameManager.instance.gameInfo.skillHP++;
-                UseGold(50);
+                UseGem(costShow);
                 GameManager.instance.ShowMap(true);
                 SoundManager.instance.PlaySingle(skillSound);
             }
@@ -422,35 +426,22 @@ namespace HideAndSeek
 
         void DestoryEnemy()
         {
-            if(Gold >= 200)
+            if(gem >= costDestroy)
             {
                 GameManager.instance.gameInfo.skillDestroy++;
-                UseGold(200);
+                UseGem(costDestroy);
                 GameManager.instance.DestoryEnemies();
                 SoundManager.instance.PlaySingle(skillSound);
             }
-        }
-
-        void AddTime()
-        {
-            if (Gold >= 30)
-            {
-                GameManager.instance.gameInfo.skillTime++;
-                timeLimit += 30;
-
-                UseGold(30);
-                SoundManager.instance.PlaySingle(skillSound);
-            }
-
-        }
+        }        
 
         void UseHPRecover()
         {
-            if (Gold >= 30)
+            if (gem >= costHP)
             {
                 GameManager.instance.gameInfo.skillHP++;
                 RecoverHP(10);
-                UseGold(30);                
+                UseGem(costHP);                
                 SoundManager.instance.PlaySingle(skillSound);
             }
         }
@@ -472,7 +463,7 @@ namespace HideAndSeek
             GameManager.instance.ShowMap(true);
 
             hitPoint = 20;
-            Gold = 0;
+            gem = 0;
 
             GameManager.instance.GameOver();
         }

@@ -88,9 +88,7 @@ namespace HideAndSeek
 
         public float levelStartDelay = 2f;
         public int playerHp = 30;
-        public int playerIp = 1;
-        public int playerGold = 0;
-        public int playerCoin = 1;
+        public int playerGem = 0;
         public static GameManager instance = null;              //Static instance of GameManager which allows it to be accessed by any other script.
         [HideInInspector] public bool playersTurn = true;
 
@@ -198,13 +196,15 @@ namespace HideAndSeek
             foreach (int time in waitTimes)
             {
                 if (time > 0) gameInfo.waitCount++;
-            }
-            gameInfo.totalTime += gameInfo.deltaTime;
-            gameInfo.averageTime += gameInfo.totalTime / level;
+            }            
+
+            gameInfo.totalTime += gameInfo.deltaTime;            
             gameInfo.totalSkillHP += gameInfo.skillHP;
             gameInfo.totalSkillShow += gameInfo.skillShow;
             gameInfo.totalSkillTime += gameInfo.skillTime;
             gameInfo.totalSkillDestroy += gameInfo.skillDestroy;
+
+            gameInfo.averageTime = gameInfo.totalTime / level;
 
             Dictionary<string, object> eventInfo = new Dictionary<string, object>
                         {
@@ -308,6 +308,11 @@ namespace HideAndSeek
                 Invoke("HideTitleImage", levelStartDelay);
         }
 
+        public void StartGame()
+        {
+            gameState = GAME_STATE.START;
+        }
+
         public bool IsGameOver()
         {
             return gameState == GAME_STATE.OVER;
@@ -331,14 +336,11 @@ namespace HideAndSeek
 			subTitleText.enabled = true;
             switch(gameState)
             {
-                case GAME_STATE.OVER:
-                    titleText.text = "GAME OVER";
-                    break;
-
                 case GAME_STATE.END:
                     titleText.text = "All levels cleared!";
                     break;
 
+                case GAME_STATE.OVER:
                 case GAME_STATE.START:
                     titleText.text = "Hide and Seek beta";
                     break;
@@ -382,10 +384,6 @@ namespace HideAndSeek
                     gameState = GAME_STATE.START;
                     ChangeTitleText();
                     break;
-                case GAME_STATE.OVER:
-                    gameState = GAME_STATE.START;
-                    ChangeTitleText();
-                    break;
 
                 case GAME_STATE.START:
                     gameState = GAME_STATE.PLAY;
@@ -408,8 +406,10 @@ namespace HideAndSeek
         }
 		
 		void Update()
-		{            
-            if (gameState != GAME_STATE.PLAY)
+		{
+            if (gameState == GAME_STATE.OVER) return;
+
+            if (gameState == GAME_STATE.END || gameState == GAME_STATE.START)
             {
                 TitlePageUpdate();
                 return;                
@@ -442,7 +442,7 @@ namespace HideAndSeek
 #if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
 #else
             string info = "Last Level " + level.ToString()
-              + "Total Skill HP: " + gameInfo.totalSkillHP.ToString()
+              + "\tTotal Skill HP: " + gameInfo.totalSkillHP.ToString()
               + "\tTotal Skill Time: " + gameInfo.totalSkillTime.ToString()
               + "\tTotal Skill Show: " + gameInfo.totalSkillShow.ToString()
               + "\tTotal Skill Destroy: " + gameInfo.totalSkillDestroy.ToString()
@@ -479,8 +479,8 @@ namespace HideAndSeek
         {
             ShowEnemies(bShow);
             ShowObjects(bShow);
-            gameInfo.showCount++;
-            gameInfo.Init();
+
+            if (bShow) gameInfo.showCount++;            
         }
 
         public void ShowEnemies(bool bShow)

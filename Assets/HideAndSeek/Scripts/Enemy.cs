@@ -30,10 +30,8 @@ namespace HideAndSeek
 			float distanceX = Mathf.Abs (target.position.x - transform.position.x);
 			float distanceY = Mathf.Abs (target.position.y - transform.position.y);
 
-            //if(distanceY <= rangeOfSense && distanceX <= rangeOfSense)
             if( distanceX + distanceY <= rangeOfSense )
             {
-                print(distanceX.ToString() + " " + distanceY.ToString());
                 float value = Random.Range(0f, 1f);
                 if (value < 0.5f)
                 {

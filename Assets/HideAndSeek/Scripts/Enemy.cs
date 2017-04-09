@@ -13,6 +13,7 @@ namespace HideAndSeek
 		
 		private Animator animator;
         private Transform target;
+        private bool skipMove = false;
 
         protected override void Start ()
 		{
@@ -24,6 +25,12 @@ namespace HideAndSeek
 
 		public virtual void MoveEnemy ()
 		{
+            if (skipMove)
+            {
+                skipMove = false;
+                return;
+            }
+
             int xDir = 0;
 			int yDir = 0;
 
@@ -64,24 +71,20 @@ namespace HideAndSeek
 
                 sprite.material.color = color;
             }
-        }
-		
+        }	
+        
 		protected override void OnCantMove <T> (T component)
 		{
 			Player hitPlayer = component as Player;
 			
 			hitPlayer.LoseFood (playerDamage);
-                        
-            animator.SetTrigger ("enemyAttack");
-            StartCoroutine(ShowEnemy());
-            SoundManager.instance.RandomizeSfx (attackSound1, attackSound2);
-		}
 
-        protected IEnumerator ShowEnemy()
-        {            
             Show(true);
-            yield return new WaitForSeconds(0.1f);
-            Show(false); 
+            animator.SetTrigger ("enemyAttack");
+            SoundManager.instance.RandomizeSfx (attackSound1, attackSound2);
+
+            skipMove = true;
+
         }        
     }
 }

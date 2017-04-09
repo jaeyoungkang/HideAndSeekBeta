@@ -31,7 +31,6 @@ namespace HideAndSeek
 
         void SetTarget()
         {
-            print("SetTarget");
             skipCount = 2;
             targetObj = null;
             float prevDistance = 100;

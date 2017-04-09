@@ -13,9 +13,12 @@ namespace HideAndSeek
 		public float restartLevelDelay = 1f;
 		public int potionA = 10;
         public int potionB = 20;
-        public int wallDamage = 1;					//How much damage a player does to a wall when chopping it.
         
-		public Text foodText;
+        public int costDestroy = 8;
+        public int costShow = 4;
+        public int costHP = 2;
+
+        public Text foodText;
         public Text ScoreText;
         public Text TimeText;
         public Text gameEndText;        
@@ -91,25 +94,25 @@ namespace HideAndSeek
         void MoveUp()
         {
             if (!GameManager.instance.Isplaying()) return;
-            AttemptMove<Wall>(0, 1);
+            AttemptMove<Enemy>(0, 1);
         }
 
         void MoveDown()
         {
             if (!GameManager.instance.Isplaying()) return;
-            AttemptMove<Wall>(0, -1);
+            AttemptMove<Enemy>(0, -1);
         }
 
         void MoveRight()
         {
             if (!GameManager.instance.Isplaying()) return;
-            AttemptMove<Wall>(1, 0);
+            AttemptMove<Enemy>(1, 0);
         }
 
         void MoveLeft()
         {
             if (!GameManager.instance.Isplaying()) return;
-            AttemptMove<Wall>(-1, 0);
+            AttemptMove<Enemy>(-1, 0);
         }
 
 
@@ -158,14 +161,11 @@ namespace HideAndSeek
 
             if (hitPoint <= 0) return;
 
-
-
             int horizontal = 0;  	//Used to store the horizontal move direction.
 			int vertical = 0;		//Used to store the vertical move direction.
 			
 			//Check if we are running either in the Unity editor or in a standalone build.
 #if UNITY_STANDALONE || UNITY_WEBPLAYER
-			
 			//Get input from the input manager, round it to an integer and store in horizontal to set x axis move direction
 			horizontal = (int) (Input.GetAxisRaw ("Horizontal"));
 			
@@ -224,7 +224,7 @@ namespace HideAndSeek
 			{
                 //Call AttemptMove passing in the generic parameter Wall, since that is what Player may interact with if they encounter one (by attacking it)
                 //Pass in horizontal and vertical as parameters to specify the direction to move Player in.                
-                AttemptMove<Wall> (horizontal, vertical);
+                AttemptMove<Enemy> (horizontal, vertical);
                 
             }
 		}
@@ -270,35 +270,7 @@ namespace HideAndSeek
 				GameManager.instance.gameInfo.moveCount++;
                 if(checkPos(xDir, yDir)) GameManager.instance.ShowMap(true);
                 CheckTrap(xDir, yDir);               
-            }
-            else
-            {
-                if (hit.collider.tag == "Enemy" || hit.collider.tag == "Thief")
-                {
-                    SpriteRenderer sprite = hit.collider.GetComponent<SpriteRenderer>();
-                    if (sprite)
-                    {
-                        Color color = sprite.material.color;
-                        color.a = 1.0f;
-                        sprite.material.color = color;
-                    }
-
-                    if (hit.collider.tag == "Thief")
-                    {
-                        Animator thiefAnimator = hit.collider.GetComponent<Animator>();
-                        if (thiefAnimator) thiefAnimator.SetTrigger("playerHit");
-                        animator.SetTrigger("playerChop");
-                        SoundManager.instance.RandomizeSfx(attackedSound1, attackedSound2);
-                        GetGold(5);
-                        SoundManager.instance.RandomizeSfx(goldASound, goldASound);
-                        Analytics.CustomEvent("Attack Thief", new Dictionary<string, object>
-                        {
-                            { "Attack Thief", 1},
-                        });
-                    }
-                }
-                
-            }
+            }          
 
 			CheckIfGameOver ();
 			
@@ -323,14 +295,30 @@ namespace HideAndSeek
 
 
         protected override void OnCantMove <T> (T component)
-		{
-			Wall hitWall = component as Wall;
-            hitWall.DamageWall (wallDamage);			
-			animator.SetTrigger ("playerChop");
+		{            
+			Enemy hitEnemy = component as Enemy;
+
+            SpriteRenderer sprite = hitEnemy.GetComponent<SpriteRenderer>();
+            if (sprite)
+            {
+                Color color = sprite.material.color;
+                color.a = 1.0f;
+                sprite.material.color = color;
+            }
+
+            if (hitEnemy.tag == "Thief")
+            {
+                animator.SetTrigger("playerChop");
+                Animator thiefAnimator = hitEnemy.GetComponent<Animator>();
+                if (thiefAnimator) thiefAnimator.SetTrigger("playerHit");
+                
+                SoundManager.instance.RandomizeSfx(attackedSound1, attackedSound2);
+                GetGold(5);
+                SoundManager.instance.RandomizeSfx(goldASound, goldASound);
+                Analytics.CustomEvent("Attack Thief", new Dictionary<string, object>{{ "Attack Thief", 1}});
+            }            
         }
-
-
-        //OnTriggerEnter2D is sent when another object enters a trigger collider attached to this object (2D physics only).
+        
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.tag == "Exit")
@@ -347,15 +335,6 @@ namespace HideAndSeek
                 SoundManager.instance.RandomizeSfx(goldASound, goldASound);
                 GetGold(1);
                 StartCoroutine(HideAni(other.gameObject));
-            }
-            else if (other.tag == "Thief")
-            {
-                Renderer renderer = other.gameObject.GetComponent<SpriteRenderer>();
-                if (renderer) renderer.enabled = true;
-                SoundManager.instance.RandomizeSfx(goldASound, goldASound);
-                GetGold(10);
-                StartCoroutine(HideAni(other.gameObject));
-                
             }
         }
 
@@ -407,11 +386,7 @@ namespace HideAndSeek
         {
             gem -= count;
             SetScoreText(Color.red);
-        }
-
-        public int costShow = 5;
-        public int costDestroy = 10;
-        public int costHP = 3;
+        }        
 
         void ShowMap()
         {

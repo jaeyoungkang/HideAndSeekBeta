@@ -365,7 +365,7 @@ namespace HideAndSeek
                 if (touchReleased) break;
             }
 
-            if (touchReleased)
+            if (touchReleased || Input.GetKeyUp(KeyCode.Space))
 #else
             if (Input.GetKeyUp(KeyCode.Space))
 #endif
@@ -477,22 +477,35 @@ namespace HideAndSeek
 
         public void ShowMap(bool bShow)
         {
-            ShowEnemies(bShow);
+            ShowAllUnits(bShow);
             ShowObjects(bShow);
 
             if (bShow) gameInfo.showCount++;            
+        }
+
+        public void ShowAllUnits(bool bShow)
+        {
+            ShowEnemies(bShow);
+            for (int i = 0; i < enemies.Count; i++)
+            {
+                if (enemies[i].tag == "Thief") enemies[i].Show(bShow);
+            }
         }
 
         public void ShowEnemies(bool bShow)
         {
             for (int i = 0; i < enemies.Count; i++)
             {
-                enemies[i].Show(bShow);
+                if (enemies[i].tag == "Enemy") enemies[i].Show(bShow);
             }
         }
 
         public void DestoryEnemies()
         {
+            for (int i = 0; i < enemies.Count; i++)
+            {
+                if(enemies[i].tag == "Thief");
+            }
             StartCoroutine(DestroyEffect());
         }
 
@@ -510,30 +523,24 @@ namespace HideAndSeek
             yield return new WaitForSeconds(0.1f);
             for (int i = 0; i < enemies.Count; i++)
             {
-                enemies[i].gameObject.SetActive(false);
+                if (enemies[i].tag == "Enemy") enemies[i].gameObject.SetActive(false);
             }
         }
 
 
         IEnumerator MoveEnemies()
 		{
-            float totalTime = 0.3f;
+            float totalTime = 0.34f;
 			enemiesMoving = true;
-			
-			yield return new WaitForSeconds(0.1f);
-			
-			if (enemies.Count == 0) 
-			{
-				yield return new WaitForSeconds(0.1f);
-			}
-			
-			for (int i = 0; i < enemies.Count; i++)
+            
+            yield return new WaitForSeconds(0.1f);
+
+            for (int i = 0; i < enemies.Count; i++)
 			{
                 if(enemies[i].gameObject.activeSelf) enemies[i].MoveEnemy ();
 
-                yield return new WaitForSeconds(0.02f);
-                totalTime -= 0.02f;
-
+                yield return new WaitForSeconds(0.06f);
+                totalTime -= 0.06f;
             }
 
             yield return new WaitForSeconds(totalTime);

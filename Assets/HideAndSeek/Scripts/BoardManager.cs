@@ -169,12 +169,12 @@ namespace HideAndSeek
             int gemRate = 0;
             int enemyCount = 0;
             int strongEnemyCount = 0;
-            int thiefCount = 1;
+            int thiefCount = 0;
             int trapCount = 0;
             if (level < 4) // 1,2,3
             {
                 trapCount = level + 6;
-                gemRate = 2;
+                gemRate = 1;
             }
             else if (3 < level && level < 7) // 4,5,6
             {

@@ -18,6 +18,8 @@ namespace HideAndSeek
 
         public int playerHp;
         public int moveCount;
+        public int showCount;
+        public int waitCount;
 
         public float deltaTime;        
 
@@ -27,7 +29,10 @@ namespace HideAndSeek
             playerHPIncrease = 0;
             playerHp = 0;
             moveCount = 0;
-            deltaTime = 0;
+            showCount = 0;
+            waitCount = 0;
+
+            deltaTime = 0;            
         }
 
     }	
@@ -155,6 +160,11 @@ namespace HideAndSeek
 		{
             gameInfo.deltaTime = Time.time - prevTime;
 			prevTime = Time.time;
+            foreach (int time in waitTimes)
+            {
+                if (time > 0) gameInfo.waitCount++;
+            }
+
             Dictionary<string, object> eventInfo = new Dictionary<string, object>
                         {
                             { "level", level},
@@ -162,6 +172,8 @@ namespace HideAndSeek
                             { "HP", gameInfo.playerHp},
                             { "HP Inc", gameInfo.playerHPIncrease},
                             { "HP Dec", gameInfo.playerHPDecrease},
+                            { "show", gameInfo.showCount},                            
+                            { "Wait", gameInfo.waitCount},
                             { "time", (int)gameInfo.deltaTime}
                         };
 
@@ -171,27 +183,14 @@ namespace HideAndSeek
 #else
             string info =
                 "Level: " + level.ToString()
-                + " Move: " + gameInfo.moveCount.ToString()
-                + " HP: " + gameInfo.playerHp.ToString()
-                + " HP Inc: " + gameInfo.playerHPIncrease.ToString()
-                + " HP Dec: " + gameInfo.playerHPDecrease.ToString()
-                + " Time: " + ((int)gameInfo.deltaTime).ToString();
-            print(info);
-
-            string info1 =
-                level.ToString()
-                + "\t" + gameInfo.moveCount.ToString()
-                + "\t" + gameInfo.playerHp.ToString()
-                + "\t" + gameInfo.playerHPIncrease.ToString()
-                + "\t" + gameInfo.playerHPDecrease.ToString()
-                + "\t" + ((int)gameInfo.deltaTime).ToString();
-            WriteFile(fileName, info1);
-            string times = "WaitTimes: ";
-            foreach(int time in waitTimes)
-            {
-                times += time.ToString() + " ";
-            }
-            WriteFile(fileName, times);
+                + "\tMove: " + gameInfo.moveCount.ToString()
+                + "\tHP: " + gameInfo.playerHp.ToString()
+                + "\tHP Inc: " + gameInfo.playerHPIncrease.ToString()
+                + "\tHP Dec: " + gameInfo.playerHPDecrease.ToString()
+                + "\tShow: " + gameInfo.showCount.ToString()
+                + "\tWait: " + gameInfo.waitCount.ToString()
+                + "\tTime: " + ((int)gameInfo.deltaTime).ToString();            
+            WriteFile(fileName, info);
 #endif
             gameInfo.init();
         }
@@ -211,10 +210,7 @@ namespace HideAndSeek
 
 		public void setLevel()
 		{
-			if (gameState == GAME_STATE.OVER)
-                instance.level = 1;
-			else 
-				instance.level++;
+            instance.level++;
 		}
 
         //This is called each time a scene is loaded.
@@ -252,6 +248,11 @@ namespace HideAndSeek
             titleImage.SetActive(true);
             if (gameState == GAME_STATE.PLAY)
                 Invoke("HideTitleImage", levelStartDelay);
+        }
+
+        public bool IsGameOver()
+        {
+            return gameState == GAME_STATE.OVER;
         }
 
         public bool Isplaying()
@@ -294,7 +295,7 @@ namespace HideAndSeek
             }			
 		}
 
-        bool IsInput()
+        public bool IsInput()
         {
 #if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
             bool touchReleased = false;
@@ -372,15 +373,8 @@ namespace HideAndSeek
             gameState = GAME_STATE.OVER;
             playersTurn = false;
             gameOverCount++;
-        }
-
-        public void GameContinue()
-        {
-            writeLog();
-            gameState = GAME_STATE.PLAY;
-            playersTurn = false;
-            level--;
-        }
+            level = 0;
+        }        
         
         public void EndGame()
 		{
@@ -402,6 +396,36 @@ namespace HideAndSeek
             return true;
         }
 
+        public void DestoryEnemies()
+        {
+            StartCoroutine(DestroyEffect());
+        }
+
+        IEnumerator DestroyEffect()
+        {
+            for (int i = 0; i < enemies.Count; i++)
+            {
+                enemies[i].Show(true);
+            }
+            yield return new WaitForSeconds(0.1f);
+
+            for (int i = 0; i < enemies.Count; i++)
+            {
+                enemies[i].Show(false);
+            }
+            yield return new WaitForSeconds(0.1f);
+
+            for (int i = 0; i < enemies.Count; i++)
+            {
+                enemies[i].Show(true);
+            }
+            yield return new WaitForSeconds(0.1f);
+            for (int i = 0; i < enemies.Count; i++)
+            {
+                enemies[i].gameObject.SetActive(false);
+            }
+        }
+
 
         IEnumerator MoveEnemies()
 		{
@@ -417,7 +441,7 @@ namespace HideAndSeek
 			
 			for (int i = 0; i < enemies.Count; i++)
 			{
-                enemies[i].MoveEnemy ();
+                if(enemies[i].gameObject.activeSelf) enemies[i].MoveEnemy ();
 
                 yield return new WaitForSeconds(0.02f);
                 totalTime -= 0.02f;

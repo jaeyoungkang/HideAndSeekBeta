@@ -44,25 +44,25 @@ namespace HideAndSeek
 		private int hitPoint;
         private int Gold;
         private int Coin;
-
+        
         public float prevTime = 0;
 
         public void InitDatas()
 		{
             hitPoint = GameManager.instance.playerHp;
-            Gold = GameManager.instance.playerGold;
+            Gold = 300;// GameManager.instance.playerGold;
             Coin = GameManager.instance.playerCoin;
         }
 
         public void SetGoldText(Color gColor)
         {
-            ScoreText.text = "Gold: " + Gold.ToString();
+            ScoreText.text = "Gold:" + Gold.ToString();
             ScoreText.color = gColor;
         }
-
-		//Start overrides the Start function of MovingObject
-		protected override void Start ()
-		{
+                 
+        
+        protected override void Start ()
+		{                        
             prevTime = Time.time;
             GameManager.instance.waitTimes.Clear();
             animator = GetComponent<Animator>();            
@@ -78,8 +78,8 @@ namespace HideAndSeek
             leftBtn.onClick.AddListener(MoveLeft);
             rightBtn.onClick.AddListener(MoveRight);
 
-            OBtn.onClick.AddListener(Continue);
-            XBtn.onClick.AddListener(Restart);
+            OBtn.onClick.AddListener(UseGold);
+            XBtn.onClick.AddListener(DestoryEnemy);
 
             base.Start ();
         }
@@ -111,7 +111,7 @@ namespace HideAndSeek
 
         private void SetHPText(Color msgColor)
         {
-            foodText.text = "HP: " + hitPoint;
+            foodText.text = "HP:" + hitPoint;
             foodText.color = msgColor;
         }
 		
@@ -127,9 +127,13 @@ namespace HideAndSeek
 		
 		private void Update ()
 		{
-			//If it's not the player's turn, exit the function.
-			if(!GameManager.instance.playersTurn) return;
-            if (!GameManager.instance.Isplaying()) return;
+            if (!GameManager.instance.Isplaying())
+            {
+                if (GameManager.instance.IsGameOver() && GameManager.instance.IsInput()) Restart();
+                return;
+            }
+            if (!GameManager.instance.playersTurn) return;
+
             if (hitPoint <= 0) return;
 
             int horizontal = 0;  	//Used to store the horizontal move direction.
@@ -241,7 +245,20 @@ namespace HideAndSeek
 				SoundManager.instance.RandomizeSfx (moveSound1, moveSound2);
 				GameManager.instance.gameInfo.moveCount++;
                 if(checkPos(xDir, yDir)) GameManager.instance.ShowEnemies(true);
-                CheckTrap(xDir, yDir);
+                CheckTrap(xDir, yDir);               
+            }
+            else
+            {
+                if (hit.collider.tag == "Enemy")
+                {
+                    SpriteRenderer sprite = hit.collider.GetComponent<SpriteRenderer>();
+                    if (sprite)
+                    {
+                        Color color = sprite.material.color;
+                        color.a = 1.0f;
+                        sprite.material.color = color;
+                    }
+                }
             }
 
 			CheckIfGameOver ();
@@ -265,20 +282,6 @@ namespace HideAndSeek
             }
         }
 
-		void SenseEnemy(int xDir, int yDir)
-		{
-			GameObject[] targets = GameObject.FindGameObjectsWithTag ("Enemy");
-			bool bEnemy = false;
-			foreach (GameObject target in targets) {
-				float x = transform.position.x + xDir;
-				float y = transform.position.y + yDir;
-				float distanceX = Mathf.Abs (target.transform.position.x - x);
-				float distanceY = Mathf.Abs (target.transform.position.y - y);
-
-                if (distanceX <= 1 && distanceY <= 1)
-						bEnemy = true;				
-			}
-        }
 
         protected override void OnCantMove <T> (T component)
 		{
@@ -299,13 +302,8 @@ namespace HideAndSeek
             }
             else if (other.tag == "potionA")
             {
-                hitPoint += pointsPerFood;
-
-                SetHPText(Color.green);
-                SoundManager.instance.PlaySingle(eatSound1);
+                RecoverHP(pointsPerFood);
                 other.gameObject.SetActive(false);
-
-                GameManager.instance.gameInfo.playerHPIncrease++;
                 StartCoroutine(HideAni(other.gameObject));
             }
             else if (other.tag == "potionB")
@@ -324,7 +322,7 @@ namespace HideAndSeek
             {
                 Renderer renderer = other.gameObject.GetComponent<SpriteRenderer>();
                 if (renderer) renderer.enabled = true;
-                SoundManager.instance.RandomizeSfx(goldASound, goldASound);                
+                SoundManager.instance.RandomizeSfx(goldASound, goldASound);
                 Gold += 10;
 
                 SetGoldText(Color.yellow);
@@ -341,7 +339,7 @@ namespace HideAndSeek
                 SetGoldText(Color.yellow);
 
                 StartCoroutine(HideAni(other.gameObject));
-            }
+            }            
         }
 
         IEnumerator HideAni(GameObject obj)
@@ -377,37 +375,54 @@ namespace HideAndSeek
 			//Check if food point total is less than or equal to zero.
 			if (hitPoint <= 0) 
 			{
-				ShowContiue();
+				GameOver();
 			}
 		}
 
-        void Continue()
+        void DestoryEnemy()
         {
-            if (Coin == 0) return;
-            hitPoint = 40;
-            Coin--;
-            GameManager.instance.GameContinue();
-            Restart();
+            if(Gold >= 200)
+            {
+                Gold -= 200;
+                SetGoldText(Color.red);
+
+                GameManager.instance.DestoryEnemies();
+            }
+        }
+
+        void UseGold()
+        {
+            if (Gold >= 30)
+            {
+                RecoverHP(10);
+
+                Gold -= 30;
+                SetGoldText(Color.red);
+            }
+        }
+
+        void RecoverHP(int delta)
+        {
+            hitPoint += delta;
+
+            SetHPText(Color.green);
+            SoundManager.instance.PlaySingle(eatSound1);            
+            GameManager.instance.gameInfo.playerHPIncrease++;            
         }
 
         void GameOver()
         {
+            EndGroup.enabled = true;
+            gameEndText.text = "Game Over!\n\ntouch screen";
+
+            SoundManager.instance.PlaySingle(gameOverSound);
+            GameManager.instance.ShowEnemies(true);
+
             hitPoint = 40;
             Gold = 0;
 
             GameManager.instance.GameOver();
-            Restart();
         }
-
-		void ShowContiue()
-		{
-            EndGroup.enabled = true;
-            gameEndText.text = "Game Over!\n\ncontinue?";
-
-            SoundManager.instance.PlaySingle(gameOverSound);
-            GameManager.instance.ShowEnemies(true);  
-        }
-
     }
 }
 

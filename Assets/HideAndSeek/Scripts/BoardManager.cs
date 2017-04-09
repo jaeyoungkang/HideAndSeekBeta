@@ -76,9 +76,9 @@ namespace HideAndSeek
                     GameObject instance = Instantiate(toInstantiate, new Vector3(x, y, 0f), Quaternion.identity) as GameObject;
                     bool bShow = false;
                     if (x == 0 && y == 0) bShow = true;
-                    else if (x == 7 && y == 7) bShow = true;
-                    else if (x == 7 && y == 0) bShow = true;
-                    else if (x == 0 && y == 7) bShow = true;
+                    else if (x == columns-1 && y == rows-1) bShow = true;
+                    else if (x == columns-1 && y == 0) bShow = true;
+                    else if (x == 0 && y == rows-1) bShow = true;
 
                     if (bShow)
                     {
@@ -136,7 +136,7 @@ namespace HideAndSeek
             for (int i = 0; i < objectCount; i++)
             {
                 Vector3 randomPosition = RandomPosition();
-                while (0 == randomPosition.x || randomPosition.x == 7 || randomPosition.y == 0 || randomPosition.y == 7)
+                while (0 == randomPosition.x || randomPosition.x == columns-1 || randomPosition.y == 0 || randomPosition.y == rows-1 || (randomPosition.y == 1 && randomPosition.y == 1))
                 {
                     randomPosition = RandomPosition();
                 }
@@ -171,9 +171,9 @@ namespace HideAndSeek
             int goldRate = 0;
             int gemRate = 0;
 
-            int enemyCount = 0;
-            int strongEnemyCount = 0;
-            int thiefCount = 1;
+            int enemyCount = 2;
+            int strongEnemyCount = 2;
+            int thiefCount = 0;
 
             int trapCount = 0;
             if (level < 4) // 1,2,3
@@ -198,6 +198,11 @@ namespace HideAndSeek
                 goldRate = 2;
                 gemRate = 1;
 
+                if (Random.Range(0f, 1f) < 0.2f)
+                {
+                    thiefCount = 1;
+                }
+
                 if (level == 9)
                 {
                     potionARate  = 1;
@@ -211,6 +216,11 @@ namespace HideAndSeek
             }
             else if (9 < level && level < 13) // 10,11,12
             {
+                if (Random.Range(0f, 1f) < 0.25f)
+                {
+                    thiefCount = 1;
+                }
+
                 thiefCount = 1;
                 enemyCount = 3;
                 trapCount = level - 5;
@@ -221,6 +231,10 @@ namespace HideAndSeek
             }
             else if (12 < level && level < 16) // 13,14,15
             {
+                if (Random.Range(0f, 1f) < 0.3f)
+                {
+                    thiefCount = 1;
+                }
                 thiefCount = 1;
                 enemyCount = 2;                
                 strongEnemyCount = 1;
@@ -232,6 +246,10 @@ namespace HideAndSeek
             }
             else if (15 < level && level < 19) // 16,17,18
             {
+                if (Random.Range(0f, 1f) < 0.3f)
+                {
+                    thiefCount = 1;
+                }
                 enemyCount = 2;
                 strongEnemyCount = 2;
                 trapCount = 6;

@@ -1,0 +1,6 @@
+GAME START
+Level: 0	Move: 7	HP: 40	HP Inc: 0	HP Dec: 2	Show: 0	Wait: 1	Time: 10
+GAME START
+Level: 1	Move: 16	HP: 30	HP Inc: 0	HP Dec: 1	Show: 0	Wait: 2	Time: 19
+Level: 2	Move: 14	HP: 30	HP Inc: 0	HP Dec: 0	Show: 0	Wait: 1	Time: 11
+GAME START

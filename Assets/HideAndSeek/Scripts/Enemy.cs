@@ -4,7 +4,6 @@ using Random = UnityEngine.Random;
 
 namespace HideAndSeek
 {
-	//Enemy inherits from MovingObject, our base class for objects that can move, Player also inherits from this.
 	public class Enemy : MovingObject
 	{
 		public int rangeOfSense = 1;
@@ -13,29 +12,28 @@ namespace HideAndSeek
 		public AudioClip attackSound2;
 		
 		private Animator animator;
-		private Transform target;
-        private bool bShowing = false;
+        private Transform target;
 
         protected override void Start ()
 		{
-			GameManager.instance.AddEnemyToList (this);
+            GameManager.instance.AddEnemyToList (this);
 			animator = GetComponent<Animator> ();
 			target = GameObject.FindGameObjectWithTag ("Player").transform;
 			base.Start ();
 		}
-		
 
-		public void MoveEnemy ()
+		public virtual void MoveEnemy ()
 		{
-			int xDir = 0;
+            int xDir = 0;
 			int yDir = 0;
 
 			float distanceX = Mathf.Abs (target.position.x - transform.position.x);
 			float distanceY = Mathf.Abs (target.position.y - transform.position.y);
 
             //if(distanceY <= rangeOfSense && distanceX <= rangeOfSense)
-            if( (distanceY <= rangeOfSense && distanceX < rangeOfSense) || (distanceY < rangeOfSense && distanceX <= rangeOfSense) )
-            {                
+            if( distanceX + distanceY <= rangeOfSense )
+            {
+                print(distanceX.ToString() + " " + distanceY.ToString());
                 float value = Random.Range(0f, 1f);
                 if (value < 0.5f)
                 {
@@ -58,7 +56,6 @@ namespace HideAndSeek
         
         public void Show(bool bShow)
         {
-            bShowing = bShow;
             SpriteRenderer sprite = GetComponent<SpriteRenderer>();
 
             if (sprite)
@@ -78,15 +75,15 @@ namespace HideAndSeek
 			hitPlayer.LoseFood (playerDamage);
                         
             animator.SetTrigger ("enemyAttack");
-            if (bShowing == false) StartCoroutine(ShowEnemyAttack());            
+            StartCoroutine(ShowEnemy());
             SoundManager.instance.RandomizeSfx (attackSound1, attackSound2);
 		}
 
-        IEnumerator ShowEnemyAttack()
+        protected IEnumerator ShowEnemy()
         {            
             Show(true);
             yield return new WaitForSeconds(0.1f);
             Show(false); 
-        }
+        }        
     }
 }

@@ -11,9 +11,11 @@ namespace HideAndSeek
         private int skipCount = 0;
         public GameObject targetObj;
         public List<GameObject> Objs = new List<GameObject>();
+        public int hitPoint = 5;
 
         protected override void Start()
         {
+            hitPoint = 5;
             Objs.Clear();
 //            GameObject[] Golds = GameObject.FindGameObjectsWithTag("Gold");
             GameObject[] Gems = GameObject.FindGameObjectsWithTag("Gem");
@@ -31,7 +33,7 @@ namespace HideAndSeek
 
         void SetTarget()
         {
-            skipCount = 2;
+            skipCount = 1;
             targetObj = null;
             float prevDistance = 100;
             foreach (GameObject obj in Objs)
@@ -114,5 +116,11 @@ namespace HideAndSeek
             gameObject.SetActive(false);
         }
 
+        public void Hitted()
+        {
+            if (hitPoint <= 0) return;
+            hitPoint--;
+            if(hitPoint <= 0) gameObject.SetActive(false);
+        }
     }
 }

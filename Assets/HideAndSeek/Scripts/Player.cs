@@ -239,15 +239,6 @@ namespace HideAndSeek
             else if (nextPosX == 7 && nextPosY == 7) bShow = true;
             else if (nextPosX == 0 && nextPosY == 7) bShow = true;
             else if (nextPosX == 7 && nextPosY == 0) bShow = true;
-
-            //else if (nextPosX == 1 && nextPosY == 4) bShow = true;
-            //else if (nextPosX == 2 && nextPosY == 1) bShow = true;
-            //else if (nextPosX == 2 && nextPosY == 6) bShow = true;
-            //else if (nextPosX == 4 && nextPosY == 7) bShow = true;
-            //else if (nextPosX == 5 && nextPosY == 0) bShow = true;
-            //else if (nextPosX == 5 && nextPosY == 5) bShow = true;
-            //else if (nextPosX == 6 && nextPosY == 3) bShow = true;
-
             return bShow;
         }
                 
@@ -308,14 +299,17 @@ namespace HideAndSeek
 
             if (hitEnemy.tag == "Thief")
             {
+                Thief hitThief = component as Thief;
                 animator.SetTrigger("playerChop");
-                Animator thiefAnimator = hitEnemy.GetComponent<Animator>();
+                Animator thiefAnimator = hitThief.GetComponent<Animator>();
                 if (thiefAnimator) thiefAnimator.SetTrigger("playerHit");
                 
                 SoundManager.instance.RandomizeSfx(attackedSound1, attackedSound2);
-                GetGold(5);
+                GetGold(2);
                 SoundManager.instance.RandomizeSfx(goldASound, goldASound);
                 Analytics.CustomEvent("Attack Thief", new Dictionary<string, object>{{ "Attack Thief", 1}});
+
+                hitThief.Hitted();
             }            
         }
         

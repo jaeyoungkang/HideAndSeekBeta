@@ -8,6 +8,7 @@ namespace HideAndSeek
     //Enemy inherits from MovingObject, our base class for objects that can move, Player also inherits from this.
     public class Thief : Enemy
     {
+        private int skipCount = 0;
         public GameObject targetObj;
         public List<GameObject> Objs = new List<GameObject>();
 
@@ -30,6 +31,8 @@ namespace HideAndSeek
 
         void SetTarget()
         {
+            print("SetTarget");
+            skipCount = 2;
             targetObj = null;
             float prevDistance = 100;
             foreach (GameObject obj in Objs)
@@ -45,22 +48,21 @@ namespace HideAndSeek
                 }
             }
 
-            if (targetObj == null) targetObj = GameObject.FindGameObjectWithTag("Exit");
+            if (targetObj == null) targetObj = GameObject.FindGameObjectWithTag("Exit");                
         }
-
-        private bool bSkip = false;
+        
         public override void MoveEnemy()
         {
-            if (bSkip)
+            if (skipCount > 0)
             {
-                bSkip = false;
+                skipCount--;
                 return;
             }
             if (enabled == false) return;
             if (targetObj.activeSelf == false)
             {
-                bSkip = true;
                 SetTarget();
+                return;
             }
 
             int xDir = 0;

@@ -215,18 +215,16 @@ namespace HideAndSeek
                     thiefCount = 1;
                 }
 
-                thiefCount = 1;
                 enemyCount = 3;
                 trapCount = level - 5;
                 gemRate = 4;
             }
             else if (12 < level && level < 16) // 13,14,15
             {
-                if (Random.Range(0f, 1f) < 0.15f)
+                if (Random.Range(0f, 1f) < 0.2f)
                 {
                     thiefCount = 1;
                 }
-                thiefCount = 1;
                 enemyCount = 2;                
                 strongEnemyCount = 1;
                 trapCount = 6;

@@ -171,6 +171,21 @@ namespace HideAndSeek
             int strongEnemyCount = 0;
             int thiefCount = 0;
             int trapCount = 0;
+
+            //int count10 = 0;
+            //int count15 = 0;
+            //int count20 = 0;
+            //int count25 = 0;
+            //for (int i =0; i<5; i++)
+            //{
+            //    if (Random.Range(0f, 1f) < 0.1f) count10++;
+            //    if (Random.Range(0f, 1f) < 0.15f) count15++;
+            //    if (Random.Range(0f, 1f) < 0.2f) count20++;
+            //    if (Random.Range(0f, 1f) < 0.25f) count25++;
+            //}
+
+            //print(count10.ToString() + " " + count15.ToString() + " " + count20.ToString() + " " + count25.ToString() + " ");            
+
             if (level < 4) // 1,2,3
             {
                 trapCount = level + 6;
@@ -188,14 +203,14 @@ namespace HideAndSeek
                 trapCount = level - 2;
                 gemRate = 3;
 
-                if (Random.Range(0f, 1f) < 0.2f)
+                if (Random.Range(0f, 1f) < 0.1f)
                 {
                     thiefCount = 1;
                 }
             }
             else if (9 < level && level < 13) // 10,11,12
             {
-                if (Random.Range(0f, 1f) < 0.25f)
+                if (Random.Range(0f, 1f) < 0.1f)
                 {
                     thiefCount = 1;
                 }
@@ -207,7 +222,7 @@ namespace HideAndSeek
             }
             else if (12 < level && level < 16) // 13,14,15
             {
-                if (Random.Range(0f, 1f) < 0.3f)
+                if (Random.Range(0f, 1f) < 0.15f)
                 {
                     thiefCount = 1;
                 }
@@ -219,7 +234,7 @@ namespace HideAndSeek
             }
             else if (15 < level && level < 19) // 16,17,18
             {
-                if (Random.Range(0f, 1f) < 0.3f)
+                if (Random.Range(0f, 1f) < 0.15f)
                 {
                     thiefCount = 1;
                 }

@@ -32,12 +32,12 @@ namespace HideAndSeek
             }
 
             int xDir = 0;
-			int yDir = 0;
+            int yDir = 0;
 
-			float distanceX = Mathf.Abs (target.position.x - transform.position.x);
-			float distanceY = Mathf.Abs (target.position.y - transform.position.y);
+            float distanceX = Mathf.Abs(target.position.x - transform.position.x);
+            float distanceY = Mathf.Abs(target.position.y - transform.position.y);
 
-            if( distanceX + distanceY <= rangeOfSense )
+            if (distanceX + distanceY <= rangeOfSense)
             {
                 float value = Random.Range(0f, 1f);
                 if (value < 0.5f)
@@ -46,13 +46,13 @@ namespace HideAndSeek
                         yDir = target.position.y > transform.position.y ? 1 : -1;
                     else
                         xDir = target.position.x > transform.position.x ? 1 : -1;
-                }                
+                }
                 else
                 {
                     if (distanceY < float.Epsilon)
                         xDir = target.position.x > transform.position.x ? 1 : -1;
                     else
-                        yDir = target.position.y > transform.position.y ? 1 : -1;                    
+                        yDir = target.position.y > transform.position.y ? 1 : -1;
                 }
             }
 

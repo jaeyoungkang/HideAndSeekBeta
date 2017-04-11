@@ -108,6 +108,17 @@ namespace HideAndSeek
         public List<GameObject> objsOnStage = new List<GameObject>();
         public List<GameObject> tilesOnStage = new List<GameObject>();
 
+
+        public bool IsAvailablePos(Vector2 dest)
+        {
+            foreach(Enemy en in enemies)
+            {
+                Vector2 pos = en.transform.position;
+                if (pos == dest) return false;
+            }
+            return true;
+        }
+
         public GameObject IsTrap(float x, float y)
         {
             foreach (GameObject obj in trapsOnStage)

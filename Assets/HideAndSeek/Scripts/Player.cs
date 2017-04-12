@@ -426,6 +426,7 @@ namespace HideAndSeek
             if (bHideMode) return;
             if (gem >= costHide)
             {
+                GameManager.instance.gameInfo.skillHide++;
                 SetHideMode(true);                
                 UseGem(costHide);                
                 SoundManager.instance.PlaySingle(skillSound);
@@ -437,7 +438,7 @@ namespace HideAndSeek
             if (GameManager.instance.IsShowing()) return;
             if (gem >= costShow)
             {
-                GameManager.instance.gameInfo.skillHP++;
+                GameManager.instance.gameInfo.skillShow++;
                 UseGem(costShow);
                 GameManager.instance.ShowMap(true);
                 SoundManager.instance.PlaySingle(skillSound);
@@ -471,7 +472,7 @@ namespace HideAndSeek
             hitPoint += delta;
 
             SetHPText(Color.green);            
-            GameManager.instance.gameInfo.playerHPIncrease += delta;            
+            GameManager.instance.gameInfo.playerHPIncrease += delta;
         }
 
         void GameOver()

@@ -11,4 +11,5 @@ Level: 9	Move: 22	HP: 20	HP Inc: 0	HP Dec: 0	Gold: 8	GoldGet: 3	Show: 2	Wait: 1	
 Level: 10	Move: 14	HP: 20	HP Inc: 0	HP Dec: 0	Gold: 11	GoldGet: 3	Show: 2	Wait: 2	Skill HP: 1	Skill Time: 0	Skill Show: 0	Skill Destroy: 0	Time: 45
 Level: 11	Move: 22	HP: 20	HP Inc: 10	HP Dec: 10	Gold: 10	GoldGet: 4	Show: 4	Wait: 3	Skill HP: 1	Skill Time: 0	Skill Show: 0	Skill Destroy: 0	Time: 25
 Level: 12	Move: 25	HP: 20	HP Inc: 20	HP Dec: 40	Gold: 12	GoldGet: 1	Show: 3	Wait: 6	Skill HP: 2	Skill Time: 0	Skill Show: 0	Skill Destroy: 1	Time: 38
+
 Last Level 12	Total Skill HP: 5	Total Skill Time: 0	Total Skill Show: 0	Total Skill Destroy: 1	Total Time: 287	Average Time: 23

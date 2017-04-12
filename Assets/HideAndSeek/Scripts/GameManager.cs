@@ -22,13 +22,13 @@ namespace HideAndSeek
 
         public int goldGet;
 
-        public int skillHP;
-        public int skillTime;
         public int skillShow;
+        public int skillHP;
+        public int skillHide;
         public int skillDestroy;
 
         public int totalSkillHP;
-        public int totalSkillTime;
+        public int totalSkillHide;
         public int totalSkillShow;
         public int totalSkillDestroy;
 
@@ -49,7 +49,7 @@ namespace HideAndSeek
             goldGet = 0;
 
             skillHP = 0;
-            skillTime = 0;
+            skillHide = 0;
             skillShow = 0;
             skillDestroy = 0;
 
@@ -60,7 +60,7 @@ namespace HideAndSeek
         {
             ResetLevelInfo();
             totalSkillHP = 0;
-            totalSkillTime = 0;
+            totalSkillHide = 0;
             totalSkillShow = 0;
             totalSkillDestroy = 0;
             totalTime = 0;
@@ -174,7 +174,7 @@ namespace HideAndSeek
 #if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
 #else
                 fileName = "log/gameLog_" + DateTime.Now.ToString("M_d_hh_mm") + "_VER_" + Version.ToString() + ".txt";
-                string info = "Level: " + "\tMove: "+ "\tHP Inc: "+ "\tHP Dec: "+ "\tGoldGet: "+ "\tShow: "+ "\tWait: "+ "\tSkill HP: "+ "\tSkill Time: "+ "\tSkill Show: "+ "\tSkill Destroy: "+ "\tTime: ";
+                string info = "Level: " + "\tMove: "+ "\tHP Inc: "+ "\tHP Dec: "+ "\tGoldGet: "+ "\tShow: "+ "\tWait: "+ "\tSkill HP: "+ "\tSkill Hide: "+ "\tSkill Show: "+ "\tSkill Destroy: "+ "\tTime: ";
                 WriteFile(fileName, info);
 #endif
             }
@@ -213,7 +213,7 @@ namespace HideAndSeek
             gameInfo.totalTime += gameInfo.deltaTime;            
             gameInfo.totalSkillHP += gameInfo.skillHP;
             gameInfo.totalSkillShow += gameInfo.skillShow;
-            gameInfo.totalSkillTime += gameInfo.skillTime;
+            gameInfo.totalSkillHide += gameInfo.skillHide;
             gameInfo.totalSkillDestroy += gameInfo.skillDestroy;
 
             gameInfo.averageTime = gameInfo.totalTime / level;
@@ -236,7 +236,7 @@ namespace HideAndSeek
                         {
                             { "level", level},
                             { "Skill HP", gameInfo.skillHP},
-                            { "Skill Time", gameInfo.skillTime},
+                            { "Skill Hide", gameInfo.skillHide},
                             { "Skill Show", gameInfo.skillShow},
                             { "Skill Destory", gameInfo.skillDestroy}
                          };
@@ -252,7 +252,7 @@ namespace HideAndSeek
                 + "\t" + gameInfo.showCount.ToString()
                 + "\t" + gameInfo.waitCount.ToString()
                 + "\t" + gameInfo.skillHP.ToString()
-                + "\t" + gameInfo.skillTime.ToString()
+                + "\t" + gameInfo.skillHide.ToString()
                 + "\t" + gameInfo.skillShow.ToString()
                 + "\t" + gameInfo.skillDestroy.ToString()
                 + "\t" + ((int)gameInfo.deltaTime).ToString();
@@ -439,7 +439,7 @@ namespace HideAndSeek
                         {
                             { "Last Level", level},
                             { "Total Skill HP", gameInfo.totalSkillHP},
-                            { "Total Skill Time", gameInfo.totalSkillTime},
+                            { "Total Skill Hide", gameInfo.totalSkillHide},
                             { "Total Skill Show", gameInfo.totalSkillShow},
                             { "Total Skill Destory", gameInfo.totalSkillDestroy},
                             { "Total Time", gameInfo.totalTime},
@@ -450,7 +450,7 @@ namespace HideAndSeek
 #else
             string info = "Last Level " + level.ToString()
               + "\tTotal Skill HP: " + gameInfo.totalSkillHP.ToString()
-              + "\tTotal Skill Time: " + gameInfo.totalSkillTime.ToString()
+              + "\tTotal Skill Hide: " + gameInfo.totalSkillHide.ToString()
               + "\tTotal Skill Show: " + gameInfo.totalSkillShow.ToString()
               + "\tTotal Skill Destroy: " + gameInfo.totalSkillDestroy.ToString()
               + "\tTotal Time: " + ((int)gameInfo.totalTime).ToString()

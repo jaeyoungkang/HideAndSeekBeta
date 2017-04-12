@@ -15,8 +15,9 @@ namespace HideAndSeek
         public int potionB = 20;
         
         public int costDestroy = 8;
-        public int costShow = 4;
+        public int costShow = 1;
         public int costHP = 2;
+        public int costHide = 4;
 
         public Text foodText;
         public Text ScoreText;
@@ -26,8 +27,10 @@ namespace HideAndSeek
         public Canvas EndGroup;
 
         public Button HealBtn;
-        public Button DestroyBtn;
         public Button ShowBtn;
+        public Button HideBtn;
+        public Button DestroyBtn;
+        
 
         public Button upBtn;
         public Button downBtn;
@@ -87,6 +90,7 @@ namespace HideAndSeek
             HealBtn.onClick.AddListener(UseHPRecover);
             DestroyBtn.onClick.AddListener(DestoryEnemy);
             ShowBtn.onClick.AddListener(ShowMap);
+            HideBtn.onClick.AddListener(Hide);
 
             base.Start ();
         }
@@ -154,6 +158,7 @@ namespace HideAndSeek
                     timeLimit = 10;
                     LoseFood(10);
                     SoundManager.instance.RandomizeSfx(attackedSound1, attackedSound2);
+                    SetHideMode(false);
                 }
             }       
 
@@ -239,6 +244,8 @@ namespace HideAndSeek
             else if (nextPosX == 7 && nextPosY == 7) bShow = true;
             else if (nextPosX == 0 && nextPosY == 7) bShow = true;
             else if (nextPosX == 7 && nextPosY == 0) bShow = true;
+
+            if(bShow) SetHideMode(false);
             return bShow;
         }
                 
@@ -257,7 +264,8 @@ namespace HideAndSeek
 			RaycastHit2D hit;
 			if (Move (xDir, yDir, out hit)) 
 			{
-				SoundManager.instance.RandomizeSfx (moveSound1, moveSound2);
+                if(bHideMode == false) SoundManager.instance.RandomizeSfx (moveSound1, moveSound2);
+
 				GameManager.instance.gameInfo.moveCount++;
                 if(checkPos(xDir, yDir)) GameManager.instance.ShowMap(true);
                 CheckTrap(xDir, yDir);               
@@ -281,6 +289,7 @@ namespace HideAndSeek
                 if (renderer) renderer.enabled = true;
                 LoseFood(10);
                 SoundManager.instance.RandomizeSfx(attackedSound1, attackedSound2);
+                SetHideMode(false);
             }
         }
 
@@ -295,6 +304,7 @@ namespace HideAndSeek
                 Color color = sprite.material.color;
                 color.a = 1.0f;
                 sprite.material.color = color;
+                SetHideMode(false);
             }
 
             if (hitEnemy.tag == "Thief")
@@ -329,6 +339,7 @@ namespace HideAndSeek
                 SoundManager.instance.RandomizeSfx(goldASound, goldASound);
                 GetGold(1);
                 StartCoroutine(HideAni(other.gameObject));
+                SetHideMode(false);                
             }
         }
 
@@ -380,10 +391,52 @@ namespace HideAndSeek
         {
             gem -= count;
             SetScoreText(Color.red);
-        }        
+        }
+
+        bool bHideMode = false;
+
+        void SetHideMode(bool bHide)
+        {
+            if(bHideMode && bHide == false)
+            {
+                GameManager.instance.SetSearchEnemies(false);
+                SpriteRenderer renderer = GetComponent<SpriteRenderer>();
+                if(renderer)
+                {
+                    Color playerColor = renderer.color;
+                    playerColor.a = 1f;
+                    renderer.color = playerColor;
+                }
+            }
+            else if (bHide && bHideMode == false)
+            {
+                GameManager.instance.SetSearchEnemies(true);
+                SpriteRenderer renderer = GetComponent<SpriteRenderer>();
+                if (renderer)
+                {
+                    Color playerColor = renderer.color;
+                    playerColor.a = 0.5f;                    
+                    renderer.color = playerColor;
+                }
+            }
+
+            bHideMode = bHide;
+        }
+
+        void Hide()
+        {
+            if (bHideMode) return;
+            if (gem >= costHide)
+            {
+                SetHideMode(true);                
+                UseGem(costHide);                
+                SoundManager.instance.PlaySingle(skillSound);
+            }
+        }
 
         void ShowMap()
         {
+            if (GameManager.instance.IsShowing()) return;
             if (gem >= costShow)
             {
                 GameManager.instance.gameInfo.skillHP++;

@@ -189,19 +189,21 @@ namespace HideAndSeek
             if (level < 4) // 1,2,3
             {
                 trapCount = level + 6;
-                gemRate = 1;
+                gemRate = 2;
+                if(level>1)
+                    enemyCount = 1;
             }
             else if (3 < level && level < 7) // 4,5,6
             {
                 trapCount = level + 1;
-                enemyCount = 1;
-                gemRate = 2;
+                enemyCount = 2;
+                gemRate = 3;
             }
             else if (6 < level && level < 10) // 7,8,9
             {
-                enemyCount = 2;
-                trapCount = level - 2;
-                gemRate = 3;
+                enemyCount = 3;
+                trapCount = level - 3;
+                gemRate = 4;
 
                 if (Random.Range(0f, 1f) < 0.1f)
                 {
@@ -215,8 +217,9 @@ namespace HideAndSeek
                     thiefCount = 1;
                 }
 
-                enemyCount = 3;
-                trapCount = level - 5;
+                enemyCount = 2;
+                strongEnemyCount = 1;
+                trapCount = 6;
                 gemRate = 4;
             }
             else if (12 < level && level < 16) // 13,14,15
@@ -225,7 +228,7 @@ namespace HideAndSeek
                 {
                     thiefCount = 1;
                 }
-                enemyCount = 2;                
+                enemyCount = 3;                
                 strongEnemyCount = 1;
                 trapCount = 6;
                 gemRate = 5;
@@ -239,7 +242,7 @@ namespace HideAndSeek
                 enemyCount = 2;
                 strongEnemyCount = 2;
                 trapCount = 6;
-                gemRate = 6;
+                gemRate = 5;
             }
 
             LayoutObjectAtRandom(gemTiles, gemRate, gemRate);

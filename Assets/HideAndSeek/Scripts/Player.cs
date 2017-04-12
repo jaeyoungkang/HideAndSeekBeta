@@ -434,7 +434,7 @@ namespace HideAndSeek
         }
 
         void ShowMap()
-        {
+        {            
             if (GameManager.instance.IsShowing()) return;
             if (gem >= costShow)
             {

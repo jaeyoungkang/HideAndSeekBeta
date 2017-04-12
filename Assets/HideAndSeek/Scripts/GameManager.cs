@@ -16,12 +16,10 @@ namespace HideAndSeek
         public int playerHPDecrease;
         public int playerHPIncrease;
                 
-        public int playerHp;
         public int moveCount;
         public int showCount;
         public int waitCount;
 
-        public int gold;
         public int goldGet;
 
         public int skillHP;
@@ -44,12 +42,10 @@ namespace HideAndSeek
             playerHPDecrease = 0;
             playerHPIncrease = 0;
 
-            playerHp = 0;
             moveCount = 0;
             showCount = 0;
             waitCount = 0;
 
-            gold = 0;
             goldGet = 0;
 
             skillHP = 0;
@@ -74,7 +70,7 @@ namespace HideAndSeek
 
     public class GameManager : MonoBehaviour
     {
-        public int Version = 4;
+        private int Version = 5;
         public string fileName;
 
         public GAME_INFO gameInfo;
@@ -175,7 +171,12 @@ namespace HideAndSeek
             {
                 instance = this;
                 gameInfo.Init();
+#if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
+#else
                 fileName = "log/gameLog_" + DateTime.Now.ToString("M_d_hh_mm") + "_VER_" + Version.ToString() + ".txt";
+                string info = "Level: " + "\tMove: "+ "\tHP Inc: "+ "\tHP Dec: "+ "\tGoldGet: "+ "\tShow: "+ "\tWait: "+ "\tSkill HP: "+ "\tSkill Time: "+ "\tSkill Show: "+ "\tSkill Destroy: "+ "\tTime: ";
+                WriteFile(fileName, info);
+#endif
             }
             else if (instance != this)
                 Destroy(gameObject);
@@ -221,10 +222,8 @@ namespace HideAndSeek
                         {
                             { "level", level},
                             { "move", gameInfo.moveCount},
-                            { "HP", gameInfo.playerHp},
                             { "HP Inc", gameInfo.playerHPIncrease},
                             { "HP Dec", gameInfo.playerHPDecrease},
-                            { "Gold", gameInfo.gold},
                             { "GoldGet", gameInfo.goldGet},
                             { "show", gameInfo.showCount},                            
                             { "Wait", gameInfo.waitCount},
@@ -245,21 +244,18 @@ namespace HideAndSeek
             
 #if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
 #else
-            string info =
-                "Level: " + level.ToString()
-                + "\tMove: " + gameInfo.moveCount.ToString()
-                + "\tHP: " + gameInfo.playerHp.ToString()
-                + "\tHP Inc: " + gameInfo.playerHPIncrease.ToString()
-                + "\tHP Dec: " + gameInfo.playerHPDecrease.ToString()
-                + "\tGold: " + gameInfo.gold.ToString()
-                + "\tGoldGet: " + gameInfo.goldGet.ToString()
-                + "\tShow: " + gameInfo.showCount.ToString()
-                + "\tWait: " + gameInfo.waitCount.ToString()
-                + "\tSkill HP: " + gameInfo.skillHP.ToString()
-                + "\tSkill Time: " + gameInfo.skillTime.ToString()
-                + "\tSkill Show: " + gameInfo.skillShow.ToString()
-                + "\tSkill Destroy: " + gameInfo.skillDestroy.ToString()
-                + "\tTime: " + ((int)gameInfo.deltaTime).ToString();            
+            string info = level.ToString()
+                + "\t" + gameInfo.moveCount.ToString()
+                + "\t" + gameInfo.playerHPIncrease.ToString()
+                + "\t" + gameInfo.playerHPDecrease.ToString()
+                + "\t" + gameInfo.goldGet.ToString()
+                + "\t" + gameInfo.showCount.ToString()
+                + "\t" + gameInfo.waitCount.ToString()
+                + "\t" + gameInfo.skillHP.ToString()
+                + "\t" + gameInfo.skillTime.ToString()
+                + "\t" + gameInfo.skillShow.ToString()
+                + "\t" + gameInfo.skillDestroy.ToString()
+                + "\t" + ((int)gameInfo.deltaTime).ToString();
             WriteFile(fileName, info);            
 #endif
             gameInfo.ResetLevelInfo();
@@ -519,7 +515,7 @@ namespace HideAndSeek
         {
             for (int i = 0; i < enemies.Count; i++)
             {
-                if(enemies[i].tag == "Thief");
+                if(enemies[i].tag == "Thief") continue;
             }
             StartCoroutine(DestroyEffect());
         }

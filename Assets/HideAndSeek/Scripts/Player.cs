@@ -358,9 +358,7 @@ namespace HideAndSeek
         }
 
         private void Restart ()
-		{
-            GameManager.instance.gameInfo.gold = gem;
-            GameManager.instance.gameInfo.playerHp = hitPoint;
+		{            
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
 		}
 		

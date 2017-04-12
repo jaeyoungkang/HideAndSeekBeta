@@ -1,3 +1,0 @@
-GAME START
-Level: 1	Move: 10	HP: 0	HP Inc: 0	HP Dec: 20	Gold: 0	GoldGet: 0	Show: 3	Wait: 8	Skill HP: 0	Skill Time: 0	Skill Show: 0	Skill Destroy: 0	Time: 16
-Last Level 1	Total Skill HP: 0	Total Skill Time: 0	Total Skill Show: 0	Total Skill Destroy: 0	Total Time: 16	Average Time: 16

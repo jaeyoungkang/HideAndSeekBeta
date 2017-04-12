@@ -196,7 +196,6 @@ namespace HideAndSeek
                 
                 xDir = (int)(nextPos.x - transform.position.x);
                 yDir = (int)(nextPos.y - transform.position.y);
-                print(nextPos.ToString() + " " + xDir + " " + yDir);
             }
             else
             {

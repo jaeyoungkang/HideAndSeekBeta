@@ -36,7 +36,7 @@ namespace HideAndSeek
                 return;
             }
 
-            if (bSearch) return;
+            if (bSearch == false) return;
 
             int xDir = 0;
             int yDir = 0;

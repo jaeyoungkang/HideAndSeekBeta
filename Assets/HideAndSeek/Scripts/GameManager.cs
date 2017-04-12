@@ -486,8 +486,12 @@ namespace HideAndSeek
             gameEndCount++;
         }
 
+        bool bShowing = false;
+        public bool IsShowing() { return bShowing;  }
+
         public void ShowMap(bool bShow)
         {
+            bShowing = bShow;
             ShowAllUnits(bShow);
             ShowObjects(bShow);
 
@@ -538,6 +542,13 @@ namespace HideAndSeek
             }
         }
 
+        public void SetSearchEnemies(bool value)
+        {
+            foreach(Enemy en in enemies)
+            {
+                en.SetSearch(value);
+            }
+        }
 
         IEnumerator MoveEnemies()
 		{

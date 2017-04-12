@@ -10,17 +10,22 @@ namespace HideAndSeek
 		public int playerDamage;
 		public AudioClip attackSound1;
 		public AudioClip attackSound2;
-		
-		private Animator animator;
+
+        private Animator animator;
         private Transform target;
         private bool skipMove = false;
+
+        private bool bSearch = true;
+
+        public void SetSearch ( bool value ) { bSearch = value; }
 
         protected override void Start ()
 		{
             GameManager.instance.AddEnemyToList (this);
 			animator = GetComponent<Animator> ();
 			target = GameObject.FindGameObjectWithTag ("Player").transform;
-			base.Start ();
+            SetSearch(true);
+            base.Start ();
 		}
 
 		public virtual void MoveEnemy ()
@@ -30,6 +35,8 @@ namespace HideAndSeek
                 skipMove = false;
                 return;
             }
+
+            if (bSearch) return;
 
             int xDir = 0;
             int yDir = 0;

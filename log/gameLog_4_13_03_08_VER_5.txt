@@ -1,0 +1,4 @@
+Level: 	Move: 	HP Inc: 	HP Dec: 	GoldGet: 	Show: 	Wait: 	Skill HP: 	Skill Hide: 	Skill Show: 	Skill Destroy: 	Time: 
+GAME START
+1	2	0	20	0	2	1	0	0	0	0	74
+Last Level 1	Total Skill HP: 0	Total Skill Hide: 0	Total Skill Show: 0	Total Skill Destroy: 0	Total Time: 74	Average Time: 74

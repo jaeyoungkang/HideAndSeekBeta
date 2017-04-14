@@ -104,6 +104,31 @@ namespace HideAndSeek
         public List<GameObject> objsOnStage = new List<GameObject>();
         public List<GameObject> tilesOnStage = new List<GameObject>();
 
+        public bool[,] UpdateMap(Vector3 playerPos)
+        {
+            bool[,] map = new bool[8,8];
+
+            for(int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    map[i, j] = true;
+                }
+            }
+
+            foreach (Enemy en in enemies)
+            {
+                Vector2 pos = en.transform.position;
+                int x = (int)pos.x;
+                int y = (int)pos.y;
+//                int y = Reverse((int)pos.y);
+                map[x,y] = false;
+            }
+
+            map[(int)playerPos.x, (int)playerPos.y] = false;
+
+            return map;
+        }
 
         public bool IsAvailablePos(Vector2 dest)
         {
@@ -259,7 +284,7 @@ namespace HideAndSeek
             WriteFile(fileName, info);            
 #endif
             gameInfo.ResetLevelInfo();
-        }
+        }        
 
         public void WriteFile(string fileName, string info)
         {
@@ -548,20 +573,20 @@ namespace HideAndSeek
 
         IEnumerator MoveEnemies()
 		{
-            float totalTime = 0.34f;
+            float totalTime = 0.24f;
 			enemiesMoving = true;
             
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.08f);
 
             for (int i = 0; i < enemies.Count; i++)
 			{
                 if(enemies[i].gameObject.activeSelf) enemies[i].MoveEnemy ();
 
-                yield return new WaitForSeconds(0.06f);
-                totalTime -= 0.06f;
+                yield return new WaitForSeconds(0.04f);
+                totalTime -= 0.04f;
             }
 
-            yield return new WaitForSeconds(totalTime);
+            if(totalTime > 0) yield return new WaitForSeconds(totalTime);
             playersTurn = true;
 			
 			enemiesMoving = false;

@@ -2,6 +2,9 @@
 using System.Collections;
 using Random = UnityEngine.Random;
 using System.Collections.Generic;
+using HideAndSeek;
+
+
 
 namespace HideAndSeek
 {
@@ -26,98 +29,22 @@ namespace HideAndSeek
 
 
         List<Vector2> path = new List<Vector2>();
-        Vector2 DeadPos = new Vector2(-1, -1);
+        bool[,] map = new bool[8, 8];
+
         void MakePath()
         {
+            if (targetObj == false || targetObj.activeSelf == false) return;
             path.Clear();
+            map = GameManager.instance.UpdateMap(target.position);
             Vector2 startPos = transform.position;
-            Vector2 destPos = targetObj.transform.position;
+            Vector2 destPos = targetObj.transform.position;                      
 
-            List<Vector2> startPath = new List<Vector2>();
-            startPath.Add(startPos);
-            path = Search4Way(startPath, destPos);
+            SearchParameters searchParameters = new SearchParameters(startPos, destPos, map);
 
-            //print(startPos.ToString());
-            //print(destPos.ToString());
-            //foreach (Vector2 pos in path)
-            //{
-            //    print(pos.ToString());
-            //}
-            path.RemoveAt(0);
+            PathFinder pathFinder = new PathFinder(searchParameters);
+            
+            path = pathFinder.FindPath();
         }
-
-        int CompareWeight(Vector2 A, Vector2 B, Vector2 target)
-        {            
-            float weightAX = Mathf.Abs(target.x - A.x);
-            float weightAY = Mathf.Abs(target.y - A.y);
-            float weightA = weightAX + weightAY;
-
-            float weightBX = Mathf.Abs(target.x - B.x);
-            float weightBY = Mathf.Abs(target.y - B.y);
-            float weightB = weightBX + weightBY;
-
-
-            if (weightA > weightB) return 1;
-            else if (weightA < weightB) return -1;
-            return 0;
-        }
-
-        bool IsCollision(Vector2 start, Vector2 end)
-        {
-            RaycastHit2D hit;
-            BoxCollider2D boxCollider = gameObject.GetComponent<BoxCollider2D>();
-            boxCollider.enabled = false;
-            hit = Physics2D.Linecast(start, end, blockingLayer);            
-            boxCollider.enabled = true;
-            if (hit.transform == null) return false;
-
-            return true;
-        }
-        
-        List<Vector2> Search4Way(List<Vector2> prevs, Vector2 destPos)
-        {
-            Vector2 curPos = prevs[prevs.Count - 1];    
-            Vector2[] nexts = GetNextPos(curPos);            
-            List<Vector2> orderedNexts = new List<Vector2>(nexts);
-            orderedNexts.Sort((Vector2 x, Vector2 y) => CompareWeight(x, y, destPos));
-
-            foreach (Vector2 nPos in orderedNexts)
-            {
-                bool bOk = GameManager.instance.IsAvailablePos(nPos);
-                if (bOk && !existPos(prevs, nPos))
-                {
-                    List<Vector2> temp = new List<Vector2>();
-                    temp.AddRange(prevs);
-                    temp.Add(nPos);
-                    if (nPos == destPos) return temp;
-                    else return Search4Way(temp, destPos);
-                }
-            }
-
-            prevs.Add(DeadPos);
-            return prevs;
-        }
-
-        bool existPos(List<Vector2> prevs, Vector2 pos)
-        {
-            foreach (Vector2 prev in prevs)
-            {
-                if (pos == prev) return true;
-            }
-
-            return false;
-        }
-
-
-        Vector2[] GetNextPos(Vector2 curPos)
-        {
-            Vector2[] nexts = { new Vector2(curPos.x + 1, curPos.y),
-                            new Vector2( curPos.x - 1, curPos.y ),
-                            new Vector2(curPos.x, curPos.y + 1 ),
-                            new Vector2(curPos.x, curPos.y - 1 ) };
-            return nexts;            
-        }
-
         
         
         protected override void OnCantMove<T>(T component)
@@ -166,7 +93,7 @@ namespace HideAndSeek
 
             if (targetObj == null) targetObj = GameObject.FindGameObjectWithTag("Exit");
         }
-        
+
         public override void MoveEnemy()
         {
             if (skipCount > 0)
@@ -186,16 +113,20 @@ namespace HideAndSeek
                 ChangeTarget();
             }
 
+
             int xDir = 0;
             int yDir = 0;
+
             if(targetObj) MakePath();
             if (path.Count>0)
             {
                 Vector2 nextPos = path[0];
-                path.RemoveAt(0);
+                int x = (int)nextPos.x;
+                int y = (int)nextPos.y;
                 
-                xDir = (int)(nextPos.x - transform.position.x);
-                yDir = (int)(nextPos.y - transform.position.y);
+                xDir = x - (int)transform.position.x;
+                yDir = y - (int)transform.position.y;
+                path.RemoveAt(0);
             }
             else
             {

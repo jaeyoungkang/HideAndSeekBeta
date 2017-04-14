@@ -12,7 +12,7 @@ namespace HideAndSeek
 		public AudioClip attackSound2;
 
         private Animator animator;
-        private Transform target;
+        protected Transform target;
         private bool skipMove = false;
 
         private bool bSearch = true;

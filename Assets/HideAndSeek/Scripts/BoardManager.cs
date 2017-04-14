@@ -3,8 +3,7 @@ using System;
 using System.Collections.Generic; 		//Allows us to use Lists.
 using Random = UnityEngine.Random; 		//Tells Random to use the Unity Engine random number generator.
 
-namespace HideAndSeek
-	
+namespace HideAndSeek	
 {
 
     public class BoardManager : MonoBehaviour
@@ -171,21 +170,7 @@ namespace HideAndSeek
             int strongEnemyCount = 0;
             int thiefCount = 0;
             int trapCount = 0;
-
-            //int count10 = 0;
-            //int count15 = 0;
-            //int count20 = 0;
-            //int count25 = 0;
-            //for (int i =0; i<5; i++)
-            //{
-            //    if (Random.Range(0f, 1f) < 0.1f) count10++;
-            //    if (Random.Range(0f, 1f) < 0.15f) count15++;
-            //    if (Random.Range(0f, 1f) < 0.2f) count20++;
-            //    if (Random.Range(0f, 1f) < 0.25f) count25++;
-            //}
-
-            //print(count10.ToString() + " " + count15.ToString() + " " + count20.ToString() + " " + count25.ToString() + " ");            
-
+            
             if (level < 4) // 1,2,3
             {
                 trapCount = level + 6;

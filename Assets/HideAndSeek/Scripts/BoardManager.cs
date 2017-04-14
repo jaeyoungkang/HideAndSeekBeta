@@ -197,13 +197,12 @@ namespace HideAndSeek
             }
             else if (9 < level && level < 13) // 10,11,12
             {
-                if (Random.Range(0f, 1f) < 0.1f)
+                if (Random.Range(0f, 1f) < 0.15f)
                 {
                     thiefCount = 1;
                 }
 
-                enemyCount = 2;
-                strongEnemyCount = 1;
+                enemyCount = 4;                
                 trapCount = 6;
                 gemRate = 4;
             }
@@ -220,11 +219,7 @@ namespace HideAndSeek
             }
             else if (15 < level && level < 19) // 16,17,18
             {
-                if (Random.Range(0f, 1f) < 0.15f)
-                {
-                    thiefCount = 1;
-                }
-                enemyCount = 2;
+                enemyCount = 3;
                 strongEnemyCount = 2;
                 trapCount = 6;
                 gemRate = 5;

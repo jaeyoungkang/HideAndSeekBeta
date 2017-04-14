@@ -536,31 +536,95 @@ namespace HideAndSeek
             }
         }
 
-        public void DestoryEnemies()
+        public List<Enemy> SearchEnemies(Vector3[] range)
         {
-            for (int i = 0; i < enemies.Count; i++)
+            List<Enemy> result = new List<Enemy>();
+
+            foreach(Vector3 v in range)
             {
-                if(enemies[i].tag == "Thief") continue;
+                for (int i = 0; i < enemies.Count; i++)
+                {
+                    if (enemies[i].tag == "Thief") continue;
+                    if (enemies[i].transform.position == v) result.Add(enemies[i]);
+                }
             }
-            StartCoroutine(DestroyEffect());
+
+            return result;
         }
 
-        IEnumerator DestroyEffect()
+        public void DestoryEnemies(Vector3 targetPos)
         {
-            ShowEnemies(true);
-            yield return new WaitForSeconds(0.1f);
-            ShowEnemies(false);
-            yield return new WaitForSeconds(0.1f);
-            ShowEnemies(true);
-            yield return new WaitForSeconds(0.05f);
-            ShowEnemies(false);
-            yield return new WaitForSeconds(0.05f);
-            ShowEnemies(true);
-            yield return new WaitForSeconds(0.1f);
-            for (int i = 0; i < enemies.Count; i++)
+            Vector3[] range = new Vector3[]
             {
-                if (enemies[i].tag == "Enemy") enemies[i].gameObject.SetActive(false);
+                new Vector3(targetPos.x-1, targetPos.y, 0  ),
+                new Vector3(targetPos.x+1, targetPos.y, 0  ),
+                new Vector3(targetPos.x, targetPos.y-1, 0  ),
+                new Vector3(targetPos.x, targetPos.y+1, 0  )
+            };
+
+            List<GameObject> targetTiles = new List<GameObject>();
+
+            foreach(GameObject obj in tilesOnStage)
+            {
+                foreach(Vector3 v in range)
+                {
+                    if (obj.tag == "Wall") continue;
+                    if (obj.transform.position == v) targetTiles.Add(obj);
+                }
             }
+
+            foreach (GameObject obj in trapsOnStage)
+            {
+                foreach (Vector3 v in range)
+                {
+                    if (obj.transform.position == v) targetTiles.Add(obj);
+                }
+            }
+
+            List<Enemy> targetEnemies = SearchEnemies(range);
+            StartCoroutine(DestroyEffectFloor(targetTiles));
+            StartCoroutine(DestroyEffect(targetEnemies));            
+        }
+
+        IEnumerator DestroyEffectFloor(List<GameObject> targetTiles)
+        {
+            foreach(GameObject obj in targetTiles)
+            {
+                SpriteRenderer spRenderer = obj.GetComponent<SpriteRenderer>();
+                if(spRenderer)
+                {
+                    Color color = spRenderer.color;
+                    color = new Vector4(1, 0.5f, 0.5F, 1);
+                    spRenderer.color = color;
+                }
+            }
+            yield return new WaitForSeconds(0.5f);
+
+            foreach (GameObject obj in targetTiles)
+            {
+                SpriteRenderer spRenderer = obj.GetComponent<SpriteRenderer>();
+                if (spRenderer)
+                {
+                    Color color = spRenderer.color;
+                    color = new Vector4(1, 1, 1, 1);
+                    spRenderer.color = color;
+                }
+            }
+        }
+
+        IEnumerator DestroyEffect(List<Enemy> targetEnemies)
+        {
+            foreach (Enemy en in targetEnemies) en.Show(true);
+            yield return new WaitForSeconds(0.1f);
+            foreach (Enemy en in targetEnemies) en.Show(false);
+            yield return new WaitForSeconds(0.1f);
+            foreach (Enemy en in targetEnemies) en.Show(true);
+            yield return new WaitForSeconds(0.05f);
+            foreach (Enemy en in targetEnemies) en.Show(false);
+            yield return new WaitForSeconds(0.05f);
+            foreach (Enemy en in targetEnemies) en.Show(true);
+            yield return new WaitForSeconds(0.1f);
+            foreach (Enemy en in targetEnemies) en.gameObject.SetActive(false);
         }
 
         public void SetSearchEnemies(bool value)

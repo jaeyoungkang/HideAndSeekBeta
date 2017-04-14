@@ -399,7 +399,7 @@ namespace HideAndSeek
             {
                 GameManager.instance.gameInfo.skillDestroy++;
                 UseGem(costDestroy);
-                GameManager.instance.DestoryEnemies();
+                GameManager.instance.DestoryEnemies(transform.position);
                 SoundManager.instance.PlaySingle(skillSound);
             }
         }        

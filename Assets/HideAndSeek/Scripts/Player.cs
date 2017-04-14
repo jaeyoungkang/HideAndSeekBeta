@@ -345,7 +345,7 @@ namespace HideAndSeek
         {
             if(bHideMode && bHide == false)
             {
-                GameManager.instance.SetSearchEnemies(false);
+                GameManager.instance.SetSearchEnemies(!bHide);
                 SpriteRenderer renderer = GetComponent<SpriteRenderer>();
                 if(renderer)
                 {
@@ -356,7 +356,7 @@ namespace HideAndSeek
             }
             else if (bHide && bHideMode == false)
             {
-                GameManager.instance.SetSearchEnemies(true);
+                GameManager.instance.SetSearchEnemies(!bHide);
                 SpriteRenderer renderer = GetComponent<SpriteRenderer>();
                 if (renderer)
                 {

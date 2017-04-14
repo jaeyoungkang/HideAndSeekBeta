@@ -646,8 +646,8 @@ namespace HideAndSeek
 			{
                 if(enemies[i].gameObject.activeSelf) enemies[i].MoveEnemy ();
 
-                yield return new WaitForSeconds(0.04f);
-                totalTime -= 0.04f;
+                yield return new WaitForSeconds(0.03f);
+                totalTime -= 0.03f;
             }
 
             if(totalTime > 0) yield return new WaitForSeconds(totalTime);

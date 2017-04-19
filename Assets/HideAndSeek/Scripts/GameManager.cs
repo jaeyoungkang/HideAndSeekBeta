@@ -66,7 +66,61 @@ namespace HideAndSeek
             totalTime = 0;
             averageTime = 0;
         }
-    }	
+    }
+
+    public class Level
+    {
+        public int index;
+        public int trap;
+        public int enemy;
+        public int strongEnemy;
+        public int thief;
+        public int gem;
+
+        public Level(int _index, int _trap, int _enemy, int _strongEnemy, int _thief, int _gem)
+        {
+            index = _index;
+            trap = _trap;
+            enemy = _enemy;
+            strongEnemy = _strongEnemy;
+            thief = _thief;
+            gem = _gem;
+        }
+    }
+
+    public enum PLAYER_ABILITY { VIEW, HEAL, HIDE, DESTROY };
+
+    public class Dungeon
+    {        
+        private Level[] levels;
+        public int curLevel;
+        public int lastLevel;
+        private int cost;
+        private PLAYER_ABILITY ability;
+
+        public Dungeon(Level[] _levels, int _cost, PLAYER_ABILITY _ability)
+        {
+            levels = _levels;
+            cost = _cost;
+            curLevel = 0;
+            lastLevel = levels.Length;
+            ability = _ability;
+        }        
+
+        public override string ToString() { return curLevel + "/" + lastLevel; }        
+                
+        public int Cost() { return cost; }
+
+        public Level GetCurLevel() { return levels[curLevel-1];  }
+        public Level[] GetLevels() { return levels; }
+
+        public PLAYER_ABILITY GetAbility() { return ability; }
+    }
+
+    class Region
+    {
+        public List<Dungeon> dungeons;
+    }
 
     public class GameManager : MonoBehaviour
     {
@@ -88,17 +142,34 @@ namespace HideAndSeek
         public static GameManager instance = null;              //Static instance of GameManager which allows it to be accessed by any other script.
         [HideInInspector] public bool playersTurn = true;
 
-        private Text subTitleText;
-        private Text titleText;
         private GameObject titleImage;
+        private GameObject lobbyImage;
+        private GameObject dungeonImage;
+        private GameObject resultImage;
+        private GameObject controller;
+
+        private Text dungeonText;
+
+        private Button startButton;
+        private Button resultButton;
+        private Button shopBtn;
+        private Button Tutorial;
+        private Button dungeonABtn;
+        private Button dungeonBBtn;
+
+        private Player player;
         private BoardManager boardScript;
-        private int level = 1;
         private List<Enemy> enemies;                            //List of all Enemy units, used to issue them move commands.
         private bool enemiesMoving;                             //Boolean to check if enemies are moving.
-        private bool doingSetup = true;                         //Boolean to check if we're setting up board, prevent Player from moving during setup.
 
-        private enum GAME_STATE { START, PLAY, END, OVER }
-        private GAME_STATE gameState = GAME_STATE.START;
+        private Dungeon curDungeon;
+        private Dungeon tutorial;        
+        private Dungeon dungeonA;
+        private Dungeon dungeonB;
+        private Dungeon dungeonC;
+
+        private enum GAME_STATE { START, LOBBY, LEVEL, PLAY, RESULT, OVER }
+        private GAME_STATE gameState;
                 
         public List<GameObject> trapsOnStage = new List<GameObject>();
         public List<GameObject> objsOnStage = new List<GameObject>();
@@ -121,7 +192,6 @@ namespace HideAndSeek
                 Vector2 pos = en.transform.position;
                 int x = (int)pos.x;
                 int y = (int)pos.y;
-//                int y = Reverse((int)pos.y);
                 map[x,y] = false;
             }
 
@@ -188,6 +258,11 @@ namespace HideAndSeek
             }            
         }
 
+        public void SetPlayer(Player _player)
+        {
+            player = _player;
+        }
+
         //Awake is always called before any Start functions
         void Awake()
         {            
@@ -214,7 +289,9 @@ namespace HideAndSeek
             //Get a component reference to the attached BoardManager script
             boardScript = GetComponent<BoardManager>();
 
-            InitGame();           
+            InitDungeons();
+            InitUI();
+            ChangeState(GAME_STATE.START);
         }
 
         //this is called only once, and the paramter tell it to be called only after the scene was loaded
@@ -241,11 +318,11 @@ namespace HideAndSeek
             gameInfo.totalSkillHide += gameInfo.skillHide;
             gameInfo.totalSkillDestroy += gameInfo.skillDestroy;
 
-            gameInfo.averageTime = gameInfo.totalTime / level;
+//            gameInfo.averageTime = gameInfo.totalTime / level;
 
             Dictionary<string, object> eventInfo = new Dictionary<string, object>
                         {
-                            { "level", level},
+//                            { "level", level},
                             { "move", gameInfo.moveCount},
                             { "HP Inc", gameInfo.playerHPIncrease},
                             { "HP Dec", gameInfo.playerHPDecrease},
@@ -259,7 +336,7 @@ namespace HideAndSeek
 
             Dictionary<string, object> skillInfo = new Dictionary<string, object>
                         {
-                            { "level", level},
+//                            { "level", level},
                             { "Skill HP", gameInfo.skillHP},
                             { "Skill Hide", gameInfo.skillHide},
                             { "Skill Show", gameInfo.skillShow},
@@ -269,8 +346,9 @@ namespace HideAndSeek
             
 #if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
 #else
-            string info = level.ToString()
-                + "\t" + gameInfo.moveCount.ToString()
+            string info = 
+//                level.ToString() + "\t" +
+                gameInfo.moveCount.ToString()
                 + "\t" + gameInfo.playerHPIncrease.ToString()
                 + "\t" + gameInfo.playerHPDecrease.ToString()
                 + "\t" + gameInfo.goldGet.ToString()
@@ -299,93 +377,186 @@ namespace HideAndSeek
             sr.Close();
         }
 
-		public void setLevel()
-		{
-            instance.level++;
-		}
-
-        //This is called each time a scene is loaded.
         static private void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)
         {
             if (instance != null)
-            {				
-				instance.setLevel ();
-                instance.InitGame();
+            {
+                instance.InitUI();                
+                instance.setupLevel();
             }
         }
 
-		//Initializes the game for each level.
-        void InitGame()
+        void InitDungeons()
         {
-            if (level == 19)
-                EndGame();
+            Level[] tutorialInfo= new Level[] {
+                                   new Level(0, 5, 1, 0, 0, 1),
+            };
+            tutorial = new Dungeon(tutorialInfo, 0, PLAYER_ABILITY.VIEW);
+            
+            Level[] levelInfoA = new Level[] {
+                                   new Level(0, 5, 1, 0, 0, 1),
+                                   new Level(1, 6, 1, 0, 0, 2),
+                                   new Level(2, 7, 2, 0, 0, 3)
+            };
+            dungeonA = new Dungeon(levelInfoA, 2, PLAYER_ABILITY.HEAL);
 
-            //While doingSetup is true the player can't move, prevent player from moving while title card is up.
-            doingSetup = true;
+            Level[] levelInfoB = new Level[] {
+                                   new Level(0, 5, 2, 0, 0, 3),
+                                   new Level(1, 6, 2, 0, 0, 3),
+                                   new Level(2, 6, 3, 0, 0, 3),
+                                   new Level(3, 7, 3, 0, 1, 4),
+                                   new Level(4, 7, 3, 1, 0, 4)
+            };
+            dungeonB = new Dungeon(levelInfoB, 3, PLAYER_ABILITY.HIDE);
 
-            titleImage = GameObject.Find("LevelImage");
+            Level[] levelInfoC = new Level[] {
+                                   new Level(0, 5, 2, 0, 0, 3),
+                                   new Level(1, 6, 2, 0, 0, 3),
+                                   new Level(2, 6, 3, 0, 0, 3),
+                                   new Level(3, 7, 3, 0, 1, 4),
+                                   new Level(4, 7, 3, 1, 0, 4)
+            };
+            dungeonC = new Dungeon(levelInfoC, 4, PLAYER_ABILITY.DESTROY);
+        }
 
-            titleText = GameObject.Find("LevelText").GetComponent<Text>();
-            subTitleText = GameObject.Find("SubTitleText").GetComponent<Text>();
+        bool showPopup = false;
+        public Rect winRect = new Rect(200, 200, 320, 300);
 
-            ChangeTitleText();
+        void OnGUI()
+        {
+            if(showPopup)
+            {
+//                GUI.Box(new Rect(Screen.width / 2 - 75, Screen.height / 2 - 160, 200, 100), "Test~~~~~");
+//                winRect.height = 100;
+//                winRect = GUILayout.Window(0, winRect, DoMyWindow, "Window Title");
+//                winRect.x = (int)(Screen.width * 0.5f - winRect.width * 0.5f);
+////                winRect.y = (int)(Screen.height * 0.5f - winRect.height * 0.5f);
+//                GUILayout.Window(0, winRect, DoMyWindow, "Window Title");
+            }            
+        }
+
+        void DoMyWindow(int windowID)
+        {
+            if (GUILayout.Button("Hello World"))
+            {
+                print("Got a click");
+                showPopup = false;
+            }        
+        }
+
+        void EnterDungeon(Dungeon dungeon)
+        {
+            if(dungeon.Cost() <= playerGem)
+            {
+                playerGem = playerGem - dungeon.Cost();
+                curDungeon = dungeon;
+                setupLevel();
+            }
+            else
+            {
+                showPopup = true;                
+            }
+        }
+
+        void setupPage()
+        {
+            bool bTitle = false;
+            bool bLobby = false;
+            bool bDungeon = false;
+            bool bResult = false;
+            bool bController = false;
+            switch (gameState)
+            {
+                case GAME_STATE.START: bTitle = true; break;
+                case GAME_STATE.LOBBY: bLobby = true; break;
+                case GAME_STATE.LEVEL: bDungeon = true; break;
+                case GAME_STATE.PLAY: bController = true; break;
+                case GAME_STATE.RESULT: bResult = true;  break;
+                case GAME_STATE.OVER: bResult = true; break;
+            }
+
+            lobbyImage.SetActive(bLobby);
+            titleImage.SetActive(bTitle);            
+            dungeonImage.SetActive(bDungeon);
+            resultImage.SetActive(bResult);
+            controller.SetActive(bController);
+        }
+
+        void setupLevel()
+        {
+            curDungeon.curLevel++;
+            if(curDungeon.curLevel > curDungeon.lastLevel)
+            {
+                player.AddAbility(curDungeon.GetAbility());
+                ChangeState(GAME_STATE.RESULT);
+                curDungeon.curLevel = 0;
+                return;
+            }
+            dungeonText.text = "Level " + curDungeon.ToString();
 
             enemies.Clear();
+            boardScript.SetupScene(curDungeon.GetCurLevel());
+            ChangeState(GAME_STATE.LEVEL);
+            setupPage();
 
-            //Call the SetupScene function of the BoardManager script, pass it current level number.
-            boardScript.SetupScene(level);
-
-            titleImage.SetActive(true);
-            if (gameState == GAME_STATE.PLAY)
-                Invoke("HideTitleImage", levelStartDelay);
+            Invoke("ChagePlayState", 2f);
         }
 
-        public void StartGame()
+        void ChagePlayState()
         {
-            gameState = GAME_STATE.START;
+            ChangeState(GAME_STATE.PLAY);
         }
 
-        public bool IsGameOver()
+        void EnterTutorial()
         {
-            return gameState == GAME_STATE.OVER;
+            EnterDungeon(tutorial);
         }
 
-        public bool Isplaying()
+        void EnterDungeonA()
         {
-            return (gameState == GAME_STATE.PLAY && !doingSetup);
+            EnterDungeon(dungeonA);
         }
 
-		void HideTitleImage()
-		{
-			titleImage.SetActive(false);
-			
-			//Set doingSetup to false allowing player to move again.
-			doingSetup = false;
+        void EnterDungeonB()
+        {
+            EnterDungeon(dungeonB);
         }
 
-		void ChangeTitleText ()
-		{
-			subTitleText.enabled = true;
-            switch(gameState)
-            {
-                case GAME_STATE.END:
-                    titleText.text = "All levels cleared!";
-                    break;
+        void EnterShop()
+        {
 
-                case GAME_STATE.OVER:
-                case GAME_STATE.START:
-                    titleText.text = "Hide and Seek beta";
-                    break;
+        }
 
-                case GAME_STATE.PLAY:
-                    if (level == 16) titleText.text = "Last Level 1/3";
-                    else if (level == 17) titleText.text = "Last Level 2/3";
-                    else if (level == 18) titleText.text = "Last Level 3/3";
-                    else titleText.text = "Level " + level +"/15";
-                    subTitleText.enabled = false;
-                    break;
-            }			
-		}
+        void GoToLobby()
+        {
+            ChangeState(GAME_STATE.LOBBY);
+        }
+
+        void InitUI()
+        {
+            titleImage = GameObject.Find("FrontPageImage");
+            lobbyImage = GameObject.Find("LobbyImage");
+            dungeonImage = GameObject.Find("DungeonImage");
+            resultImage = GameObject.Find("ResultImage");
+            controller = GameObject.Find("Controller");
+
+            dungeonText = GameObject.Find("DungeonText").GetComponent<Text>();
+
+            shopBtn = GameObject.Find("ShopButton").GetComponent<Button>();
+            Tutorial = GameObject.Find("TutorialButton").GetComponent<Button>();
+            dungeonABtn = GameObject.Find("DungeonAButton").GetComponent<Button>();
+            dungeonBBtn = GameObject.Find("DungeonBButton").GetComponent<Button>();
+            resultButton = GameObject.Find("ResultButton").GetComponent<Button>();
+            startButton = GameObject.Find("FrontPageButton").GetComponent<Button>();
+
+            Tutorial.onClick.AddListener(EnterTutorial);
+            dungeonABtn.onClick.AddListener(EnterDungeonA);
+            dungeonBBtn.onClick.AddListener(EnterDungeonB);
+            shopBtn.onClick.AddListener(EnterShop);
+
+            resultButton.onClick.AddListener(GoToLobby);
+            startButton.onClick.AddListener(GoToLobby);            
+        }
 
         public bool IsInput()
         {
@@ -406,51 +577,19 @@ namespace HideAndSeek
                 return false;
         }
 
-        void TitlePageUpdate()
+        void ChangeState(GAME_STATE nextState)
         {
-            if (IsInput() == false) return;
-
-            switch(gameState)
-            {
-                case GAME_STATE.END:
-                    gameState = GAME_STATE.START;
-                    ChangeTitleText();
-                    break;
-
-                case GAME_STATE.START:
-                    gameState = GAME_STATE.PLAY;
-                    ChangeTitleText();
-
-                    Invoke("HideTitleImage", levelStartDelay);
-
-                    Analytics.CustomEvent("gameStart", new Dictionary<string, object>
-                    {
-                        { "GameOverCount", gameOverCount},
-                        { "GameEndCount", gameOverCount}
-                    });
-#if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
-#else
-                    WriteFile(fileName, "GAME START");
-#endif
-                    break;
-            }
-
+            gameState = nextState;
+            setupPage();
         }
-		
+
 		void Update()
 		{
-            if (gameState == GAME_STATE.OVER) return;
-
-            if (gameState == GAME_STATE.END || gameState == GAME_STATE.START)
+            if (gameState == GAME_STATE.PLAY)
             {
-                TitlePageUpdate();
-                return;                
+                if (!playersTurn && !enemiesMoving)
+                    StartCoroutine(MoveEnemies());                
             }
-
-            if (playersTurn || enemiesMoving || doingSetup)
-                return;
-
-            StartCoroutine(MoveEnemies());
         }
 		
 		public void AddEnemyToList(Enemy script)
@@ -462,7 +601,7 @@ namespace HideAndSeek
         {
             Dictionary<string, object> TotalInfo = new Dictionary<string, object>
                         {
-                            { "Last Level", level},
+//                            { "Last Level", level},
                             { "Total Skill HP", gameInfo.totalSkillHP},
                             { "Total Skill Hide", gameInfo.totalSkillHide},
                             { "Total Skill Show", gameInfo.totalSkillShow},
@@ -473,8 +612,9 @@ namespace HideAndSeek
             Analytics.CustomEvent("Total info", TotalInfo);
 #if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
 #else
-            string info = "Last Level " + level.ToString()
-              + "\tTotal Skill HP: " + gameInfo.totalSkillHP.ToString()
+            string info = 
+//                "Last Level " + level.ToString()+ 
+                "\tTotal Skill HP: " + gameInfo.totalSkillHP.ToString()
               + "\tTotal Skill Hide: " + gameInfo.totalSkillHide.ToString()
               + "\tTotal Skill Show: " + gameInfo.totalSkillShow.ToString()
               + "\tTotal Skill Destroy: " + gameInfo.totalSkillDestroy.ToString()
@@ -490,23 +630,12 @@ namespace HideAndSeek
             saveTotalInfo();
             gameInfo.Init();
 
-            gameState = GAME_STATE.OVER;
+            ChangeState(GAME_STATE.OVER);
+                        
             playersTurn = false;
             gameOverCount++;
-            level = 0;            
         }        
         
-        public void EndGame()
-		{
-            writeLog();
-            saveTotalInfo();
-            gameInfo.Init();
-            level = 1;
-            gameState = GAME_STATE.END;
-            playersTurn = false;
-            gameEndCount++;
-        }
-
         bool bShowing = false;
         public bool IsShowing() { return bShowing;  }
 

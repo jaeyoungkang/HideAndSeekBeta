@@ -22,15 +22,11 @@ namespace HideAndSeek
         public Text foodText;
         public Text ScoreText;
         public Text TimeText;
-        public Text gameEndText;        
-
-        public Canvas EndGroup;
 
         public Button HealBtn;
         public Button ShowBtn;
         public Button HideBtn;
-        public Button DestroyBtn;
-        
+        public Button DestroyBtn;       
 
         public Button upBtn;
         public Button downBtn;
@@ -51,21 +47,26 @@ namespace HideAndSeek
         public AudioClip skillSound;
 
         private Animator animator;
-		private int hitPoint;
-        private int gem;
+		private int hitPoint;        
+
+        private List<PLAYER_ABILITY> abilities = new List<PLAYER_ABILITY>();
         
         public float prevTime = 0;
         float timeLimit = 60;
 
+        public void AddAbility(PLAYER_ABILITY _ability)
+        {
+            abilities.Add(_ability);
+        }
+
         public void InitDatas()
 		{
-            hitPoint = GameManager.instance.playerHp;
-            gem = GameManager.instance.playerGem;
+            hitPoint = GameManager.instance.playerHp;            
         }
 
         public void SetScoreText(Color gColor)
         {
-            ScoreText.text = gem.ToString();
+            ScoreText.text = GameManager.instance.playerGem.ToString();
             ScoreText.color = gColor;
         }                 
         
@@ -80,42 +81,63 @@ namespace HideAndSeek
 			SetHPText(Color.white);
             SetScoreText(Color.white);
 
-            EndGroup.enabled = false;
-
             upBtn.onClick.AddListener(MoveUp);
             downBtn.onClick.AddListener(MoveDown);
             leftBtn.onClick.AddListener(MoveLeft);
             rightBtn.onClick.AddListener(MoveRight);
 
+
+            ShowBtn.enabled = false;
+            HealBtn.enabled = false;
+            HideBtn.enabled = false;
+            DestroyBtn.enabled = false;
+
+            foreach (PLAYER_ABILITY ab in abilities)
+            {
+                switch(ab)
+                {
+                    case PLAYER_ABILITY.VIEW:
+                        ShowBtn.enabled = true;
+                        break;
+                    case PLAYER_ABILITY.HEAL:
+                        HealBtn.enabled = true;
+                        break;
+                    case PLAYER_ABILITY.HIDE:
+                        HideBtn.enabled = true;
+                        break;
+                    case PLAYER_ABILITY.DESTROY:
+                        DestroyBtn.enabled = true;
+                        break;
+                }
+                
+            }
             HealBtn.onClick.AddListener(UseHPRecover);
             DestroyBtn.onClick.AddListener(DestoryEnemy);
             ShowBtn.onClick.AddListener(ShowMap);
             HideBtn.onClick.AddListener(Hide);
 
             base.Start ();
+
+            GameManager.instance.SetPlayer(this);
         }
 
         void MoveUp()
         {
-            if (!GameManager.instance.Isplaying()) return;
             AttemptMove<Enemy>(0, 1);
         }
 
         void MoveDown()
         {
-            if (!GameManager.instance.Isplaying()) return;
             AttemptMove<Enemy>(0, -1);
         }
 
         void MoveRight()
         {
-            if (!GameManager.instance.Isplaying()) return;
             AttemptMove<Enemy>(1, 0);
         }
 
         void MoveLeft()
         {
-            if (!GameManager.instance.Isplaying()) return;
             AttemptMove<Enemy>(-1, 0);
         }
 
@@ -130,37 +152,23 @@ namespace HideAndSeek
 		//This function is called when the behaviour becomes disabled or inactive.
 		private void OnDisable ()
 		{
-			GameManager.instance.playerHp = hitPoint;
-            GameManager.instance.playerGem = gem;
+			GameManager.instance.playerHp = hitPoint;            
         }
 
         private void Update ()
 		{
-            if (GameManager.instance.IsGameOver() && GameManager.instance.IsInput())
-            {
-                GameManager.instance.StartGame();
-                Restart();
-            }
-            
-            if (!GameManager.instance.Isplaying())
-            {                
-                return;
-            }
-            else
-            {
-                timeLimit -= Time.deltaTime;
-                TimeText.text = Mathf.Floor(timeLimit).ToString();
-                if (timeLimit <= 10) TimeText.color = Color.red;
-                else TimeText.color = Color.white;
+            timeLimit -= Time.deltaTime;
+            TimeText.text = Mathf.Floor(timeLimit).ToString();
+            if (timeLimit <= 10) TimeText.color = Color.red;
+            else TimeText.color = Color.white;
 
-                if (timeLimit <= 0)
-                {
-                    timeLimit = 10;
-                    LoseFood(10);
-                    SoundManager.instance.RandomizeSfx(attackedSound1, attackedSound2);
-                    SetHideMode(false);
-                }
-            }       
+            if (timeLimit <= 0)
+            {
+                timeLimit = 10;
+                LoseFood(10);
+                SoundManager.instance.RandomizeSfx(attackedSound1, attackedSound2);
+                SetHideMode(false);
+            }      
 
             if (!GameManager.instance.playersTurn) return;
 
@@ -293,7 +301,7 @@ namespace HideAndSeek
 
         void GetGold(int count)
         {
-            gem += count;
+            GameManager.instance.playerGem += count;
             SetScoreText(Color.green);
             GameManager.instance.gameInfo.goldGet += count;
         }
@@ -335,7 +343,7 @@ namespace HideAndSeek
 
         void UseGem(int count)
         {
-            gem -= count;
+            GameManager.instance.playerGem -= count;
             SetScoreText(Color.red);
         }
 
@@ -372,7 +380,7 @@ namespace HideAndSeek
         void Hide()
         {
             if (bHideMode) return;
-            if (gem >= costHide)
+//            if (gem >= costHide)
             {
                 GameManager.instance.gameInfo.skillHide++;
                 SetHideMode(true);                
@@ -384,7 +392,7 @@ namespace HideAndSeek
         void ShowMap()
         {            
             if (GameManager.instance.IsShowing()) return;
-            if (gem >= costShow)
+//            if (gem >= costShow)
             {
                 GameManager.instance.gameInfo.skillShow++;
                 UseGem(costShow);
@@ -395,7 +403,7 @@ namespace HideAndSeek
 
         void DestoryEnemy()
         {
-            if(gem >= costDestroy)
+//            if(gem >= costDestroy)
             {
                 GameManager.instance.gameInfo.skillDestroy++;
                 UseGem(costDestroy);
@@ -406,7 +414,7 @@ namespace HideAndSeek
 
         void UseHPRecover()
         {
-            if (gem >= costHP)
+//            if (gem >= costHP)
             {
                 GameManager.instance.gameInfo.skillHP++;
                 RecoverHP(10);
@@ -425,14 +433,10 @@ namespace HideAndSeek
 
         void GameOver()
         {
-            EndGroup.enabled = true;
-            gameEndText.text = "Game Over!";
-
             SoundManager.instance.PlaySingle(gameOverSound);
             GameManager.instance.ShowMap(true);
 
             hitPoint = 20;
-            gem = 0;
 
             GameManager.instance.GameOver();
         }

@@ -86,7 +86,6 @@ namespace HideAndSeek
             leftBtn.onClick.AddListener(MoveLeft);
             rightBtn.onClick.AddListener(MoveRight);
 
-
             ShowBtn.enabled = false;
             HealBtn.enabled = false;
             HideBtn.enabled = false;
@@ -118,7 +117,12 @@ namespace HideAndSeek
 
             base.Start ();
 
-            GameManager.instance.SetPlayer(this);
+            GameManager.instance.SetPlayer(this);            
+        }
+
+        public void ResetPos()
+        {
+            transform.position = new Vector3(0, 0, 0);
         }
 
         void MoveUp()
@@ -313,7 +317,7 @@ namespace HideAndSeek
             obj.SetActive(false);
         }
 
-        private void Restart ()
+        public void Restart ()
 		{            
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
 		}

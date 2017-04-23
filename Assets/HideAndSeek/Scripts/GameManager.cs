@@ -98,6 +98,10 @@ namespace HideAndSeek
         private int cost;
         private PLAYER_ABILITY ability;
 
+        private int tryCount;
+        private int clearCount;
+        private int failCount;
+
         public Dungeon(Level[] _levels, int _cost, PLAYER_ABILITY _ability)
         {
             levels = _levels;
@@ -105,7 +109,15 @@ namespace HideAndSeek
             curLevel = 0;
             lastLevel = levels.Length;
             ability = _ability;
-        }        
+
+            tryCount = 0;
+            clearCount = 0;
+            failCount = 0;
+        }
+
+        public void CountFail() { failCount++; }
+        public void CountClear() { clearCount++; }
+        public void CountTry() { tryCount++; }
 
         public override string ToString() { return curLevel + "/" + lastLevel; }        
                 
@@ -130,9 +142,6 @@ namespace HideAndSeek
         public GAME_INFO gameInfo;
 
         public List<int> waitTimes = new List<int>();
-
-        public int gameOverCount = 0;
-        public int gameEndCount = 0;        
 
         float prevTime = 0f;        
 
@@ -381,8 +390,9 @@ namespace HideAndSeek
         {
             if (instance != null)
             {
-                instance.InitUI();                
-                instance.setupLevel();
+                instance.InitUI();
+                if(instance.gameState == GAME_STATE.PLAY)
+                    instance.setupLevel();
             }
         }
 
@@ -451,6 +461,7 @@ namespace HideAndSeek
                 playerGem = playerGem - dungeon.Cost();
                 curDungeon = dungeon;
                 setupLevel();
+                curDungeon.CountTry();
             }
             else
             {
@@ -482,14 +493,21 @@ namespace HideAndSeek
             controller.SetActive(bController);
         }
 
+        void clearDungeon()
+        {
+            player.AddAbility(curDungeon.GetAbility());
+            ChangeState(GAME_STATE.RESULT);
+            curDungeon.curLevel = 0;
+            curDungeon.CountClear();
+        }
+
         void setupLevel()
         {
+            player.ResetPos();
             curDungeon.curLevel++;
             if(curDungeon.curLevel > curDungeon.lastLevel)
             {
-                player.AddAbility(curDungeon.GetAbility());
-                ChangeState(GAME_STATE.RESULT);
-                curDungeon.curLevel = 0;
+                clearDungeon();
                 return;
             }
             dungeonText.text = "Level " + curDungeon.ToString();
@@ -527,6 +545,12 @@ namespace HideAndSeek
 
         }
 
+        void GoToLobbyFromDungeon()
+        {
+            player.Restart();
+            GoToLobby();
+        }
+
         void GoToLobby()
         {
             ChangeState(GAME_STATE.LOBBY);
@@ -554,8 +578,10 @@ namespace HideAndSeek
             dungeonBBtn.onClick.AddListener(EnterDungeonB);
             shopBtn.onClick.AddListener(EnterShop);
 
-            resultButton.onClick.AddListener(GoToLobby);
-            startButton.onClick.AddListener(GoToLobby);            
+            resultButton.onClick.AddListener(GoToLobbyFromDungeon);
+            startButton.onClick.AddListener(GoToLobby);
+
+            setupPage();
         }
 
         public bool IsInput()
@@ -631,9 +657,10 @@ namespace HideAndSeek
             gameInfo.Init();
 
             ChangeState(GAME_STATE.OVER);
-                        
+            curDungeon.curLevel = 0;
+            curDungeon.CountFail();
+
             playersTurn = false;
-            gameOverCount++;
         }        
         
         bool bShowing = false;

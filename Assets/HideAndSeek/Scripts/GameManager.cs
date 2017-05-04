@@ -102,7 +102,7 @@ namespace HideAndSeek
         {
             levels = _levels;
             cost = _cost;
-            curLevel = 0;
+            curLevel = 1;
             lastLevel = levels.Length;
             ability = _ability;
         }        
@@ -379,7 +379,7 @@ namespace HideAndSeek
         {
             if (instance != null)
             {
-                instance.InitUI();                
+                instance.InitUI();
 				instance.setupLevel ();
             }
         }
@@ -422,7 +422,6 @@ namespace HideAndSeek
             {
                 playerGem = playerGem - dungeon.Cost();
                 curDungeon = dungeon;
-				curDungeon.
 				ChangeState(GAME_STATE.LEVEL);
 				dungeonText.text = "Level " + curDungeon.ToString();
 				Invoke("ChagePlayState", 2f);
@@ -469,13 +468,12 @@ namespace HideAndSeek
             }
             enemies.Clear();
             boardScript.SetupScene(curDungeon.GetCurLevel());
-			setupPage();
+            ChangeState(GAME_STATE.PLAY);
         }
 
         void ChagePlayState()
-        {
-			ChangeState(GAME_STATE.PLAY);
-			SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
+        {            
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);            
         }
 
         void EnterTutorial()

@@ -30,6 +30,9 @@ namespace HideAndSeek
 		
 		public void PlaySingle(AudioClip clip)
 		{
+			if (clip == null)
+				return;
+			
             float randomPitch = Random.Range(lowPitchRange, highPitchRange);
 
             foreach(AudioSource efxSource in efxSources)
@@ -45,6 +48,9 @@ namespace HideAndSeek
 
         public void RandomizeSfx(params AudioClip[] clips)
 		{
+			if (clips.Length == 0)
+				return;
+			
 			int randomIndex = Random.Range(0, clips.Length);
             PlaySingle(clips[randomIndex]);
 		}

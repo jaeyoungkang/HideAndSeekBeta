@@ -86,6 +86,7 @@ namespace HideAndSeek
             leftBtn.onClick.AddListener(MoveLeft);
             rightBtn.onClick.AddListener(MoveRight);
 
+
             ShowBtn.enabled = false;
             HealBtn.enabled = false;
             HideBtn.enabled = false;
@@ -117,12 +118,7 @@ namespace HideAndSeek
 
             base.Start ();
 
-            GameManager.instance.SetPlayer(this);            
-        }
-
-        public void ResetPos()
-        {
-            transform.position = new Vector3(0, 0, 0);
+            GameManager.instance.SetPlayer(this);
         }
 
         void MoveUp()
@@ -282,15 +278,15 @@ namespace HideAndSeek
                 hitThief.Hitted();
             }            
         }
-        
+
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.tag == "Exit")
             {
-                SoundManager.instance.RandomizeSfx(levelClearSound, levelClearSound);
-                Invoke("Restart", restartLevelDelay);
-                enabled = false;
-                GameManager.instance.writeLog();
+				SoundManager.instance.RandomizeSfx(levelClearSound, levelClearSound);
+				GameManager.instance.ShowResult();
+				enabled = false;
+				GameManager.instance.writeLog();
             }
             else if (other.tag == "Gem")
             {
@@ -317,12 +313,6 @@ namespace HideAndSeek
             obj.SetActive(false);
         }
 
-        public void Restart ()
-		{            
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
-		}
-		
-		
 		public void LoseFood (int loss)
 		{
             animator.SetTrigger ("playerHit");

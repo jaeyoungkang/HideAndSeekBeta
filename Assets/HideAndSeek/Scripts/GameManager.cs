@@ -98,10 +98,6 @@ namespace HideAndSeek
         private int cost;
         private PLAYER_ABILITY ability;
 
-        private int tryCount;
-        private int clearCount;
-        private int failCount;
-
         public Dungeon(Level[] _levels, int _cost, PLAYER_ABILITY _ability)
         {
             levels = _levels;
@@ -109,15 +105,7 @@ namespace HideAndSeek
             curLevel = 0;
             lastLevel = levels.Length;
             ability = _ability;
-
-            tryCount = 0;
-            clearCount = 0;
-            failCount = 0;
-        }
-
-        public void CountFail() { failCount++; }
-        public void CountClear() { clearCount++; }
-        public void CountTry() { tryCount++; }
+        }        
 
         public override string ToString() { return curLevel + "/" + lastLevel; }        
                 
@@ -142,6 +130,9 @@ namespace HideAndSeek
         public GAME_INFO gameInfo;
 
         public List<int> waitTimes = new List<int>();
+
+        public int gameOverCount = 0;
+        public int gameEndCount = 0;        
 
         float prevTime = 0f;        
 
@@ -175,9 +166,7 @@ namespace HideAndSeek
         private Dungeon tutorial;        
         private Dungeon dungeonA;
         private Dungeon dungeonB;
-        private Dungeon dungeonC;
-
-        private enum GAME_STATE { START, LOBBY, LEVEL, PLAY, RESULT, OVER }
+        public enum GAME_STATE { START, LOBBY, LEVEL, PLAY, RESULT, OVER }
         private GAME_STATE gameState;
                 
         public List<GameObject> trapsOnStage = new List<GameObject>();
@@ -390,9 +379,8 @@ namespace HideAndSeek
         {
             if (instance != null)
             {
-                instance.InitUI();
-                if(instance.gameState == GAME_STATE.PLAY)
-                    instance.setupLevel();
+                instance.InitUI();                
+				instance.setupLevel ();
             }
         }
 
@@ -426,32 +414,6 @@ namespace HideAndSeek
                                    new Level(3, 7, 3, 0, 1, 4),
                                    new Level(4, 7, 3, 1, 0, 4)
             };
-            dungeonC = new Dungeon(levelInfoC, 4, PLAYER_ABILITY.DESTROY);
-        }
-
-        bool showPopup = false;
-        public Rect winRect = new Rect(200, 200, 320, 300);
-
-        void OnGUI()
-        {
-            if(showPopup)
-            {
-//                GUI.Box(new Rect(Screen.width / 2 - 75, Screen.height / 2 - 160, 200, 100), "Test~~~~~");
-//                winRect.height = 100;
-//                winRect = GUILayout.Window(0, winRect, DoMyWindow, "Window Title");
-//                winRect.x = (int)(Screen.width * 0.5f - winRect.width * 0.5f);
-////                winRect.y = (int)(Screen.height * 0.5f - winRect.height * 0.5f);
-//                GUILayout.Window(0, winRect, DoMyWindow, "Window Title");
-            }            
-        }
-
-        void DoMyWindow(int windowID)
-        {
-            if (GUILayout.Button("Hello World"))
-            {
-                print("Got a click");
-                showPopup = false;
-            }        
         }
 
         void EnterDungeon(Dungeon dungeon)
@@ -460,12 +422,14 @@ namespace HideAndSeek
             {
                 playerGem = playerGem - dungeon.Cost();
                 curDungeon = dungeon;
-                setupLevel();
-                curDungeon.CountTry();
+				curDungeon.
+				ChangeState(GAME_STATE.LEVEL);
+				dungeonText.text = "Level " + curDungeon.ToString();
+				Invoke("ChagePlayState", 2f);
             }
             else
             {
-                showPopup = true;                
+                
             }
         }
 
@@ -475,13 +439,14 @@ namespace HideAndSeek
             bool bLobby = false;
             bool bDungeon = false;
             bool bResult = false;
-            bool bController = false;
+            bool bPlay = false;
+
             switch (gameState)
             {
                 case GAME_STATE.START: bTitle = true; break;
                 case GAME_STATE.LOBBY: bLobby = true; break;
                 case GAME_STATE.LEVEL: bDungeon = true; break;
-                case GAME_STATE.PLAY: bController = true; break;
+				case GAME_STATE.PLAY: bPlay = true; break;
                 case GAME_STATE.RESULT: bResult = true;  break;
                 case GAME_STATE.OVER: bResult = true; break;
             }
@@ -490,39 +455,27 @@ namespace HideAndSeek
             titleImage.SetActive(bTitle);            
             dungeonImage.SetActive(bDungeon);
             resultImage.SetActive(bResult);
-            controller.SetActive(bController);
-        }
-
-        void clearDungeon()
-        {
-            player.AddAbility(curDungeon.GetAbility());
-            ChangeState(GAME_STATE.RESULT);
-            curDungeon.curLevel = 0;
-            curDungeon.CountClear();
+			controller.SetActive(bPlay);
         }
 
         void setupLevel()
         {
-            player.ResetPos();
-            curDungeon.curLevel++;
             if(curDungeon.curLevel > curDungeon.lastLevel)
             {
-                clearDungeon();
+                player.AddAbility(curDungeon.GetAbility());
+                ChangeState(GAME_STATE.RESULT);
+                curDungeon.curLevel = 0;
                 return;
             }
-            dungeonText.text = "Level " + curDungeon.ToString();
-
             enemies.Clear();
             boardScript.SetupScene(curDungeon.GetCurLevel());
-            ChangeState(GAME_STATE.LEVEL);
-            setupPage();
-
-            Invoke("ChagePlayState", 2f);
+			setupPage();
         }
 
         void ChagePlayState()
         {
-            ChangeState(GAME_STATE.PLAY);
+			ChangeState(GAME_STATE.PLAY);
+			SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
         }
 
         void EnterTutorial()
@@ -545,12 +498,6 @@ namespace HideAndSeek
 
         }
 
-        void GoToLobbyFromDungeon()
-        {
-            player.Restart();
-            GoToLobby();
-        }
-
         void GoToLobby()
         {
             ChangeState(GAME_STATE.LOBBY);
@@ -558,7 +505,7 @@ namespace HideAndSeek
 
         void InitUI()
         {
-            titleImage = GameObject.Find("FrontPageImage");
+			titleImage = GameObject.Find("FrontPageImage");
             lobbyImage = GameObject.Find("LobbyImage");
             dungeonImage = GameObject.Find("DungeonImage");
             resultImage = GameObject.Find("ResultImage");
@@ -578,10 +525,8 @@ namespace HideAndSeek
             dungeonBBtn.onClick.AddListener(EnterDungeonB);
             shopBtn.onClick.AddListener(EnterShop);
 
-            resultButton.onClick.AddListener(GoToLobbyFromDungeon);
-            startButton.onClick.AddListener(GoToLobby);
-
-            setupPage();
+			resultButton.onClick.AddListener(GoToLobby);
+            startButton.onClick.AddListener(GoToLobby);            
         }
 
         public bool IsInput()
@@ -603,11 +548,11 @@ namespace HideAndSeek
                 return false;
         }
 
-        void ChangeState(GAME_STATE nextState)
+        public void ChangeState(GAME_STATE nextState)
         {
             gameState = nextState;
             setupPage();
-        }
+		}
 
 		void Update()
 		{
@@ -657,12 +602,21 @@ namespace HideAndSeek
             gameInfo.Init();
 
             ChangeState(GAME_STATE.OVER);
-            curDungeon.curLevel = 0;
-            curDungeon.CountFail();
-
+                        
             playersTurn = false;
+            gameOverCount++;
         }        
-        
+
+		public void ShowResult()
+		{
+			saveTotalInfo();
+			gameInfo.Init();
+
+			ChangeState(GAME_STATE.RESULT);
+
+			playersTurn = false;
+		}        
+
         bool bShowing = false;
         public bool IsShowing() { return bShowing;  }
 

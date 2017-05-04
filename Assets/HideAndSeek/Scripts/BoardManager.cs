@@ -25,11 +25,7 @@ namespace HideAndSeek
         public int rows = 8;											//Number of rows in our game board.
         public GameObject exit;
         public GameObject[] floorTiles;
-        public GameObject[] wallTiles;
-        public GameObject[] potionATiles;
-        public GameObject[] potionBTiles;
-        public GameObject[] goldATiles;
-        public GameObject[] gemTiles;
+    	public GameObject[] gemTiles;
         public GameObject[] thiefTiles;
         public GameObject[] enemyTiles;
         public GameObject[] strongEnemyTiles;
@@ -170,60 +166,6 @@ namespace HideAndSeek
             int thiefCount = levelInfo.thief;
             int trapCount = levelInfo.trap;
             
-            //if (level < 4) // 1,2,3
-            //{
-            //    trapCount = level + 6;
-            //    gemRate = 2;
-            //    if(level>1)
-            //        enemyCount = 1;
-            //}
-            //else if (3 < level && level < 7) // 4,5,6
-            //{
-            //    trapCount = level + 1;
-            //    enemyCount = 2;
-            //    gemRate = 3;
-            //}
-            //else if (6 < level && level < 10) // 7,8,9
-            //{
-            //    enemyCount = 3;
-            //    trapCount = level - 3;
-            //    gemRate = 4;
-
-            //    if (Random.Range(0f, 1f) < 0.1f)
-            //    {
-            //        thiefCount = 1;
-            //    }
-            //}
-            //else if (9 < level && level < 13) // 10,11,12
-            //{
-            //    if (Random.Range(0f, 1f) < 0.15f)
-            //    {
-            //        thiefCount = 1;
-            //    }
-
-            //    enemyCount = 4;                
-            //    trapCount = 6;
-            //    gemRate = 4;
-            //}
-            //else if (12 < level && level < 16) // 13,14,15
-            //{
-            //    if (Random.Range(0f, 1f) < 0.2f)
-            //    {
-            //        thiefCount = 1;
-            //    }
-            //    enemyCount = 3;                
-            //    strongEnemyCount = 1;
-            //    trapCount = 6;
-            //    gemRate = 5;
-            //}
-            //else if (15 < level && level < 19) // 16,17,18
-            //{
-            //    enemyCount = 3;
-            //    strongEnemyCount = 2;
-            //    trapCount = 6;
-            //    gemRate = 5;
-            //}
-
             LayoutObjectAtRandom(gemTiles, gemRate, gemRate);
 
             LayoutTrapsAtRandom(trapTiles, trapCount, trapCount);

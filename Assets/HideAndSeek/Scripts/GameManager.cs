@@ -101,10 +101,10 @@ namespace HideAndSeek
         public Dungeon(Level[] _levels, int _cost, PLAYER_ABILITY _ability)
         {
             levels = _levels;
-            cost = _cost;
-            curLevel = 1;
+            cost = _cost;            
             lastLevel = levels.Length;
             ability = _ability;
+            MoveToStart();
         }        
 
         public override string ToString() { return curLevel + "/" + lastLevel; }        
@@ -115,6 +115,10 @@ namespace HideAndSeek
         public Level[] GetLevels() { return levels; }
 
         public PLAYER_ABILITY GetAbility() { return ability; }
+
+        public void MoveToStart() { curLevel = 0; }
+        public void MoveToNext() { curLevel++; }
+        public bool IsEnd() { return curLevel > lastLevel; }
     }
 
     class Region
@@ -127,7 +131,7 @@ namespace HideAndSeek
         private int Version = 5;
         public string fileName;
 
-        public GAME_INFO gameInfo;
+//        public GAME_INFO gameInfo;
 
         public List<int> waitTimes = new List<int>();
 
@@ -157,7 +161,6 @@ namespace HideAndSeek
         private Button dungeonABtn;
         private Button dungeonBBtn;
 
-        private Player player;
         private BoardManager boardScript;
         private List<Enemy> enemies;                            //List of all Enemy units, used to issue them move commands.
         private bool enemiesMoving;                             //Boolean to check if enemies are moving.
@@ -173,94 +176,6 @@ namespace HideAndSeek
         public List<GameObject> objsOnStage = new List<GameObject>();
         public List<GameObject> tilesOnStage = new List<GameObject>();
 
-        public bool[,] UpdateMap(Vector3 playerPos)
-        {
-            bool[,] map = new bool[8,8];
-
-            for(int i = 0; i < 8; i++)
-            {
-                for (int j = 0; j < 8; j++)
-                {
-                    map[i, j] = true;
-                }
-            }
-
-            foreach (Enemy en in enemies)
-            {
-                Vector2 pos = en.transform.position;
-                int x = (int)pos.x;
-                int y = (int)pos.y;
-                map[x,y] = false;
-            }
-
-            map[(int)playerPos.x, (int)playerPos.y] = false;
-
-            return map;
-        }
-
-        public bool IsAvailablePos(Vector2 dest)
-        {
-            foreach(Enemy en in enemies)
-            {
-                Vector2 pos = en.transform.position;
-                if (pos == dest) return false;
-            }
-            return true;
-        }
-
-        public GameObject IsTrap(float x, float y)
-        {
-            foreach (GameObject obj in trapsOnStage)
-            {
-                if (obj.transform.position.x == x && obj.transform.position.y == y) return obj;
-            }
-
-            return null;
-        }
-
-        public void ShowObjects(bool bShow)
-        {            
-            foreach (GameObject obj in objsOnStage)
-            {
-                if (obj == null) continue;
-                Renderer renderer = obj.GetComponent<SpriteRenderer>();
-                if (renderer) renderer.enabled = bShow;
-            }
-
-            foreach (GameObject obj in trapsOnStage)
-            {
-                if (obj == null) continue;
-                Renderer renderer = obj.GetComponent<SpriteRenderer>();
-                if (renderer) renderer.enabled = bShow;
-            }
-
-            foreach (GameObject obj in tilesOnStage)
-            {
-                if (obj == null) continue;
-                Renderer renderer = obj.GetComponent<SpriteRenderer>();
-                if (renderer)
-                {
-                    if (bShow)
-                    {
-                        Color color = renderer.material.color;
-                        color.a = 1f;
-                        renderer.material.color = color;
-                    }
-                    else
-                    {
-                        Color color = renderer.material.color;
-                        color.a = 0.6f;
-                        renderer.material.color = color;
-                    }
-                }
-            }            
-        }
-
-        public void SetPlayer(Player _player)
-        {
-            player = _player;
-        }
-
         //Awake is always called before any Start functions
         void Awake()
         {            
@@ -268,7 +183,6 @@ namespace HideAndSeek
             if (instance == null)
             {
                 instance = this;
-                gameInfo.Init();
 #if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
 #else
                 fileName = "log/gameLog_" + DateTime.Now.ToString("M_d_hh_mm") + "_VER_" + Version.ToString() + ".txt";
@@ -303,63 +217,63 @@ namespace HideAndSeek
 
 		public void writeLog()
 		{
-            gameInfo.deltaTime = Time.time - prevTime;
-			prevTime = Time.time;
-            foreach (int time in waitTimes)
-            {
-                if (time > 0) gameInfo.waitCount++;
-            }            
+//            gameInfo.deltaTime = Time.time - prevTime;
+//			prevTime = Time.time;
+//            foreach (int time in waitTimes)
+//            {
+//                if (time > 0) gameInfo.waitCount++;
+//            }            
 
-            gameInfo.totalTime += gameInfo.deltaTime;            
-            gameInfo.totalSkillHP += gameInfo.skillHP;
-            gameInfo.totalSkillShow += gameInfo.skillShow;
-            gameInfo.totalSkillHide += gameInfo.skillHide;
-            gameInfo.totalSkillDestroy += gameInfo.skillDestroy;
+//            gameInfo.totalTime += gameInfo.deltaTime;            
+//            gameInfo.totalSkillHP += gameInfo.skillHP;
+//            gameInfo.totalSkillShow += gameInfo.skillShow;
+//            gameInfo.totalSkillHide += gameInfo.skillHide;
+//            gameInfo.totalSkillDestroy += gameInfo.skillDestroy;
 
-//            gameInfo.averageTime = gameInfo.totalTime / level;
+////            gameInfo.averageTime = gameInfo.totalTime / level;
 
-            Dictionary<string, object> eventInfo = new Dictionary<string, object>
-                        {
-//                            { "level", level},
-                            { "move", gameInfo.moveCount},
-                            { "HP Inc", gameInfo.playerHPIncrease},
-                            { "HP Dec", gameInfo.playerHPDecrease},
-                            { "GoldGet", gameInfo.goldGet},
-                            { "show", gameInfo.showCount},                            
-                            { "Wait", gameInfo.waitCount},
-                            { "time", (int)gameInfo.deltaTime}
-                        };
+//            Dictionary<string, object> eventInfo = new Dictionary<string, object>
+//                        {
+////                            { "level", level},
+//                            { "move", gameInfo.moveCount},
+//                            { "HP Inc", gameInfo.playerHPIncrease},
+//                            { "HP Dec", gameInfo.playerHPDecrease},
+//                            { "GoldGet", gameInfo.goldGet},
+//                            { "show", gameInfo.showCount},                            
+//                            { "Wait", gameInfo.waitCount},
+//                            { "time", (int)gameInfo.deltaTime}
+//                        };
 
-            Analytics.CustomEvent("Level info", eventInfo);
+//            Analytics.CustomEvent("Level info", eventInfo);
 
-            Dictionary<string, object> skillInfo = new Dictionary<string, object>
-                        {
-//                            { "level", level},
-                            { "Skill HP", gameInfo.skillHP},
-                            { "Skill Hide", gameInfo.skillHide},
-                            { "Skill Show", gameInfo.skillShow},
-                            { "Skill Destory", gameInfo.skillDestroy}
-                         };
-            Analytics.CustomEvent("Skill info", skillInfo);
+//            Dictionary<string, object> skillInfo = new Dictionary<string, object>
+//                        {
+////                            { "level", level},
+//                            { "Skill HP", gameInfo.skillHP},
+//                            { "Skill Hide", gameInfo.skillHide},
+//                            { "Skill Show", gameInfo.skillShow},
+//                            { "Skill Destory", gameInfo.skillDestroy}
+//                         };
+//            Analytics.CustomEvent("Skill info", skillInfo);
             
-#if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
-#else
-            string info = 
-//                level.ToString() + "\t" +
-                gameInfo.moveCount.ToString()
-                + "\t" + gameInfo.playerHPIncrease.ToString()
-                + "\t" + gameInfo.playerHPDecrease.ToString()
-                + "\t" + gameInfo.goldGet.ToString()
-                + "\t" + gameInfo.showCount.ToString()
-                + "\t" + gameInfo.waitCount.ToString()
-                + "\t" + gameInfo.skillHP.ToString()
-                + "\t" + gameInfo.skillHide.ToString()
-                + "\t" + gameInfo.skillShow.ToString()
-                + "\t" + gameInfo.skillDestroy.ToString()
-                + "\t" + ((int)gameInfo.deltaTime).ToString();
-            WriteFile(fileName, info);            
-#endif
-            gameInfo.ResetLevelInfo();
+//#if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
+//#else
+//            string info = 
+////                level.ToString() + "\t" +
+//                gameInfo.moveCount.ToString()
+//                + "\t" + gameInfo.playerHPIncrease.ToString()
+//                + "\t" + gameInfo.playerHPDecrease.ToString()
+//                + "\t" + gameInfo.goldGet.ToString()
+//                + "\t" + gameInfo.showCount.ToString()
+//                + "\t" + gameInfo.waitCount.ToString()
+//                + "\t" + gameInfo.skillHP.ToString()
+//                + "\t" + gameInfo.skillHide.ToString()
+//                + "\t" + gameInfo.skillShow.ToString()
+//                + "\t" + gameInfo.skillDestroy.ToString()
+//                + "\t" + ((int)gameInfo.deltaTime).ToString();
+//            WriteFile(fileName, info);            
+//#endif
+//            gameInfo.ResetLevelInfo();
         }        
 
         public void WriteFile(string fileName, string info)
@@ -388,6 +302,7 @@ namespace HideAndSeek
         {
             Level[] tutorialInfo= new Level[] {
                                    new Level(0, 5, 1, 0, 0, 1),
+                                   new Level(1, 6, 1, 0, 0, 2),
             };
             tutorial = new Dungeon(tutorialInfo, 0, PLAYER_ABILITY.VIEW);
             
@@ -422,9 +337,8 @@ namespace HideAndSeek
             {
                 playerGem = playerGem - dungeon.Cost();
                 curDungeon = dungeon;
-				ChangeState(GAME_STATE.LEVEL);
-				dungeonText.text = "Level " + curDungeon.ToString();
-				Invoke("ChagePlayState", 2f);
+                curDungeon.MoveToStart();
+                MoveToNextLevel();				
             }
             else
             {
@@ -458,20 +372,13 @@ namespace HideAndSeek
         }
 
         void setupLevel()
-        {
-            if(curDungeon.curLevel > curDungeon.lastLevel)
-            {
-                player.AddAbility(curDungeon.GetAbility());
-                ChangeState(GAME_STATE.RESULT);
-                curDungeon.curLevel = 0;
-                return;
-            }
+        {            
             enemies.Clear();
             boardScript.SetupScene(curDungeon.GetCurLevel());
             ChangeState(GAME_STATE.PLAY);
         }
 
-        void ChagePlayState()
+        void InitiateLevel()
         {            
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);            
         }
@@ -496,6 +403,35 @@ namespace HideAndSeek
 
         }
 
+        public void ShowResult()
+        {
+            ChangeState(GAME_STATE.RESULT);
+        }
+
+        public void MoveToNextLevel()
+        {
+            if(gameState == GAME_STATE.OVER) //  have to seperate the gameover page and the gameresult page and total result page
+            {
+                playersTurn = false;
+                GoToLobby();
+                return;
+            }
+            
+            curDungeon.MoveToNext();
+            if (curDungeon.IsEnd())
+            {
+//                player.AddAbility(curDungeon.GetAbility());                
+                playersTurn = false;
+                GoToLobby();
+            }
+            else
+            {
+                ChangeState(GAME_STATE.LEVEL);
+                dungeonText.text = "Level " + curDungeon.ToString();                
+                Invoke("InitiateLevel", 2f);                
+            }            
+        }
+        
         void GoToLobby()
         {
             ChangeState(GAME_STATE.LOBBY);
@@ -523,27 +459,8 @@ namespace HideAndSeek
             dungeonBBtn.onClick.AddListener(EnterDungeonB);
             shopBtn.onClick.AddListener(EnterShop);
 
-			resultButton.onClick.AddListener(GoToLobby);
+			resultButton.onClick.AddListener(MoveToNextLevel);
             startButton.onClick.AddListener(GoToLobby);            
-        }
-
-        public bool IsInput()
-        {
-#if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
-            bool touchReleased = false;
-            for (int i = 0; i < Input.touches.Length; i++)
-            {
-                touchReleased = Input.touches[i].phase == TouchPhase.Ended;
-                if (touchReleased) break;
-            }
-
-            if (touchReleased || Input.GetKeyUp(KeyCode.Space))
-#else
-            if (Input.GetKeyUp(KeyCode.Space))
-#endif
-                return true;
-            else
-                return false;
         }
 
         public void ChangeState(GAME_STATE nextState)
@@ -566,55 +483,12 @@ namespace HideAndSeek
 			enemies.Add(script);
 		}
 
-        public void saveTotalInfo()
-        {
-            Dictionary<string, object> TotalInfo = new Dictionary<string, object>
-                        {
-//                            { "Last Level", level},
-                            { "Total Skill HP", gameInfo.totalSkillHP},
-                            { "Total Skill Hide", gameInfo.totalSkillHide},
-                            { "Total Skill Show", gameInfo.totalSkillShow},
-                            { "Total Skill Destory", gameInfo.totalSkillDestroy},
-                            { "Total Time", gameInfo.totalTime},
-                            { "Total Average Time", gameInfo.averageTime}
-                         };
-            Analytics.CustomEvent("Total info", TotalInfo);
-#if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
-#else
-            string info = 
-//                "Last Level " + level.ToString()+ 
-                "\tTotal Skill HP: " + gameInfo.totalSkillHP.ToString()
-              + "\tTotal Skill Hide: " + gameInfo.totalSkillHide.ToString()
-              + "\tTotal Skill Show: " + gameInfo.totalSkillShow.ToString()
-              + "\tTotal Skill Destroy: " + gameInfo.totalSkillDestroy.ToString()
-              + "\tTotal Time: " + ((int)gameInfo.totalTime).ToString()
-              + "\tAverage Time: " + ((int)gameInfo.averageTime).ToString();
-            WriteFile(fileName, info);
-#endif
-        }
         
         public void GameOver()
 		{
-            writeLog();
-            saveTotalInfo();
-            gameInfo.Init();
-
             ChangeState(GAME_STATE.OVER);
-                        
-            playersTurn = false;
-            gameOverCount++;
         }        
-
-		public void ShowResult()
-		{
-			saveTotalInfo();
-			gameInfo.Init();
-
-			ChangeState(GAME_STATE.RESULT);
-
-			playersTurn = false;
-		}        
-
+		
         bool bShowing = false;
         public bool IsShowing() { return bShowing;  }
 
@@ -623,8 +497,6 @@ namespace HideAndSeek
             bShowing = bShow;
             ShowAllUnits(bShow);
             ShowObjects(bShow);
-
-            if (bShow) gameInfo.showCount++;            
         }
 
         public void ShowAllUnits(bool bShow)
@@ -763,6 +635,89 @@ namespace HideAndSeek
 			
 			enemiesMoving = false;
 		}
-	}
+
+        public bool[,] UpdateMap(Vector3 playerPos)
+        {
+            bool[,] map = new bool[8, 8];
+
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    map[i, j] = true;
+                }
+            }
+
+            foreach (Enemy en in enemies)
+            {
+                Vector2 pos = en.transform.position;
+                int x = (int)pos.x;
+                int y = (int)pos.y;
+                map[x, y] = false;
+            }
+
+            map[(int)playerPos.x, (int)playerPos.y] = false;
+
+            return map;
+        }
+
+        public bool IsAvailablePos(Vector2 dest)
+        {
+            foreach (Enemy en in enemies)
+            {
+                Vector2 pos = en.transform.position;
+                if (pos == dest) return false;
+            }
+            return true;
+        }
+
+        public GameObject IsTrap(float x, float y)
+        {
+            foreach (GameObject obj in trapsOnStage)
+            {
+                if (obj.transform.position.x == x && obj.transform.position.y == y) return obj;
+            }
+
+            return null;
+        }
+
+        public void ShowObjects(bool bShow)
+        {
+            foreach (GameObject obj in objsOnStage)
+            {
+                if (obj == null) continue;
+                Renderer renderer = obj.GetComponent<SpriteRenderer>();
+                if (renderer) renderer.enabled = bShow;
+            }
+
+            foreach (GameObject obj in trapsOnStage)
+            {
+                if (obj == null) continue;
+                Renderer renderer = obj.GetComponent<SpriteRenderer>();
+                if (renderer) renderer.enabled = bShow;
+            }
+
+            foreach (GameObject obj in tilesOnStage)
+            {
+                if (obj == null) continue;
+                Renderer renderer = obj.GetComponent<SpriteRenderer>();
+                if (renderer)
+                {
+                    if (bShow)
+                    {
+                        Color color = renderer.material.color;
+                        color.a = 1f;
+                        renderer.material.color = color;
+                    }
+                    else
+                    {
+                        Color color = renderer.material.color;
+                        color.a = 0.6f;
+                        renderer.material.color = color;
+                    }
+                }
+            }
+        }
+    }
 }
 

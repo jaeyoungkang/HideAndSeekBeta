@@ -117,8 +117,6 @@ namespace HideAndSeek
             HideBtn.onClick.AddListener(Hide);
 
             base.Start ();
-
-            GameManager.instance.SetPlayer(this);
         }
 
         void MoveUp()
@@ -222,7 +220,6 @@ namespace HideAndSeek
 			{
                 if(bHideMode == false) SoundManager.instance.RandomizeSfx (moveSound1, moveSound2);
 
-				GameManager.instance.gameInfo.moveCount++;
                 if(checkPos(xDir, yDir)) GameManager.instance.ShowMap(true);
                 CheckTrap(xDir, yDir);               
             }          
@@ -303,7 +300,6 @@ namespace HideAndSeek
         {
             GameManager.instance.playerGem += count;
             SetScoreText(Color.green);
-            GameManager.instance.gameInfo.goldGet += count;
         }
 
         IEnumerator HideAni(GameObject obj)
@@ -319,16 +315,13 @@ namespace HideAndSeek
 			hitPoint -= loss;
 
             SetHPText(Color.red);
-            GameManager.instance.gameInfo.playerHPDecrease += loss;
-            
+
             CheckIfGameOver ();
 		}
 		
 		
-		//CheckIfGameOver checks if the player is out of food points and if so, ends the game.
 		private void CheckIfGameOver ()
 		{            
-			//Check if food point total is less than or equal to zero.
 			if (hitPoint <= 0) 
 			{
 				GameOver();
@@ -376,7 +369,6 @@ namespace HideAndSeek
             if (bHideMode) return;
 //            if (gem >= costHide)
             {
-                GameManager.instance.gameInfo.skillHide++;
                 SetHideMode(true);                
                 UseGem(costHide);                
                 SoundManager.instance.PlaySingle(skillSound);
@@ -388,7 +380,6 @@ namespace HideAndSeek
             if (GameManager.instance.IsShowing()) return;
 //            if (gem >= costShow)
             {
-                GameManager.instance.gameInfo.skillShow++;
                 UseGem(costShow);
                 GameManager.instance.ShowMap(true);
                 SoundManager.instance.PlaySingle(skillSound);
@@ -399,7 +390,6 @@ namespace HideAndSeek
         {
 //            if(gem >= costDestroy)
             {
-                GameManager.instance.gameInfo.skillDestroy++;
                 UseGem(costDestroy);
                 GameManager.instance.DestoryEnemies(transform.position);
                 SoundManager.instance.PlaySingle(skillSound);
@@ -410,7 +400,6 @@ namespace HideAndSeek
         {
 //            if (gem >= costHP)
             {
-                GameManager.instance.gameInfo.skillHP++;
                 RecoverHP(10);
                 UseGem(costHP);                
                 SoundManager.instance.PlaySingle(skillSound);
@@ -422,7 +411,6 @@ namespace HideAndSeek
             hitPoint += delta;
 
             SetHPText(Color.green);            
-            GameManager.instance.gameInfo.playerHPIncrease += delta;
         }
 
         void GameOver()

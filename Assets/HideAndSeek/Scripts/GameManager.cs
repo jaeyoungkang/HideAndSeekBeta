@@ -119,6 +119,11 @@ namespace HideAndSeek
         public void MoveToStart() { curLevel = 0; }
         public void MoveToNext() { curLevel++; }
         public bool IsEnd() { return curLevel > lastLevel; }
+
+		public void SetLevel(int _level)
+		{
+			curLevel = _level;
+		}
     }
 
     class Region
@@ -169,9 +174,15 @@ namespace HideAndSeek
         private Dungeon tutorial;        
         private Dungeon dungeonA;
         private Dungeon dungeonB;
-        public enum GAME_STATE { START, LOBBY, LEVEL, PLAY, RESULT, OVER }
+        public enum GAME_STATE { START, LOBBY, LEVEL, MAP, PLAY, RESULT, OVER }
         private GAME_STATE gameState;
-                
+
+		private GameObject dungeonMap;
+		private Button level1Btn;
+		private Button level2Btn;
+		private Button level3Btn;
+		private Button level4Btn;
+
         public List<GameObject> trapsOnStage = new List<GameObject>();
         public List<GameObject> objsOnStage = new List<GameObject>();
         public List<GameObject> tilesOnStage = new List<GameObject>();
@@ -303,7 +314,9 @@ namespace HideAndSeek
             Level[] tutorialInfo= new Level[] {
                                    new Level(0, 5, 1, 0, 0, 1),
                                    new Level(1, 6, 1, 0, 0, 2),
-            };
+									new Level(2, 6, 3, 0, 0, 3),
+									new Level(3, 7, 3, 0, 1, 4)
+					            };
             tutorial = new Dungeon(tutorialInfo, 0, PLAYER_ABILITY.VIEW);
             
             Level[] levelInfoA = new Level[] {
@@ -337,14 +350,21 @@ namespace HideAndSeek
             {
                 playerGem = playerGem - dungeon.Cost();
                 curDungeon = dungeon;
-                curDungeon.MoveToStart();
-                MoveToNextLevel();				
+				ChangeState (GAME_STATE.MAP);
+//                curDungeon.MoveToStart();
+//                MoveToNextLevel();				
             }
             else
             {
                 
             }
         }
+
+		void GotoDungeonMap()
+		{
+			ChangeState (GAME_STATE.MAP);
+		}
+
 
         void setupPage()
         {
@@ -353,12 +373,14 @@ namespace HideAndSeek
             bool bDungeon = false;
             bool bResult = false;
             bool bPlay = false;
+			bool bMap = false;
 
             switch (gameState)
             {
                 case GAME_STATE.START: bTitle = true; break;
                 case GAME_STATE.LOBBY: bLobby = true; break;
                 case GAME_STATE.LEVEL: bDungeon = true; break;
+				case GAME_STATE.MAP: bMap = true; break;
 				case GAME_STATE.PLAY: bPlay = true; break;
                 case GAME_STATE.RESULT: bResult = true;  break;
                 case GAME_STATE.OVER: bResult = true; break;
@@ -369,6 +391,7 @@ namespace HideAndSeek
             dungeonImage.SetActive(bDungeon);
             resultImage.SetActive(bResult);
 			controller.SetActive(bPlay);
+			dungeonMap.SetActive (bMap);
         }
 
         void setupLevel()
@@ -418,6 +441,7 @@ namespace HideAndSeek
             }
             
             curDungeon.MoveToNext();
+
             if (curDungeon.IsEnd())
             {
 //                player.AddAbility(curDungeon.GetAbility());                
@@ -437,8 +461,51 @@ namespace HideAndSeek
             ChangeState(GAME_STATE.LOBBY);
         }
 
+		void EnterLevel1()
+		{
+			curDungeon.SetLevel(1);
+			ChangeState(GAME_STATE.LEVEL);
+			dungeonText.text = "Level " + curDungeon.ToString();                
+			Invoke("InitiateLevel", 2f);
+		}
+
+		void EnterLevel2()
+		{
+			curDungeon.SetLevel(2);
+			ChangeState(GAME_STATE.LEVEL);
+			dungeonText.text = "Level " + curDungeon.ToString();                
+			Invoke("InitiateLevel", 2f);
+		}
+
+		void EnterLevel3()
+		{
+			curDungeon.SetLevel(3);
+			ChangeState(GAME_STATE.LEVEL);
+			dungeonText.text = "Level " + curDungeon.ToString();                
+			Invoke("InitiateLevel", 2f);
+		}
+
+		void EnterLevel4()
+		{
+			curDungeon.SetLevel(4);
+			ChangeState(GAME_STATE.LEVEL);
+			dungeonText.text = "Level " + curDungeon.ToString();                
+			Invoke("InitiateLevel", 2f);
+		}
+
         void InitUI()
         {
+			dungeonMap = GameObject.Find("DungeonMap");
+			level1Btn = GameObject.Find("level1").GetComponent<Button>();
+			level2Btn = GameObject.Find("level2").GetComponent<Button>();
+			level3Btn = GameObject.Find("level3").GetComponent<Button>();
+			level4Btn = GameObject.Find("level4").GetComponent<Button>();
+
+			level1Btn.onClick.AddListener(EnterLevel1);
+			level2Btn.onClick.AddListener(EnterLevel2);
+			level3Btn.onClick.AddListener(EnterLevel3);
+			level4Btn.onClick.AddListener(EnterLevel4);
+
 			titleImage = GameObject.Find("FrontPageImage");
             lobbyImage = GameObject.Find("LobbyImage");
             dungeonImage = GameObject.Find("DungeonImage");
@@ -459,7 +526,7 @@ namespace HideAndSeek
             dungeonBBtn.onClick.AddListener(EnterDungeonB);
             shopBtn.onClick.AddListener(EnterShop);
 
-			resultButton.onClick.AddListener(MoveToNextLevel);
+			resultButton.onClick.AddListener(GotoDungeonMap);
             startButton.onClick.AddListener(GoToLobby);            
         }
 

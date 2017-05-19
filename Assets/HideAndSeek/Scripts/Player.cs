@@ -14,10 +14,10 @@ namespace HideAndSeek
 		public int potionA = 10;
         public int potionB = 20;
         
-        public int costDestroy = 4;
+        public int costDestroy = 2;
         public int costShow = 1;
-        public int costHP = 2;
-        public int costHide = 3;
+        public int costHP = 1;
+        public int costHide = 1;
 
         public Text foodText;
         public Text ScoreText;
@@ -85,12 +85,11 @@ namespace HideAndSeek
             downBtn.onClick.AddListener(MoveDown);
             leftBtn.onClick.AddListener(MoveLeft);
             rightBtn.onClick.AddListener(MoveRight);
-
-
-            ShowBtn.enabled = false;
-            HealBtn.enabled = false;
-            HideBtn.enabled = false;
-            DestroyBtn.enabled = false;
+            
+            //ShowBtn.enabled = false;
+            //HealBtn.enabled = false;
+            //HideBtn.enabled = false;
+            //DestroyBtn.enabled = false;
 
             foreach (PLAYER_ABILITY ab in abilities)
             {
@@ -367,7 +366,7 @@ namespace HideAndSeek
         void Hide()
         {
             if (bHideMode) return;
-//            if (gem >= costHide)
+            if (GameManager.instance.playerGem >= costHide)
             {
                 SetHideMode(true);                
                 UseGem(costHide);                
@@ -378,7 +377,7 @@ namespace HideAndSeek
         void ShowMap()
         {            
             if (GameManager.instance.IsShowing()) return;
-//            if (gem >= costShow)
+            if (GameManager.instance.playerGem >= costShow)
             {
                 UseGem(costShow);
                 GameManager.instance.ShowMap(true);
@@ -388,7 +387,7 @@ namespace HideAndSeek
 
         void DestoryEnemy()
         {
-//            if(gem >= costDestroy)
+            if(GameManager.instance.playerGem >= costDestroy)
             {
                 UseGem(costDestroy);
                 GameManager.instance.DestoryEnemies(transform.position);
@@ -398,7 +397,7 @@ namespace HideAndSeek
 
         void UseHPRecover()
         {
-//            if (gem >= costHP)
+            if (GameManager.instance.playerGem >= costHP)
             {
                 RecoverHP(10);
                 UseGem(costHP);                

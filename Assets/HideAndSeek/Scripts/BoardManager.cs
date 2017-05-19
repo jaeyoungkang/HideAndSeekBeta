@@ -36,10 +36,25 @@ namespace HideAndSeek
         private Transform boardHolder;                                  //A variable to store a reference to the transform of our Board object.
         private List<Vector3> gridPositions = new List<Vector3>();   //A list of possible locations to place tiles.
 
+        private List<List<Vector3>> grids = new List<List<Vector3>>();
+        private List<Vector3> gridPositions1 = new List<Vector3>();
+        private List<Vector3> gridPositions2 = new List<Vector3>();
+        private List<Vector3> gridPositions3 = new List<Vector3>();
+        private List<Vector3> gridPositions4 = new List<Vector3>();
+
+        private List<Vector3> gridPositionsExcept = new List<Vector3>();
+
         //Clears our list gridPositions and prepares it to generate a new board.
         void InitialiseList()
         {
             gridPositions.Clear();
+
+            gridPositions1.Clear();
+            gridPositions2.Clear();
+            gridPositions3.Clear();
+            gridPositions4.Clear();
+
+            grids.Clear();
 
             for (int x = 0; x < columns; x++)
             {
@@ -51,6 +66,62 @@ namespace HideAndSeek
                     gridPositions.Add(new Vector3(x, y, 0f));
                 }
             }
+
+            int halfOfCol = columns / 2;
+            int halfOfRow = rows / 2;
+
+            for (int x = 0; x < halfOfCol; x++)
+            {
+                for (int y = 0; y < halfOfRow; y++)
+                {
+                    gridPositions1.Add(new Vector3(x, y, 0f));
+                }
+            }
+
+            for (int x = 0; x < halfOfCol; x++)
+            {
+                for (int y = halfOfRow; y < rows; y++)
+                {
+                    gridPositions2.Add(new Vector3(x, y, 0f));
+                }
+            }
+
+            for (int x = halfOfCol; x < columns; x++)
+            {
+                for (int y = 0; y < halfOfRow; y++)
+                {
+                    gridPositions3.Add(new Vector3(x, y, 0f));
+                }
+            }
+
+            for (int x = halfOfCol; x < columns; x++)
+            {
+                for (int y = halfOfRow; y < rows; y++)
+                {
+                    gridPositions4.Add(new Vector3(x, y, 0f));
+                }
+            }
+
+            gridPositionsExcept.Add(new Vector3(0f, 0f, 0f));
+            gridPositionsExcept.Add(new Vector3(1f, 0f, 0f));
+            gridPositionsExcept.Add(new Vector3(0f, 1f, 0f));
+
+            gridPositionsExcept.Add(new Vector3(columns - 1, 0f, 0f));
+            gridPositionsExcept.Add(new Vector3(columns - 2, 0f, 0f));
+            gridPositionsExcept.Add(new Vector3(columns - 1, 1f, 0f));
+
+            gridPositionsExcept.Add(new Vector3(0f, rows - 1, 0f));
+            gridPositionsExcept.Add(new Vector3(1f, rows - 1, 0f));
+            gridPositionsExcept.Add(new Vector3(0f, rows - 2, 0f));
+
+            gridPositionsExcept.Add(new Vector3(columns-1, rows-1, 0f));
+            gridPositionsExcept.Add(new Vector3(columns-2, rows-1, 0f));
+            gridPositionsExcept.Add(new Vector3(columns-1, rows-2, 0f));
+
+            grids.Add(gridPositions1);
+            grids.Add(gridPositions2);
+            grids.Add(gridPositions3);
+            grids.Add(gridPositions4);
         }
 
 
@@ -97,26 +168,56 @@ namespace HideAndSeek
         }
 
 
+
+        Vector3 RandomGridsPosition()
+        {
+            if(grids.Count == 0)
+            {
+                grids.Add(gridPositions1);
+                grids.Add(gridPositions2);
+                grids.Add(gridPositions3);
+                grids.Add(gridPositions4);
+            }
+
+            int randomGridsIndex = Random.Range(0, grids.Count);
+            List<Vector3> agrid = grids[randomGridsIndex];
+            grids.RemoveAt(randomGridsIndex);
+
+            int randomIndex = Random.Range(0, agrid.Count);
+            Vector3 randomPosition = agrid[randomIndex];
+            agrid.RemoveAt(randomIndex);
+
+            while (gridPositionsExcept.Contains(randomPosition))
+            {
+                randomIndex = Random.Range(0, agrid.Count);                
+                randomPosition = agrid[randomIndex];
+                agrid.RemoveAt(randomIndex);
+            }
+            
+            return randomPosition;
+        }
+
+
         void LayoutObjectAtRandom(GameObject[] tileArray, int minimum, int maximum)
         {            
             int objectCount = Random.Range(minimum, maximum + 1);
 
             for (int i = 0; i < objectCount; i++)
             {
-                Vector3 randomPosition = RandomPosition();
+                Vector3 randomPosition = RandomGridsPosition();
                 GameObject tileChoice = tileArray[Random.Range(0, tileArray.Length)];
                 GameObject instance = Instantiate(tileChoice, randomPosition, Quaternion.identity);
                 GameManager.instance.objsOnStage.Add(instance);
             }
         }
 
-        void LayoutTrapsAtRandom(GameObject[] tileArray, int minimum, int maximum)
-        {            
+        void LayoutTrapAtRandom(GameObject[] tileArray, int minimum, int maximum)
+        {
             int objectCount = Random.Range(minimum, maximum + 1);
 
             for (int i = 0; i < objectCount; i++)
             {
-                Vector3 randomPosition = RandomPosition();
+                Vector3 randomPosition = RandomGridsPosition();
                 GameObject tileChoice = tileArray[Random.Range(0, tileArray.Length)];
                 GameObject instance = Instantiate(tileChoice, randomPosition, Quaternion.identity);
                 GameManager.instance.trapsOnStage.Add(instance);
@@ -129,14 +230,8 @@ namespace HideAndSeek
 
             for (int i = 0; i < objectCount; i++)
             {
-                Vector3 randomPosition = RandomPosition();
-                while (0 == randomPosition.x || randomPosition.x == columns-1 || randomPosition.y == 0 || randomPosition.y == rows-1 || (randomPosition.y == 1 && randomPosition.y == 1))
-                {
-                    randomPosition = RandomPosition();
-                }
-
+                Vector3 randomPosition = RandomGridsPosition();
                 GameObject tileChoice = tileArray[Random.Range(0, tileArray.Length)];
-
                 Instantiate(tileChoice, randomPosition, Quaternion.identity);
             }
         }
@@ -168,7 +263,7 @@ namespace HideAndSeek
             
             LayoutObjectAtRandom(gemTiles, gemRate, gemRate);
 
-            LayoutTrapsAtRandom(trapTiles, trapCount, trapCount);
+            LayoutTrapAtRandom(trapTiles, trapCount, trapCount);
                         
             LayoutEnemiesAtRandom(enemyTiles, enemyCount, enemyCount);
             LayoutEnemiesAtRandom(strongEnemyTiles, strongEnemyCount, strongEnemyCount);

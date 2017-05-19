@@ -301,8 +301,10 @@ namespace HideAndSeek
         void InitDungeons()
         {
             Level[] tutorialInfo= new Level[] {
-                                   new Level(0, 5, 1, 0, 0, 1),
+                                   new Level(0, 5, 0, 0, 0, 1),
                                    new Level(1, 6, 1, 0, 0, 2),
+                                   new Level(2, 6, 2, 0, 0, 3),
+                                   new Level(3, 6, 5, 0, 0, 1),
             };
             tutorial = new Dungeon(tutorialInfo, 0, PLAYER_ABILITY.VIEW);
             
@@ -434,6 +436,7 @@ namespace HideAndSeek
         
         void GoToLobby()
         {
+            playerGem = 0;
             ChangeState(GAME_STATE.LOBBY);
         }
 

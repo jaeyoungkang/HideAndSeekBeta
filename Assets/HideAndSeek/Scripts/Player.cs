@@ -19,8 +19,8 @@ namespace HideAndSeek
         public int costHP = 1;
         public int costHide = 1;
 
-        public Text foodText;
-        public Text ScoreText;
+        public Text HpText;
+        public Text GemText;
         public Text TimeText;
 
         public Button HealBtn;
@@ -49,15 +49,8 @@ namespace HideAndSeek
         private Animator animator;
 		private int hitPoint;        
 
-        private List<PLAYER_ABILITY> abilities = new List<PLAYER_ABILITY>();
-        
         public float prevTime = 0;
         float timeLimit = 60;
-
-        public void AddAbility(PLAYER_ABILITY _ability)
-        {
-            abilities.Add(_ability);
-        }
 
         public void InitDatas()
 		{
@@ -66,8 +59,8 @@ namespace HideAndSeek
 
         public void SetScoreText(Color gColor)
         {
-            ScoreText.text = GameManager.instance.playerGem.ToString();
-            ScoreText.color = gColor;
+            GemText.text = GameManager.instance.playerGem.ToString();
+            GemText.color = gColor;
         }                 
         
         protected override void Start ()
@@ -85,31 +78,7 @@ namespace HideAndSeek
             downBtn.onClick.AddListener(MoveDown);
             leftBtn.onClick.AddListener(MoveLeft);
             rightBtn.onClick.AddListener(MoveRight);
-            
-            //ShowBtn.enabled = false;
-            //HealBtn.enabled = false;
-            //HideBtn.enabled = false;
-            //DestroyBtn.enabled = false;
 
-            foreach (PLAYER_ABILITY ab in abilities)
-            {
-                switch(ab)
-                {
-                    case PLAYER_ABILITY.VIEW:
-                        ShowBtn.enabled = true;
-                        break;
-                    case PLAYER_ABILITY.HEAL:
-                        HealBtn.enabled = true;
-                        break;
-                    case PLAYER_ABILITY.HIDE:
-                        HideBtn.enabled = true;
-                        break;
-                    case PLAYER_ABILITY.DESTROY:
-                        DestroyBtn.enabled = true;
-                        break;
-                }
-                
-            }
             HealBtn.onClick.AddListener(UseHPRecover);
             DestroyBtn.onClick.AddListener(DestoryEnemy);
             ShowBtn.onClick.AddListener(ShowMap);
@@ -141,8 +110,8 @@ namespace HideAndSeek
 
         private void SetHPText(Color msgColor)
         {
-            foodText.text = "HP:" + hitPoint;
-            foodText.color = msgColor;
+            HpText.text = "HP:" + hitPoint;
+            HpText.color = msgColor;
         }
 		
 		

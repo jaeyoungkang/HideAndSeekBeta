@@ -15,7 +15,7 @@ namespace HideAndSeek
     {
         public int playerHPDecrease;
         public int playerHPIncrease;
-                
+
         public int moveCount;
         public int showCount;
         public int waitCount;
@@ -76,6 +76,7 @@ namespace HideAndSeek
         public int strongEnemy;
         public int thief;
         public int gem;
+        public bool clear;
 
         public Level(int _index, int _trap, int _enemy, int _strongEnemy, int _thief, int _gem)
         {
@@ -85,40 +86,40 @@ namespace HideAndSeek
             strongEnemy = _strongEnemy;
             thief = _thief;
             gem = _gem;
+            clear = false;
         }
     }
 
-    public enum PLAYER_ABILITY { VIEW, HEAL, HIDE, DESTROY };
-
     public class Dungeon
-    {        
+    {
         private Level[] levels;
         public int curLevel;
         public int lastLevel;
         private int cost;
-        private PLAYER_ABILITY ability;
+        private int gold;
 
-        public Dungeon(Level[] _levels, int _cost, PLAYER_ABILITY _ability)
+        public Dungeon(Level[] _levels, int _cost, int _gold)
         {
             levels = _levels;
-            cost = _cost;            
+            cost = _cost;
             lastLevel = levels.Length;
-            ability = _ability;
-            MoveToStart();
-        }        
+            gold = _gold;
+        }
 
-        public override string ToString() { return curLevel + "/" + lastLevel; }        
-                
+        public override string ToString() { return curLevel + "/" + lastLevel; }
+
         public int Cost() { return cost; }
 
-        public Level GetCurLevel() { return levels[curLevel-1];  }
+        public Level GetCurLevel() { return levels[curLevel - 1]; }
         public Level[] GetLevels() { return levels; }
 
-        public PLAYER_ABILITY GetAbility() { return ability; }
+        public void clearCurLevel() { levels[curLevel - 1].clear = true; }
+        public bool IsEnd() { return levels[lastLevel-1].clear; }
 
-        public void MoveToStart() { curLevel = 0; }
-        public void MoveToNext() { curLevel++; }
-        public bool IsEnd() { return curLevel > lastLevel; }
+        public void SetLevel(int _level)
+        {
+            curLevel = _level;
+        }
     }
 
     class Region
@@ -131,20 +132,21 @@ namespace HideAndSeek
         private int Version = 5;
         public string fileName;
 
-//        public GAME_INFO gameInfo;
+        //        public GAME_INFO gameInfo;
 
         public List<int> waitTimes = new List<int>();
 
         public int gameOverCount = 0;
-        public int gameEndCount = 0;        
+        public int gameEndCount = 0;
 
-        float prevTime = 0f;        
+        float prevTime = 0f;
 
         public float levelStartDelay = 2f;
         public int playerHp = 30;
         public int playerGem = 0;
         public static GameManager instance = null;              //Static instance of GameManager which allows it to be accessed by any other script.
-        [HideInInspector] public bool playersTurn = true;
+        [HideInInspector]
+        public bool playersTurn = true;
 
         private GameObject titleImage;
         private GameObject lobbyImage;
@@ -157,37 +159,45 @@ namespace HideAndSeek
         private Button startButton;
         private Button resultButton;
         private Button shopBtn;
-        private Button Tutorial;
+
         private Button dungeonABtn;
         private Button dungeonBBtn;
+        private Button dungeonCBtn;
 
         private BoardManager boardScript;
         private List<Enemy> enemies;                            //List of all Enemy units, used to issue them move commands.
         private bool enemiesMoving;                             //Boolean to check if enemies are moving.
 
         private Dungeon curDungeon;
-        private Dungeon tutorial;        
         private Dungeon dungeonA;
         private Dungeon dungeonB;
-        public enum GAME_STATE { START, LOBBY, LEVEL, PLAY, RESULT, OVER }
+        private Dungeon dungeonC;
+
+        public enum GAME_STATE { START, LOBBY, LEVEL, MAP, PLAY, RESULT, OVER }
         private GAME_STATE gameState;
-                
+
+        private GameObject dungeonMap;
+        private Button level1Btn;
+        private Button level2Btn;
+        private Button level3Btn;
+        private Button level4Btn;
+
         public List<GameObject> trapsOnStage = new List<GameObject>();
         public List<GameObject> objsOnStage = new List<GameObject>();
         public List<GameObject> tilesOnStage = new List<GameObject>();
 
         //Awake is always called before any Start functions
         void Awake()
-        {            
+        {
             //Check if instance already exists
             if (instance == null)
             {
                 instance = this;
 #if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
 #else
-                fileName = "log/gameLog_" + DateTime.Now.ToString("M_d_hh_mm") + "_VER_" + Version.ToString() + ".txt";
-                string info = "Level: " + "\tMove: "+ "\tHP Inc: "+ "\tHP Dec: "+ "\tGoldGet: "+ "\tShow: "+ "\tWait: "+ "\tSkill HP: "+ "\tSkill Hide: "+ "\tSkill Show: "+ "\tSkill Destroy: "+ "\tTime: ";
-                WriteFile(fileName, info);
+//                fileName = "log/gameLog_" + DateTime.Now.ToString("M_d_hh_mm") + "_VER_" + Version.ToString() + ".txt";
+//                string info = "Level: " + "\tMove: " + "\tHP Inc: " + "\tHP Dec: " + "\tGoldGet: " + "\tShow: " + "\tWait: " + "\tSkill HP: " + "\tSkill Hide: " + "\tSkill Show: " + "\tSkill Destroy: " + "\tTime: ";
+//                WriteFile(fileName, info);
 #endif
             }
             else if (instance != this)
@@ -215,138 +225,82 @@ namespace HideAndSeek
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
-		public void writeLog()
-		{
-//            gameInfo.deltaTime = Time.time - prevTime;
-//			prevTime = Time.time;
-//            foreach (int time in waitTimes)
-//            {
-//                if (time > 0) gameInfo.waitCount++;
-//            }            
-
-//            gameInfo.totalTime += gameInfo.deltaTime;            
-//            gameInfo.totalSkillHP += gameInfo.skillHP;
-//            gameInfo.totalSkillShow += gameInfo.skillShow;
-//            gameInfo.totalSkillHide += gameInfo.skillHide;
-//            gameInfo.totalSkillDestroy += gameInfo.skillDestroy;
-
-////            gameInfo.averageTime = gameInfo.totalTime / level;
-
-//            Dictionary<string, object> eventInfo = new Dictionary<string, object>
-//                        {
-////                            { "level", level},
-//                            { "move", gameInfo.moveCount},
-//                            { "HP Inc", gameInfo.playerHPIncrease},
-//                            { "HP Dec", gameInfo.playerHPDecrease},
-//                            { "GoldGet", gameInfo.goldGet},
-//                            { "show", gameInfo.showCount},                            
-//                            { "Wait", gameInfo.waitCount},
-//                            { "time", (int)gameInfo.deltaTime}
-//                        };
-
-//            Analytics.CustomEvent("Level info", eventInfo);
-
-//            Dictionary<string, object> skillInfo = new Dictionary<string, object>
-//                        {
-////                            { "level", level},
-//                            { "Skill HP", gameInfo.skillHP},
-//                            { "Skill Hide", gameInfo.skillHide},
-//                            { "Skill Show", gameInfo.skillShow},
-//                            { "Skill Destory", gameInfo.skillDestroy}
-//                         };
-//            Analytics.CustomEvent("Skill info", skillInfo);
-            
-//#if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
-//#else
-//            string info = 
-////                level.ToString() + "\t" +
-//                gameInfo.moveCount.ToString()
-//                + "\t" + gameInfo.playerHPIncrease.ToString()
-//                + "\t" + gameInfo.playerHPDecrease.ToString()
-//                + "\t" + gameInfo.goldGet.ToString()
-//                + "\t" + gameInfo.showCount.ToString()
-//                + "\t" + gameInfo.waitCount.ToString()
-//                + "\t" + gameInfo.skillHP.ToString()
-//                + "\t" + gameInfo.skillHide.ToString()
-//                + "\t" + gameInfo.skillShow.ToString()
-//                + "\t" + gameInfo.skillDestroy.ToString()
-//                + "\t" + ((int)gameInfo.deltaTime).ToString();
-//            WriteFile(fileName, info);            
-//#endif
-//            gameInfo.ResetLevelInfo();
-        }        
-
-        public void WriteFile(string fileName, string info)
-        {
-            if (File.Exists(fileName))
-            {
-                File.AppendAllText(fileName, info + Environment.NewLine);
-                return;
-            }
-
-            var sr = File.CreateText(fileName);
-            sr.WriteLine(info);
-            sr.Close();
-        }
-
         static private void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)
         {
             if (instance != null)
             {
                 instance.InitUI();
-				instance.setupLevel ();
+                instance.setupLevel();
             }
         }
 
         void InitDungeons()
         {
-            Level[] tutorialInfo= new Level[] {
-                                   new Level(0, 5, 0, 0, 0, 1),
-                                   new Level(1, 6, 1, 0, 0, 2),
-                                   new Level(2, 6, 2, 0, 0, 3),
-                                   new Level(3, 6, 5, 0, 0, 1),
-            };
-            tutorial = new Dungeon(tutorialInfo, 0, PLAYER_ABILITY.VIEW);
-            
-            Level[] levelInfoA = new Level[] {
-                                   new Level(0, 5, 1, 0, 0, 1),
-                                   new Level(1, 6, 1, 0, 0, 2),
-                                   new Level(2, 7, 2, 0, 0, 3)
-            };
-            dungeonA = new Dungeon(levelInfoA, 2, PLAYER_ABILITY.HEAL);
+            // TAKE ABOUT 1 MINUTE
+            Level[] dungeonAInfo = new Level[] {
+                                   new Level(0, 8, 0, 0, 0, 1),
+                                   new Level(1, 9, 0, 0, 0, 1),
+                                    new Level(2, 10, 2, 0, 0, 3),
+                                    new Level(3, 12, 3, 0, 0, 1)
+                                };
+            dungeonA = new Dungeon(dungeonAInfo, 0, 10);
 
-            Level[] levelInfoB = new Level[] {
-                                   new Level(0, 5, 2, 0, 0, 3),
-                                   new Level(1, 6, 2, 0, 0, 3),
-                                   new Level(2, 6, 3, 0, 0, 3),
-                                   new Level(3, 7, 3, 0, 1, 4),
-                                   new Level(4, 7, 3, 1, 0, 4)
+            // TAKE ABOUT 3 MINUTES
+            Level[] dungeonBInfo = new Level[] {
+                                   new Level(0, 6, 1, 0, 0, 1),
+                                   new Level(1, 7, 1, 0, 0, 1),
+                                    new Level(2, 8, 1, 0, 0, 1),
+                                    new Level(3, 8, 1, 0, 0, 1),
+                                    new Level(4, 8, 1, 0, 0, 1),
+                                    new Level(5, 8, 1, 0, 0, 1),
+                                    new Level(6, 8, 1, 0, 0, 1),
+                                    new Level(7, 8, 1, 0, 0, 1),
+                                    new Level(8, 9, 1, 0, 0, 0)
             };
-            dungeonB = new Dungeon(levelInfoB, 3, PLAYER_ABILITY.HIDE);
+            dungeonB = new Dungeon(dungeonBInfo, 2, 40);
 
-            Level[] levelInfoC = new Level[] {
-                                   new Level(0, 5, 2, 0, 0, 3),
-                                   new Level(1, 6, 2, 0, 0, 3),
-                                   new Level(2, 6, 3, 0, 0, 3),
-                                   new Level(3, 7, 3, 0, 1, 4),
-                                   new Level(4, 7, 3, 1, 0, 4)
+            // TAKE ABOUT 5 MINUTES
+            Level[] dungeonCInfo = new Level[] {
+                                   new Level(0, 6, 1, 0, 0, 1),
+                                   new Level(1, 7, 1, 0, 0, 1),
+                                    new Level(2, 8, 1, 0, 0, 1),
+                                    new Level(3, 8, 1, 0, 0, 1),
+                                    new Level(4, 8, 1, 0, 0, 1),
+                                    new Level(5, 8, 1, 0, 0, 1),
+                                    new Level(6, 8, 1, 0, 0, 1),
+                                    new Level(7, 8, 1, 0, 0, 1),
+                                    new Level(8, 8, 1, 0, 0, 1),
+                                    new Level(9, 8, 1, 0, 0, 1),
+                                    new Level(10, 8, 1, 0, 0, 1),
+                                    new Level(11, 8, 1, 0, 0, 1),
+                                    new Level(12, 8, 1, 0, 0, 1),
+                                    new Level(13, 8, 1, 0, 0, 1),
+                                    new Level(14, 8, 1, 0, 0, 1),
+                                    new Level(15, 8, 1, 0, 0, 1)
             };
+            dungeonC= new Dungeon(dungeonCInfo, 3, 100);
         }
 
         void EnterDungeon(Dungeon dungeon)
         {
-            if(dungeon.Cost() <= playerGem)
+            if (dungeon.Cost() <= playerGem)
             {
                 playerGem = playerGem - dungeon.Cost();
                 curDungeon = dungeon;
-                curDungeon.MoveToStart();
-                MoveToNextLevel();				
+                ChangeState(GAME_STATE.MAP);
             }
             else
             {
-                
+
             }
         }
+
+        void GotoDungeonMap()
+        {
+            if(curDungeon.IsEnd()) ChangeState(GAME_STATE.LOBBY);
+            else ChangeState(GAME_STATE.MAP);
+        }
+
 
         void setupPage()
         {
@@ -355,39 +309,37 @@ namespace HideAndSeek
             bool bDungeon = false;
             bool bResult = false;
             bool bPlay = false;
+            bool bMap = false;
 
             switch (gameState)
             {
                 case GAME_STATE.START: bTitle = true; break;
                 case GAME_STATE.LOBBY: bLobby = true; break;
                 case GAME_STATE.LEVEL: bDungeon = true; break;
-				case GAME_STATE.PLAY: bPlay = true; break;
-                case GAME_STATE.RESULT: bResult = true;  break;
+                case GAME_STATE.MAP: bMap = true; break;
+                case GAME_STATE.PLAY: bPlay = true; break;
+                case GAME_STATE.RESULT: bResult = true; break;
                 case GAME_STATE.OVER: bResult = true; break;
             }
 
             lobbyImage.SetActive(bLobby);
-            titleImage.SetActive(bTitle);            
+            titleImage.SetActive(bTitle);
             dungeonImage.SetActive(bDungeon);
             resultImage.SetActive(bResult);
-			controller.SetActive(bPlay);
+            controller.SetActive(bPlay);
+            dungeonMap.SetActive(bMap);
         }
 
         void setupLevel()
-        {            
+        {
             enemies.Clear();
             boardScript.SetupScene(curDungeon.GetCurLevel());
             ChangeState(GAME_STATE.PLAY);
         }
 
         void InitiateLevel()
-        {            
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);            
-        }
-
-        void EnterTutorial()
         {
-            EnterDungeon(tutorial);
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
         }
 
         void EnterDungeonA()
@@ -400,6 +352,11 @@ namespace HideAndSeek
             EnterDungeon(dungeonB);
         }
 
+        void EnterDungeonC()
+        {
+            EnterDungeon(dungeonC);
+        }
+
         void EnterShop()
         {
 
@@ -407,42 +364,61 @@ namespace HideAndSeek
 
         public void ShowResult()
         {
+            curDungeon.clearCurLevel();
             ChangeState(GAME_STATE.RESULT);
         }
 
-        public void MoveToNextLevel()
-        {
-            if(gameState == GAME_STATE.OVER) //  have to seperate the gameover page and the gameresult page and total result page
-            {
-                playersTurn = false;
-                GoToLobby();
-                return;
-            }
-            
-            curDungeon.MoveToNext();
-            if (curDungeon.IsEnd())
-            {
-//                player.AddAbility(curDungeon.GetAbility());                
-                playersTurn = false;
-                GoToLobby();
-            }
-            else
-            {
-                ChangeState(GAME_STATE.LEVEL);
-                dungeonText.text = "Level " + curDungeon.ToString();                
-                Invoke("InitiateLevel", 2f);                
-            }            
-        }
-        
         void GoToLobby()
         {
-            playerGem = 0;
             ChangeState(GAME_STATE.LOBBY);
+        }
+
+        void EnterLevel1()
+        {
+            curDungeon.SetLevel(1);
+            ChangeState(GAME_STATE.LEVEL);
+            dungeonText.text = "Level " + curDungeon.ToString();
+            Invoke("InitiateLevel", 2f);
+        }
+
+        void EnterLevel2()
+        {
+            curDungeon.SetLevel(2);
+            ChangeState(GAME_STATE.LEVEL);
+            dungeonText.text = "Level " + curDungeon.ToString();
+            Invoke("InitiateLevel", 2f);
+        }
+
+        void EnterLevel3()
+        {
+            curDungeon.SetLevel(3);
+            ChangeState(GAME_STATE.LEVEL);
+            dungeonText.text = "Level " + curDungeon.ToString();
+            Invoke("InitiateLevel", 2f);
+        }
+
+        void EnterLevel4()
+        {
+            curDungeon.SetLevel(4);
+            ChangeState(GAME_STATE.LEVEL);
+            dungeonText.text = "Level " + curDungeon.ToString();
+            Invoke("InitiateLevel", 2f);
         }
 
         void InitUI()
         {
-			titleImage = GameObject.Find("FrontPageImage");
+            dungeonMap = GameObject.Find("DungeonMap");
+            level1Btn = GameObject.Find("level1").GetComponent<Button>();
+            level2Btn = GameObject.Find("level2").GetComponent<Button>();
+            level3Btn = GameObject.Find("level3").GetComponent<Button>();
+            level4Btn = GameObject.Find("level4").GetComponent<Button>();
+
+            level1Btn.onClick.AddListener(EnterLevel1);
+            level2Btn.onClick.AddListener(EnterLevel2);
+            level3Btn.onClick.AddListener(EnterLevel3);
+            level4Btn.onClick.AddListener(EnterLevel4);
+
+            titleImage = GameObject.Find("FrontPageImage");
             lobbyImage = GameObject.Find("LobbyImage");
             dungeonImage = GameObject.Find("DungeonImage");
             resultImage = GameObject.Find("ResultImage");
@@ -451,49 +427,51 @@ namespace HideAndSeek
             dungeonText = GameObject.Find("DungeonText").GetComponent<Text>();
 
             shopBtn = GameObject.Find("ShopButton").GetComponent<Button>();
-            Tutorial = GameObject.Find("TutorialButton").GetComponent<Button>();
-            dungeonABtn = GameObject.Find("DungeonAButton").GetComponent<Button>();
-            dungeonBBtn = GameObject.Find("DungeonBButton").GetComponent<Button>();
+            dungeonABtn = GameObject.Find("DungeonABtn").GetComponent<Button>();
+            dungeonBBtn = GameObject.Find("DungeonBBtn").GetComponent<Button>();
+            dungeonCBtn = GameObject.Find("DungeonCBtn").GetComponent<Button>();
+            
             resultButton = GameObject.Find("ResultButton").GetComponent<Button>();
             startButton = GameObject.Find("FrontPageButton").GetComponent<Button>();
 
-            Tutorial.onClick.AddListener(EnterTutorial);
             dungeonABtn.onClick.AddListener(EnterDungeonA);
             dungeonBBtn.onClick.AddListener(EnterDungeonB);
+            dungeonCBtn.onClick.AddListener(EnterDungeonC);
+
             shopBtn.onClick.AddListener(EnterShop);
 
-			resultButton.onClick.AddListener(MoveToNextLevel);
-            startButton.onClick.AddListener(GoToLobby);            
+            resultButton.onClick.AddListener(GotoDungeonMap);
+            startButton.onClick.AddListener(GoToLobby);
         }
 
         public void ChangeState(GAME_STATE nextState)
         {
             gameState = nextState;
             setupPage();
-		}
+        }
 
-		void Update()
-		{
+        void Update()
+        {
             if (gameState == GAME_STATE.PLAY)
             {
                 if (!playersTurn && !enemiesMoving)
-                    StartCoroutine(MoveEnemies());                
+                    StartCoroutine(MoveEnemies());
             }
         }
-		
-		public void AddEnemyToList(Enemy script)
-		{
-			enemies.Add(script);
-		}
 
-        
+        public void AddEnemyToList(Enemy script)
+        {
+            enemies.Add(script);
+        }
+
+
         public void GameOver()
-		{
+        {
             ChangeState(GAME_STATE.OVER);
-        }        
-		
+        }
+
         bool bShowing = false;
-        public bool IsShowing() { return bShowing;  }
+        public bool IsShowing() { return bShowing; }
 
         public void ShowMap(bool bShow)
         {
@@ -523,7 +501,7 @@ namespace HideAndSeek
         {
             List<Enemy> result = new List<Enemy>();
 
-            foreach(Vector3 v in range)
+            foreach (Vector3 v in range)
             {
                 for (int i = 0; i < enemies.Count; i++)
                 {
@@ -547,9 +525,9 @@ namespace HideAndSeek
 
             List<GameObject> targetTiles = new List<GameObject>();
 
-            foreach(GameObject obj in tilesOnStage)
+            foreach (GameObject obj in tilesOnStage)
             {
-                foreach(Vector3 v in range)
+                foreach (Vector3 v in range)
                 {
                     if (obj.tag == "Wall") continue;
                     if (obj.transform.position == v) targetTiles.Add(obj);
@@ -566,15 +544,15 @@ namespace HideAndSeek
 
             List<Enemy> targetEnemies = SearchEnemies(range);
             StartCoroutine(DestroyEffectFloor(targetTiles));
-            StartCoroutine(DestroyEffect(targetEnemies));            
+            StartCoroutine(DestroyEffect(targetEnemies));
         }
 
         IEnumerator DestroyEffectFloor(List<GameObject> targetTiles)
         {
-            foreach(GameObject obj in targetTiles)
+            foreach (GameObject obj in targetTiles)
             {
                 SpriteRenderer spRenderer = obj.GetComponent<SpriteRenderer>();
-                if(spRenderer)
+                if (spRenderer)
                 {
                     Color color = spRenderer.color;
                     color = new Vector4(1, 0.5f, 0.5F, 1);
@@ -612,32 +590,32 @@ namespace HideAndSeek
 
         public void SetSearchEnemies(bool value)
         {
-            foreach(Enemy en in enemies)
+            foreach (Enemy en in enemies)
             {
                 en.SetSearch(value);
             }
         }
 
         IEnumerator MoveEnemies()
-		{
+        {
             float totalTime = 0.24f;
-			enemiesMoving = true;
-            
+            enemiesMoving = true;
+
             yield return new WaitForSeconds(0.08f);
 
             for (int i = 0; i < enemies.Count; i++)
-			{
-                if(enemies[i].gameObject.activeSelf) enemies[i].MoveEnemy ();
+            {
+                if (enemies[i].gameObject.activeSelf) enemies[i].MoveEnemy();
 
                 yield return new WaitForSeconds(0.03f);
                 totalTime -= 0.03f;
             }
 
-            if(totalTime > 0) yield return new WaitForSeconds(totalTime);
+            if (totalTime > 0) yield return new WaitForSeconds(totalTime);
             playersTurn = true;
-			
-			enemiesMoving = false;
-		}
+
+            enemiesMoving = false;
+        }
 
         public bool[,] UpdateMap(Vector3 playerPos)
         {
@@ -721,6 +699,80 @@ namespace HideAndSeek
                 }
             }
         }
+
+        public void writeLog()
+        {
+            //            gameInfo.deltaTime = Time.time - prevTime;
+            //			prevTime = Time.time;
+            //            foreach (int time in waitTimes)
+            //            {
+            //                if (time > 0) gameInfo.waitCount++;
+            //            }            
+
+            //            gameInfo.totalTime += gameInfo.deltaTime;            
+            //            gameInfo.totalSkillHP += gameInfo.skillHP;
+            //            gameInfo.totalSkillShow += gameInfo.skillShow;
+            //            gameInfo.totalSkillHide += gameInfo.skillHide;
+            //            gameInfo.totalSkillDestroy += gameInfo.skillDestroy;
+
+            ////            gameInfo.averageTime = gameInfo.totalTime / level;
+
+            //            Dictionary<string, object> eventInfo = new Dictionary<string, object>
+            //                        {
+            ////                            { "level", level},
+            //                            { "move", gameInfo.moveCount},
+            //                            { "HP Inc", gameInfo.playerHPIncrease},
+            //                            { "HP Dec", gameInfo.playerHPDecrease},
+            //                            { "GoldGet", gameInfo.goldGet},
+            //                            { "show", gameInfo.showCount},                            
+            //                            { "Wait", gameInfo.waitCount},
+            //                            { "time", (int)gameInfo.deltaTime}
+            //                        };
+
+            //            Analytics.CustomEvent("Level info", eventInfo);
+
+            //            Dictionary<string, object> skillInfo = new Dictionary<string, object>
+            //                        {
+            ////                            { "level", level},
+            //                            { "Skill HP", gameInfo.skillHP},
+            //                            { "Skill Hide", gameInfo.skillHide},
+            //                            { "Skill Show", gameInfo.skillShow},
+            //                            { "Skill Destory", gameInfo.skillDestroy}
+            //                         };
+            //            Analytics.CustomEvent("Skill info", skillInfo);
+
+            //#if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
+            //#else
+            //            string info = 
+            ////                level.ToString() + "\t" +
+            //                gameInfo.moveCount.ToString()
+            //                + "\t" + gameInfo.playerHPIncrease.ToString()
+            //                + "\t" + gameInfo.playerHPDecrease.ToString()
+            //                + "\t" + gameInfo.goldGet.ToString()
+            //                + "\t" + gameInfo.showCount.ToString()
+            //                + "\t" + gameInfo.waitCount.ToString()
+            //                + "\t" + gameInfo.skillHP.ToString()
+            //                + "\t" + gameInfo.skillHide.ToString()
+            //                + "\t" + gameInfo.skillShow.ToString()
+            //                + "\t" + gameInfo.skillDestroy.ToString()
+            //                + "\t" + ((int)gameInfo.deltaTime).ToString();
+            //            WriteFile(fileName, info);            
+            //#endif
+            //            gameInfo.ResetLevelInfo();
+        }
+
+        public void WriteFile(string fileName, string info)
+        {
+            if (File.Exists(fileName))
+            {
+                File.AppendAllText(fileName, info + Environment.NewLine);
+                return;
+            }
+
+            var sr = File.CreateText(fileName);
+            sr.WriteLine(info);
+            sr.Close();
+        }
+
     }
 }
-

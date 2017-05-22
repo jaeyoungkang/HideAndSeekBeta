@@ -18,11 +18,7 @@ namespace HideAndSeek
         public int costShow = 1;
         public int costHP = 1;
         public int costHide = 1;
-
-        public Text HpText;
-        public Text GemText;
-        public Text TimeText;
-
+        
         public Button HealBtn;
         public Button ShowBtn;
         public Button HideBtn;
@@ -47,32 +43,15 @@ namespace HideAndSeek
         public AudioClip skillSound;
 
         private Animator animator;
-		private int hitPoint;        
 
-        public float prevTime = 0;
-        float timeLimit = 60;
-
-        public void InitDatas()
-		{
-            hitPoint = GameManager.instance.playerHp;            
-        }
-
-        public void SetScoreText(Color gColor)
-        {
-            GemText.text = GameManager.instance.playerGem.ToString();
-            GemText.color = gColor;
-        }                 
+        
         
         protected override void Start ()
-		{
-            timeLimit = 60;
-            prevTime = Time.time;
-            GameManager.instance.waitTimes.Clear();
-            animator = GetComponent<Animator>();            
+		{   
+            animator = GetComponent<Animator>();
 
-			InitDatas();
-			SetHPText(Color.white);
-            SetScoreText(Color.white);
+            GameManager.instance.SetHPText(Color.white);
+            GameManager.instance.SetGemText(Color.white);
 
             upBtn.onClick.AddListener(MoveUp);
             downBtn.onClick.AddListener(MoveDown);
@@ -106,39 +85,20 @@ namespace HideAndSeek
         {
             AttemptMove<Enemy>(-1, 0);
         }
-
-
-        private void SetHPText(Color msgColor)
-        {
-            HpText.text = "HP:" + hitPoint;
-            HpText.color = msgColor;
-        }
 		
-		
-		//This function is called when the behaviour becomes disabled or inactive.
-		private void OnDisable ()
-		{
-			GameManager.instance.playerHp = hitPoint;            
-        }
-
         private void Update ()
-		{
-            timeLimit -= Time.deltaTime;
-            TimeText.text = Mathf.Floor(timeLimit).ToString();
-            if (timeLimit <= 10) TimeText.color = Color.red;
-            else TimeText.color = Color.white;
-
-            if (timeLimit <= 0)
+		{   
+            if (GameManager.instance.timeLimit <= 0)
             {
-                timeLimit = 10;
-                LoseFood(10);
+                GameManager.instance.timeLimit = 10;
+                LoseHP(10);
                 SoundManager.instance.RandomizeSfx(attackedSound1, attackedSound2);
                 SetHideMode(false);
             }      
 
             if (!GameManager.instance.playersTurn) return;
 
-            if (hitPoint <= 0) return;
+            if (GameManager.instance.playerHp <= 0) return;
 
             int horizontal = 0;  	//Used to store the horizontal move direction.
 			int vertical = 0;		//Used to store the vertical move direction.
@@ -174,12 +134,8 @@ namespace HideAndSeek
         
         protected override void AttemptMove <T> (int xDir, int yDir)
 		{
-            int deltaTime = (int)(Time.time - prevTime);            
-            prevTime = Time.time;
-            GameManager.instance.waitTimes.Add(deltaTime);
-
-            SetHPText(Color.white);
-            SetScoreText(Color.white);            
+            GameManager.instance.SetHPText(Color.white);
+            GameManager.instance.SetGemText(Color.white);            
             GameManager.instance.ShowMap(false);
 
             base.AttemptMove <T> (xDir, yDir);
@@ -208,7 +164,7 @@ namespace HideAndSeek
             {
                 Renderer renderer = trap.GetComponent<SpriteRenderer>();
                 if (renderer) renderer.enabled = true;
-                LoseFood(10);
+                LoseHP(10);
                 SoundManager.instance.RandomizeSfx(attackedSound1, attackedSound2);
                 SetHideMode(false);
             }
@@ -267,7 +223,7 @@ namespace HideAndSeek
         void GetGold(int count)
         {
             GameManager.instance.playerGem += count;
-            SetScoreText(Color.green);
+            GameManager.instance.SetGemText(Color.green);
         }
 
         IEnumerator HideAni(GameObject obj)
@@ -277,12 +233,12 @@ namespace HideAndSeek
             obj.SetActive(false);
         }
 
-		public void LoseFood (int loss)
+		public void LoseHP (int loss)
 		{
             animator.SetTrigger ("playerHit");
-			hitPoint -= loss;
+            GameManager.instance.playerHp -= loss;
 
-            SetHPText(Color.red);
+            GameManager.instance.SetHPText(Color.red);
 
             CheckIfGameOver ();
 		}
@@ -290,7 +246,7 @@ namespace HideAndSeek
 		
 		private void CheckIfGameOver ()
 		{            
-			if (hitPoint <= 0) 
+			if (GameManager.instance.playerHp <= 0) 
 			{
 				GameOver();
 			}
@@ -299,7 +255,7 @@ namespace HideAndSeek
         void UseGem(int count)
         {
             GameManager.instance.playerGem -= count;
-            SetScoreText(Color.red);
+            GameManager.instance.SetGemText(Color.red);
         }
 
         bool bHideMode = false;
@@ -376,18 +332,16 @@ namespace HideAndSeek
 
         void RecoverHP(int delta)
         {
-            hitPoint += delta;
+            GameManager.instance.playerHp += delta;
 
-            SetHPText(Color.green);            
+            GameManager.instance.SetHPText(Color.green);            
         }
 
         void GameOver()
         {
             SoundManager.instance.PlaySingle(gameOverSound);
             GameManager.instance.ShowMap(true);
-
-            hitPoint = 20;
-
+            
             GameManager.instance.GameOver();
         }
     }

@@ -84,7 +84,7 @@ namespace HideAndSeek
 		{
 			Player hitPlayer = component as Player;
 			
-			hitPlayer.LoseFood (playerDamage);
+			hitPlayer.LoseHP(playerDamage);
 
             Show(true);
             animator.SetTrigger ("enemyAttack");

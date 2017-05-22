@@ -8,143 +8,13 @@ using System.Collections.Generic;       //Allows us to use Lists.
 using System.IO;
 using System;
 
-
 namespace HideAndSeek
 {
-    public struct GAME_INFO
-    {
-        public int playerHPDecrease;
-        public int playerHPIncrease;
-
-        public int moveCount;
-        public int showCount;
-        public int waitCount;
-
-        public int goldGet;
-
-        public int skillShow;
-        public int skillHP;
-        public int skillHide;
-        public int skillDestroy;
-
-        public int totalSkillHP;
-        public int totalSkillHide;
-        public int totalSkillShow;
-        public int totalSkillDestroy;
-
-        public float totalTime;
-        public float averageTime;
-
-        public float deltaTime;
-
-        public void ResetLevelInfo()
-        {
-            playerHPDecrease = 0;
-            playerHPIncrease = 0;
-
-            moveCount = 0;
-            showCount = 0;
-            waitCount = 0;
-
-            goldGet = 0;
-
-            skillHP = 0;
-            skillHide = 0;
-            skillShow = 0;
-            skillDestroy = 0;
-
-            deltaTime = 0;
-        }
-
-        public void Init()
-        {
-            ResetLevelInfo();
-            totalSkillHP = 0;
-            totalSkillHide = 0;
-            totalSkillShow = 0;
-            totalSkillDestroy = 0;
-            totalTime = 0;
-            averageTime = 0;
-        }
-    }
-
-    public class Level
-    {
-        public int index;
-        public int trap;
-        public int enemy;
-        public int strongEnemy;
-        public int thief;
-        public int gem;
-        public bool clear;
-
-        public Level(int _index, int _trap, int _enemy, int _strongEnemy, int _thief, int _gem)
-        {
-            index = _index;
-            trap = _trap;
-            enemy = _enemy;
-            strongEnemy = _strongEnemy;
-            thief = _thief;
-            gem = _gem;
-            clear = false;
-        }
-    }
-
-    public class Dungeon
-    {
-        private Level[] levels;
-        public int curLevel;
-        public int lastLevel;
-        private int cost;
-        private int gold;
-
-        public Dungeon(Level[] _levels, int _cost, int _gold)
-        {
-            levels = _levels;
-            cost = _cost;
-            lastLevel = levels.Length;
-            gold = _gold;
-        }
-
-        public override string ToString() { return curLevel + "/" + lastLevel; }
-
-        public int Cost() { return cost; }
-
-        public Level GetCurLevel() { return levels[curLevel - 1]; }
-        public Level[] GetLevels() { return levels; }
-
-        public void clearCurLevel() { levels[curLevel - 1].clear = true; }
-        public bool IsEnd() { return levels[lastLevel-1].clear; }
-
-        public void SetLevel(int _level)
-        {
-            curLevel = _level;
-        }
-    }
-
-    class Region
-    {
-        public List<Dungeon> dungeons;
-    }
+    public enum GAME_STATE { START, LOBBY, SHOP, LEVEL, MAP, PLAY, RESULT, OVER }
 
     public class GameManager : MonoBehaviour
     {
-        private int Version = 5;
-        public string fileName;
-
-        //        public GAME_INFO gameInfo;
-
-        public List<int> waitTimes = new List<int>();
-
-        public int gameOverCount = 0;
-        public int gameEndCount = 0;
-
-        float prevTime = 0f;
-
-        public float levelStartDelay = 2f;
-        public int playerHp = 30;
-        public int playerGem = 0;
-        public static GameManager instance = null;              //Static instance of GameManager which allows it to be accessed by any other script.
+        public static GameManager instance = null;
         [HideInInspector]
         public bool playersTurn = true;
 
@@ -152,66 +22,63 @@ namespace HideAndSeek
         private GameObject lobbyImage;
         private GameObject dungeonImage;
         private GameObject resultImage;
+        private GameObject shopImage;
         private GameObject controller;
-
-        private Text dungeonText;
-
-        private Button startButton;
-        private Button resultButton;
-        private Button shopBtn;
+        private GameObject dungeonMap;        
 
         private Button dungeonABtn;
         private Button dungeonBBtn;
         private Button dungeonCBtn;
-
-        private BoardManager boardScript;
-        private List<Enemy> enemies;                            //List of all Enemy units, used to issue them move commands.
-        private bool enemiesMoving;                             //Boolean to check if enemies are moving.
-
-        private Dungeon curDungeon;
-        private Dungeon dungeonA;
-        private Dungeon dungeonB;
-        private Dungeon dungeonC;
-
-        public enum GAME_STATE { START, LOBBY, LEVEL, MAP, PLAY, RESULT, OVER }
-        private GAME_STATE gameState;
-
-        private GameObject dungeonMap;
+        private Button resultButton;
+        private Text dungeonText;
+        private Text resultText;
+        private Text goldText;
+        
         private Button level1Btn;
         private Button level2Btn;
         private Button level3Btn;
         private Button level4Btn;
+        private Button startButton;
+        private Button shopBtn;
 
+        private Image GemImage;
+        private Text HpText;
+        private Text GemText;
+        private Text TimeText;
+
+        private DungeonManager dungeonManager;
+        private BoardManager boardScript;
+        private List<Enemy> enemies;                            //List of all Enemy units, used to issue them move commands.
+        private bool enemiesMoving;                             //Boolean to check if enemies are moving.
+                
+        private GAME_STATE gameState;
+                
         public List<GameObject> trapsOnStage = new List<GameObject>();
         public List<GameObject> objsOnStage = new List<GameObject>();
         public List<GameObject> tilesOnStage = new List<GameObject>();
 
-        //Awake is always called before any Start functions
+        public int playerHp = 20;
+        public int playerGem = 0;
+        public float timeLimit;
+
+        public int playerGold = 40;
+        
         void Awake()
         {
-            //Check if instance already exists
             if (instance == null)
             {
                 instance = this;
-#if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
-#else
-//                fileName = "log/gameLog_" + DateTime.Now.ToString("M_d_hh_mm") + "_VER_" + Version.ToString() + ".txt";
-//                string info = "Level: " + "\tMove: " + "\tHP Inc: " + "\tHP Dec: " + "\tGoldGet: " + "\tShow: " + "\tWait: " + "\tSkill HP: " + "\tSkill Hide: " + "\tSkill Show: " + "\tSkill Destroy: " + "\tTime: ";
-//                WriteFile(fileName, info);
-#endif
             }
             else if (instance != this)
                 Destroy(gameObject);
 
-            //Sets this to not be destroyed when reloading scene
             DontDestroyOnLoad(gameObject);
 
             enemies = new List<Enemy>();
-
-            //Get a component reference to the attached BoardManager script
             boardScript = GetComponent<BoardManager>();
+            dungeonManager = GetComponent<DungeonManager>();
+            dungeonManager.InitDungeons();
 
-            InitDungeons();
             InitUI();
             ChangeState(GAME_STATE.START);
         }
@@ -234,78 +101,24 @@ namespace HideAndSeek
             }
         }
 
-        void InitDungeons()
+        private Dungeon curDungeon;
+
+        public void ShowResult()
         {
-            // TAKE ABOUT 1 MINUTE
-            Level[] dungeonAInfo = new Level[] {
-                                   new Level(0, 8, 0, 0, 0, 1),
-                                   new Level(1, 9, 0, 0, 0, 1),
-                                    new Level(2, 10, 2, 0, 0, 3),
-                                    new Level(3, 12, 3, 0, 0, 1)
-                                };
-            dungeonA = new Dungeon(dungeonAInfo, 0, 10);
-
-            // TAKE ABOUT 3 MINUTES
-            Level[] dungeonBInfo = new Level[] {
-                                   new Level(0, 6, 1, 0, 0, 1),
-                                   new Level(1, 7, 1, 0, 0, 1),
-                                    new Level(2, 8, 1, 0, 0, 1),
-                                    new Level(3, 8, 1, 0, 0, 1),
-                                    new Level(4, 8, 1, 0, 0, 1),
-                                    new Level(5, 8, 1, 0, 0, 1),
-                                    new Level(6, 8, 1, 0, 0, 1),
-                                    new Level(7, 8, 1, 0, 0, 1),
-                                    new Level(8, 9, 1, 0, 0, 0)
-            };
-            dungeonB = new Dungeon(dungeonBInfo, 2, 40);
-
-            // TAKE ABOUT 5 MINUTES
-            Level[] dungeonCInfo = new Level[] {
-                                   new Level(0, 6, 1, 0, 0, 1),
-                                   new Level(1, 7, 1, 0, 0, 1),
-                                    new Level(2, 8, 1, 0, 0, 1),
-                                    new Level(3, 8, 1, 0, 0, 1),
-                                    new Level(4, 8, 1, 0, 0, 1),
-                                    new Level(5, 8, 1, 0, 0, 1),
-                                    new Level(6, 8, 1, 0, 0, 1),
-                                    new Level(7, 8, 1, 0, 0, 1),
-                                    new Level(8, 8, 1, 0, 0, 1),
-                                    new Level(9, 8, 1, 0, 0, 1),
-                                    new Level(10, 8, 1, 0, 0, 1),
-                                    new Level(11, 8, 1, 0, 0, 1),
-                                    new Level(12, 8, 1, 0, 0, 1),
-                                    new Level(13, 8, 1, 0, 0, 1),
-                                    new Level(14, 8, 1, 0, 0, 1),
-                                    new Level(15, 8, 1, 0, 0, 1)
-            };
-            dungeonC= new Dungeon(dungeonCInfo, 3, 100);
-        }
-
-        void EnterDungeon(Dungeon dungeon)
-        {
-            if (dungeon.Cost() <= playerGem)
+            curDungeon.clearCurLevel();
+            if(curDungeon.IsEnd())
             {
-                playerGem = playerGem - dungeon.Cost();
-                curDungeon = dungeon;
-                ChangeState(GAME_STATE.MAP);
+                resultText.text = "Gold: " + curDungeon.GetReward().ToString();
+                playerGold += curDungeon.GetReward();
             }
-            else
-            {
-
-            }
+            GameManager.instance.ChangeState(GAME_STATE.RESULT);
         }
-
-        void GotoDungeonMap()
-        {
-            if(curDungeon.IsEnd()) ChangeState(GAME_STATE.LOBBY);
-            else ChangeState(GAME_STATE.MAP);
-        }
-
 
         void setupPage()
         {
             bool bTitle = false;
             bool bLobby = false;
+            bool bShop = false;
             bool bDungeon = false;
             bool bResult = false;
             bool bPlay = false;
@@ -314,6 +127,7 @@ namespace HideAndSeek
             switch (gameState)
             {
                 case GAME_STATE.START: bTitle = true; break;
+                case GAME_STATE.SHOP: bShop = true; break;
                 case GAME_STATE.LOBBY: bLobby = true; break;
                 case GAME_STATE.LEVEL: bDungeon = true; break;
                 case GAME_STATE.MAP: bMap = true; break;
@@ -322,12 +136,42 @@ namespace HideAndSeek
                 case GAME_STATE.OVER: bResult = true; break;
             }
 
+            shopImage.SetActive(bShop);
             lobbyImage.SetActive(bLobby);
             titleImage.SetActive(bTitle);
             dungeonImage.SetActive(bDungeon);
             resultImage.SetActive(bResult);
             controller.SetActive(bPlay);
             dungeonMap.SetActive(bMap);
+
+            if (bMap || bDungeon || bResult || bPlay)
+            {
+                HpText.enabled = true;
+                GemText.enabled = true;
+                TimeText.enabled = true;
+                GemImage.enabled = true;
+            }
+            else
+            {
+                HpText.enabled = false;
+                GemText.enabled = false;
+                TimeText.enabled = false;
+                GemImage.enabled = true;
+            }
+
+            goldText.text = "Gold: " + playerGold;
+        }
+
+        public void SetHPText(Color msgColor)
+        {
+            HpText.text = "HP:" + playerHp;
+            HpText.color = msgColor;
+        }
+
+        public void SetGemText(Color gColor)
+        {
+            GemText.text = playerGem.ToString();
+            GemText.color = gColor;
         }
 
         void setupLevel()
@@ -337,46 +181,95 @@ namespace HideAndSeek
             ChangeState(GAME_STATE.PLAY);
         }
 
-        void InitiateLevel()
+        public void EnterDungeon(Dungeon dungeon)
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
+            curDungeon = dungeon;
+            timeLimit = curDungeon.TimeLimit();
+            playerGem = 0;
+            playerHp = 20;
+            ChangeState(GAME_STATE.MAP);
         }
 
         void EnterDungeonA()
         {
-            EnterDungeon(dungeonA);
+            EnterDungeon(dungeonManager.DungeonA());
         }
 
         void EnterDungeonB()
         {
-            EnterDungeon(dungeonB);
+            EnterDungeon(dungeonManager.DungeonB());
         }
 
         void EnterDungeonC()
         {
-            EnterDungeon(dungeonC);
+            EnterDungeon(dungeonManager.DungeonC());
         }
 
         void EnterShop()
         {
+            ChangeState(GAME_STATE.SHOP);
+        }
+        
+        void InitUI()
+        {
+            titleImage = GameObject.Find("FrontPageImage");
+            lobbyImage = GameObject.Find("LobbyImage");
+            shopImage = GameObject.Find("ShopImage");
+            dungeonImage = GameObject.Find("DungeonImage");
+            resultImage = GameObject.Find("ResultImage");
+            controller = GameObject.Find("Controller");
+            dungeonMap = GameObject.Find("DungeonMap");
 
+            shopBtn = GameObject.Find("ShopButton").GetComponent<Button>();
+            startButton = GameObject.Find("FrontPageButton").GetComponent<Button>();
+            
+            level1Btn = GameObject.Find("level1").GetComponent<Button>();
+            level2Btn = GameObject.Find("level2").GetComponent<Button>();
+            level3Btn = GameObject.Find("level3").GetComponent<Button>();
+            level4Btn = GameObject.Find("level4").GetComponent<Button>();
+            
+            dungeonText = GameObject.Find("DungeonText").GetComponent<Text>();
+            resultText = GameObject.Find("ResultText").GetComponent<Text>();
+            goldText = GameObject.Find("GoldText").GetComponent<Text>();
+
+            HpText = GameObject.Find("HpText").GetComponent<Text>();
+            GemText = GameObject.Find("GemText").GetComponent<Text>();
+            TimeText = GameObject.Find("TimeText").GetComponent<Text>();
+            GemImage = GameObject.Find("GemImage").GetComponent<Image>();
+
+            resultButton = GameObject.Find("ResultButton").GetComponent<Button>();
+            
+            dungeonABtn = GameObject.Find("DungeonABtn").GetComponent<Button>();
+            dungeonBBtn = GameObject.Find("DungeonBBtn").GetComponent<Button>();
+            dungeonCBtn = GameObject.Find("DungeonCBtn").GetComponent<Button>();
+
+            resultButton.onClick.AddListener(GotoDungeonMap);
+
+            level1Btn.onClick.AddListener(EnterLevel1);
+            level2Btn.onClick.AddListener(EnterLevel2);
+            level3Btn.onClick.AddListener(EnterLevel3);
+            level4Btn.onClick.AddListener(EnterLevel4);
+
+            dungeonABtn.onClick.AddListener(EnterDungeonA);
+            dungeonBBtn.onClick.AddListener(EnterDungeonB);
+            dungeonCBtn.onClick.AddListener(EnterDungeonC);
+
+            shopBtn.onClick.AddListener(EnterShop);
+            startButton.onClick.AddListener(GoToLobby);
         }
 
-        public void ShowResult()
-        {
-            curDungeon.clearCurLevel();
-            ChangeState(GAME_STATE.RESULT);
-        }
 
-        void GoToLobby()
+        void GotoDungeonMap()
         {
-            ChangeState(GAME_STATE.LOBBY);
+            if (curDungeon.IsEnd()) GameManager.instance.ChangeState(GAME_STATE.LOBBY);
+            else if (playerHp == 0) GameManager.instance.ChangeState(GAME_STATE.LOBBY);
+            else GameManager.instance.ChangeState(GAME_STATE.MAP);
         }
 
         void EnterLevel1()
         {
             curDungeon.SetLevel(1);
-            ChangeState(GAME_STATE.LEVEL);
+            GameManager.instance.ChangeState(GAME_STATE.LEVEL);
             dungeonText.text = "Level " + curDungeon.ToString();
             Invoke("InitiateLevel", 2f);
         }
@@ -384,7 +277,7 @@ namespace HideAndSeek
         void EnterLevel2()
         {
             curDungeon.SetLevel(2);
-            ChangeState(GAME_STATE.LEVEL);
+            GameManager.instance.ChangeState(GAME_STATE.LEVEL);
             dungeonText.text = "Level " + curDungeon.ToString();
             Invoke("InitiateLevel", 2f);
         }
@@ -392,7 +285,7 @@ namespace HideAndSeek
         void EnterLevel3()
         {
             curDungeon.SetLevel(3);
-            ChangeState(GAME_STATE.LEVEL);
+            GameManager.instance.ChangeState(GAME_STATE.LEVEL);
             dungeonText.text = "Level " + curDungeon.ToString();
             Invoke("InitiateLevel", 2f);
         }
@@ -400,48 +293,19 @@ namespace HideAndSeek
         void EnterLevel4()
         {
             curDungeon.SetLevel(4);
-            ChangeState(GAME_STATE.LEVEL);
+            GameManager.instance.ChangeState(GAME_STATE.LEVEL);
             dungeonText.text = "Level " + curDungeon.ToString();
             Invoke("InitiateLevel", 2f);
         }
 
-        void InitUI()
+        void InitiateLevel()
         {
-            dungeonMap = GameObject.Find("DungeonMap");
-            level1Btn = GameObject.Find("level1").GetComponent<Button>();
-            level2Btn = GameObject.Find("level2").GetComponent<Button>();
-            level3Btn = GameObject.Find("level3").GetComponent<Button>();
-            level4Btn = GameObject.Find("level4").GetComponent<Button>();
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
+        }
 
-            level1Btn.onClick.AddListener(EnterLevel1);
-            level2Btn.onClick.AddListener(EnterLevel2);
-            level3Btn.onClick.AddListener(EnterLevel3);
-            level4Btn.onClick.AddListener(EnterLevel4);
-
-            titleImage = GameObject.Find("FrontPageImage");
-            lobbyImage = GameObject.Find("LobbyImage");
-            dungeonImage = GameObject.Find("DungeonImage");
-            resultImage = GameObject.Find("ResultImage");
-            controller = GameObject.Find("Controller");
-
-            dungeonText = GameObject.Find("DungeonText").GetComponent<Text>();
-
-            shopBtn = GameObject.Find("ShopButton").GetComponent<Button>();
-            dungeonABtn = GameObject.Find("DungeonABtn").GetComponent<Button>();
-            dungeonBBtn = GameObject.Find("DungeonBBtn").GetComponent<Button>();
-            dungeonCBtn = GameObject.Find("DungeonCBtn").GetComponent<Button>();
-            
-            resultButton = GameObject.Find("ResultButton").GetComponent<Button>();
-            startButton = GameObject.Find("FrontPageButton").GetComponent<Button>();
-
-            dungeonABtn.onClick.AddListener(EnterDungeonA);
-            dungeonBBtn.onClick.AddListener(EnterDungeonB);
-            dungeonCBtn.onClick.AddListener(EnterDungeonC);
-
-            shopBtn.onClick.AddListener(EnterShop);
-
-            resultButton.onClick.AddListener(GotoDungeonMap);
-            startButton.onClick.AddListener(GoToLobby);
+        void GoToLobby()
+        {
+            ChangeState(GAME_STATE.LOBBY);
         }
 
         public void ChangeState(GAME_STATE nextState)
@@ -454,6 +318,11 @@ namespace HideAndSeek
         {
             if (gameState == GAME_STATE.PLAY)
             {
+                timeLimit -= Time.deltaTime;
+                TimeText.text = Mathf.Floor(timeLimit).ToString();
+                if (timeLimit <= 10) TimeText.color = Color.red;
+                else TimeText.color = Color.white;
+
                 if (!playersTurn && !enemiesMoving)
                     StartCoroutine(MoveEnemies());
             }

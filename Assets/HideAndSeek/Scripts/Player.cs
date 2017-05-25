@@ -340,8 +340,7 @@ namespace HideAndSeek
         void GameOver()
         {
             SoundManager.instance.PlaySingle(gameOverSound);
-            GameManager.instance.ShowMap(true);
-            
+            GameManager.instance.ShowMap(true);            
             GameManager.instance.GameOver();
         }
     }

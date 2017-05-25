@@ -33,7 +33,7 @@ namespace HideAndSeek
         private Text dungeonText;
         private Text resultText;
         private Text goldText;
-        
+
         private Button level1Btn;
         private Button level2Btn;
         private Button level3Btn;

@@ -305,7 +305,8 @@ namespace HideAndSeek
             if (GameManager.instance.playerGem >= costShow)
             {
                 UseGem(costShow);
-                GameManager.instance.ShowMap(true);
+//                GameManager.instance.ShowMap(true);
+                GameManager.instance.ShowMap(transform.position);
                 SoundManager.instance.PlaySingle(skillSound);
             }
         }

@@ -10,7 +10,7 @@ using System;
 
 namespace HideAndSeek
 {
-    public enum GAME_STATE { START, LOBBY, SHOP, LEVEL, MAP, PLAY, RESULT, OVER }
+    public enum GAME_STATE { START, LOBBY, SHOP, SKILL, LEVEL, MAP, PLAY, RESULT, OVER }
 
     public class GameManager : MonoBehaviour
     {
@@ -24,7 +24,8 @@ namespace HideAndSeek
         private GameObject resultImage;
         private GameObject shopImage;
         private GameObject controller;
-        private GameObject dungeonMap;        
+        private GameObject dungeonMap;
+        private GameObject selectSkillImage;
 
         private Button dungeonABtn;
         private Button dungeonBBtn;
@@ -33,6 +34,8 @@ namespace HideAndSeek
         private Text dungeonText;
         private Text resultText;
         private Text goldText;
+
+        private Button endSelectSkillBtn;
 
         private Button level1Btn;
         private Button level2Btn;
@@ -46,6 +49,7 @@ namespace HideAndSeek
         private Text GemText;
         private Text TimeText;
 
+        private SkillManager skillManager;
         private DungeonManager dungeonManager;
         private BoardManager boardScript;
         private List<Enemy> enemies;                            //List of all Enemy units, used to issue them move commands.
@@ -76,8 +80,10 @@ namespace HideAndSeek
 
             enemies = new List<Enemy>();
             boardScript = GetComponent<BoardManager>();
-            dungeonManager = GetComponent<DungeonManager>();
+            dungeonManager = GetComponent<DungeonManager>();            
             dungeonManager.InitDungeons();
+
+            skillManager = GameObject.Find("SkillManager").GetComponent<SkillManager>();
 
             InitUI();
             ChangeState(GAME_STATE.START);
@@ -123,12 +129,14 @@ namespace HideAndSeek
             bool bResult = false;
             bool bPlay = false;
             bool bMap = false;
+            bool bSkill = false;
 
             switch (gameState)
             {
                 case GAME_STATE.START: bTitle = true; break;
                 case GAME_STATE.SHOP: bShop = true; break;
                 case GAME_STATE.LOBBY: bLobby = true; break;
+                case GAME_STATE.SKILL: bSkill = true; break;
                 case GAME_STATE.LEVEL: bDungeon = true; break;
                 case GAME_STATE.MAP: bMap = true; break;
                 case GAME_STATE.PLAY: bPlay = true; break;
@@ -136,6 +144,7 @@ namespace HideAndSeek
                 case GAME_STATE.OVER: bResult = true; break;
             }
 
+            selectSkillImage.SetActive(bSkill);
             shopImage.SetActive(bShop);
             lobbyImage.SetActive(bLobby);
             titleImage.SetActive(bTitle);
@@ -144,7 +153,7 @@ namespace HideAndSeek
             controller.SetActive(bPlay);
             dungeonMap.SetActive(bMap);
 
-            if (bMap || bDungeon || bResult || bPlay)
+            if (bMap || bDungeon || bResult || bPlay || bSkill)
             {
                 HpText.enabled = true;
                 GemText.enabled = true;
@@ -181,13 +190,19 @@ namespace HideAndSeek
             ChangeState(GAME_STATE.PLAY);
         }
 
+        public void StartDungeon()
+        {
+            skillManager.ActiveToggle();
+            ChangeState(GAME_STATE.MAP);
+        }
+
         public void EnterDungeon(Dungeon dungeon)
         {
             curDungeon = dungeon;
             timeLimit = curDungeon.TimeLimit();
             playerGem = 0;
             playerHp = 20;
-            ChangeState(GAME_STATE.MAP);
+            ChangeState(GAME_STATE.SKILL);
         }
 
         void EnterDungeonA()
@@ -212,6 +227,7 @@ namespace HideAndSeek
         
         void InitUI()
         {
+            selectSkillImage = GameObject.Find("SelectSkillImage");
             titleImage = GameObject.Find("FrontPageImage");
             lobbyImage = GameObject.Find("LobbyImage");
             shopImage = GameObject.Find("ShopImage");
@@ -222,7 +238,8 @@ namespace HideAndSeek
 
             shopBtn = GameObject.Find("ShopButton").GetComponent<Button>();
             startButton = GameObject.Find("FrontPageButton").GetComponent<Button>();
-            
+            endSelectSkillBtn = GameObject.Find("EndSelectSkillBtn").GetComponent<Button>();
+
             level1Btn = GameObject.Find("level1").GetComponent<Button>();
             level2Btn = GameObject.Find("level2").GetComponent<Button>();
             level3Btn = GameObject.Find("level3").GetComponent<Button>();
@@ -256,7 +273,9 @@ namespace HideAndSeek
 
             shopBtn.onClick.AddListener(EnterShop);
             startButton.onClick.AddListener(GoToLobby);
+            endSelectSkillBtn.onClick.AddListener(StartDungeon);
         }
+
 
 
         void GotoDungeonMap()
@@ -349,6 +368,77 @@ namespace HideAndSeek
             ShowObjects(bShow);
         }
 
+        public void ShowMap(Vector3 targetPos)
+        {
+            Vector3[] range = GetShowRange(targetPos);
+            bShowing = true;
+            for (int i = 0; i < enemies.Count; i++)
+            {
+                if (enemies[i].tag == "Thief" || enemies[i].tag == "Enemy")
+                {
+                    foreach(Vector3 pos in range)
+                    {
+                        if(pos == enemies[i].transform.position)
+                            enemies[i].Show(true);
+                    }                    
+                }
+            }
+            
+
+            ShowObjects(true, range);
+        }
+
+        public Vector3[] GetShowRange(Vector3 targetPos)
+        {
+            switch (skillManager.destoryType)
+            {
+                case 0:
+                    return new Vector3[]
+                    {
+                        new Vector3(targetPos.x+1, targetPos.y, 0  ),
+                        new Vector3(targetPos.x+2, targetPos.y, 0  ),
+                        new Vector3(targetPos.x+3, targetPos.y, 0  ),
+                        
+                        new Vector3(targetPos.x-1, targetPos.y, 0  ),
+                        new Vector3(targetPos.x-2, targetPos.y, 0  ),
+                        new Vector3(targetPos.x-3, targetPos.y, 0  ),
+
+                        new Vector3(targetPos.x, targetPos.y+1, 0  ),
+                        new Vector3(targetPos.x, targetPos.y+2, 0  ),
+                        new Vector3(targetPos.x, targetPos.y+3, 0  ),
+
+                        new Vector3(targetPos.x, targetPos.y-1, 0  ),
+                        new Vector3(targetPos.x, targetPos.y-2, 0  ),
+                        new Vector3(targetPos.x, targetPos.y-3, 0  ),
+
+                        new Vector3(targetPos.x+2, targetPos.y+1, 0  ),
+                        new Vector3(targetPos.x+1, targetPos.y+1, 0  ),
+                        new Vector3(targetPos.x+1, targetPos.y+2, 0  ),
+
+                        new Vector3(targetPos.x+2, targetPos.y-1, 0  ),
+                        new Vector3(targetPos.x+1, targetPos.y-1, 0  ),
+                        new Vector3(targetPos.x+1, targetPos.y-2, 0  ),
+
+                        new Vector3(targetPos.x-2, targetPos.y+1, 0  ),
+                        new Vector3(targetPos.x-1, targetPos.y+1, 0  ),
+                        new Vector3(targetPos.x-1, targetPos.y+2, 0  ),
+
+                        new Vector3(targetPos.x-2, targetPos.y-1, 0  ),
+                        new Vector3(targetPos.x-1, targetPos.y-1, 0  ),
+                        new Vector3(targetPos.x-1, targetPos.y-2, 0  ),
+                    };
+
+                default:
+                    return new Vector3[]
+                    {
+                        new Vector3(targetPos.x+1, targetPos.y, 0  ),
+                        new Vector3(targetPos.x-1, targetPos.y, 0  ),
+                        new Vector3(targetPos.x, targetPos.y+1, 0  ),
+                        new Vector3(targetPos.x, targetPos.y-1, 0  )
+                    };
+            }
+        }
+
         public void ShowAllUnits(bool bShow)
         {
             ShowEnemies(bShow);
@@ -382,15 +472,60 @@ namespace HideAndSeek
             return result;
         }
 
+
+        public Vector3[] GetDestroyRange(Vector3 targetPos)
+        {            
+            switch (skillManager.destoryType)
+            {
+                case 0:
+                    return new Vector3[]
+                    {
+                        new Vector3(targetPos.x+1, targetPos.y, 0  ),
+                        new Vector3(targetPos.x-1, targetPos.y, 0  ),
+                        new Vector3(targetPos.x, targetPos.y+1, 0  ),
+                        new Vector3(targetPos.x, targetPos.y-1, 0  )
+                    };
+
+                case 1:
+                    return new Vector3[]
+                    {
+                        new Vector3(targetPos.x+1, targetPos.y+1, 0  ),
+                        new Vector3(targetPos.x+1, targetPos.y-1, 0  ),
+                        new Vector3(targetPos.x-1, targetPos.y+1, 0  ),
+                        new Vector3(targetPos.x-1, targetPos.y+1, 0  )
+                    };
+                case 2:
+                    return new Vector3[]
+                    {
+                        new Vector3(targetPos.x+1, targetPos.y, 0  ),
+                        new Vector3(targetPos.x+2, targetPos.y, 0  ),
+                        new Vector3(targetPos.x-1, targetPos.y, 0  ),
+                        new Vector3(targetPos.x-2, targetPos.y, 0  )
+                    };
+                case 3:
+                    return new Vector3[]
+                    {
+                        new Vector3(targetPos.x, targetPos.y-1, 0  ),
+                        new Vector3(targetPos.x, targetPos.y-2, 0  ),
+                        new Vector3(targetPos.x, targetPos.y+1, 0  ),
+                        new Vector3(targetPos.x, targetPos.y+2, 0  )
+                    };
+
+                default:
+                    return new Vector3[]
+                    {
+                        new Vector3(targetPos.x, targetPos.y, 0  ),
+                        new Vector3(targetPos.x, targetPos.y, 0  ),
+                        new Vector3(targetPos.x, targetPos.y, 0  ),
+                        new Vector3(targetPos.x, targetPos.y, 0  )
+                    };
+            }
+
+        }
+
         public void DestoryEnemies(Vector3 targetPos)
         {
-            Vector3[] range = new Vector3[]
-            {
-                new Vector3(targetPos.x-1, targetPos.y, 0  ),
-                new Vector3(targetPos.x+1, targetPos.y, 0  ),
-                new Vector3(targetPos.x, targetPos.y-1, 0  ),
-                new Vector3(targetPos.x, targetPos.y+1, 0  )
-            };
+            Vector3[] range = GetDestroyRange(targetPos);
 
             List<GameObject> targetTiles = new List<GameObject>();
 
@@ -531,41 +666,95 @@ namespace HideAndSeek
             return null;
         }
 
-        public void ShowObjects(bool bShow)
+        public void ShowObjects(bool bShow, Vector3[] range = null)
         {
             foreach (GameObject obj in objsOnStage)
             {
                 if (obj == null) continue;
                 Renderer renderer = obj.GetComponent<SpriteRenderer>();
-                if (renderer) renderer.enabled = bShow;
+                if (range != null)
+                {
+                    foreach (Vector3 pos in range)
+                    {
+                        if (obj.transform.position == pos)
+                        {
+                            if (renderer) renderer.enabled = bShow;
+                        }
+                    }
+                }
+                else
+                {
+                    if (renderer) renderer.enabled = bShow;
+                }
             }
 
             foreach (GameObject obj in trapsOnStage)
             {
                 if (obj == null) continue;
                 Renderer renderer = obj.GetComponent<SpriteRenderer>();
-                if (renderer) renderer.enabled = bShow;
+                
+                if (range != null)
+                {
+                    foreach (Vector3 pos in range)
+                    {
+                        if (obj.transform.position == pos)
+                        {
+                            if (renderer) renderer.enabled = bShow;
+                        }
+                    }
+                }
+                else
+                {
+                    if (renderer) renderer.enabled = bShow;
+                }
             }
 
             foreach (GameObject obj in tilesOnStage)
             {
                 if (obj == null) continue;
                 Renderer renderer = obj.GetComponent<SpriteRenderer>();
-                if (renderer)
+                if (range != null)
                 {
-                    if (bShow)
+                    foreach (Vector3 pos in range)
                     {
-                        Color color = renderer.material.color;
-                        color.a = 1f;
-                        renderer.material.color = color;
-                    }
-                    else
-                    {
-                        Color color = renderer.material.color;
-                        color.a = 0.6f;
-                        renderer.material.color = color;
+                        if (obj.transform.position == pos)
+                        {
+                            if (renderer)
+                            {
+                                if (bShow)
+                                {
+                                    Color color = renderer.material.color;
+                                    color.a = 1f;
+                                    renderer.material.color = color;
+                                }
+                                else
+                                {
+                                    Color color = renderer.material.color;
+                                    color.a = 0.6f;
+                                    renderer.material.color = color;
+                                }
+                            }
+                        }
                     }
                 }
+                else
+                {
+                    if (renderer)
+                    {
+                        if (bShow)
+                        {
+                            Color color = renderer.material.color;
+                            color.a = 1f;
+                            renderer.material.color = color;
+                        }
+                        else
+                        {
+                            Color color = renderer.material.color;
+                            color.a = 0.6f;
+                            renderer.material.color = color;
+                        }
+                    }
+                }                
             }
         }
 

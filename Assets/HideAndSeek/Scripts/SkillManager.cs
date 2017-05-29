@@ -9,7 +9,13 @@ public class SkillManager : MonoBehaviour {
     public Toggle destroyC;
     public Toggle destroyD;
 
+    public Toggle showA;
+    public Toggle showB;
+    public Toggle showC;
+    public Toggle showD;
+
     public int destoryType = 0;
+    public int showType = 0;
 
     public void ActiveToggle()
     {
@@ -28,6 +34,23 @@ public class SkillManager : MonoBehaviour {
         else if (destroyD.isOn)
         {
             destoryType = 3;
+        }
+
+        if (showA.isOn)
+        {
+            showType = 0;
+        }
+        else if (showB.isOn)
+        {
+            showType = 1;
+        }
+        else if (showC.isOn)
+        {
+            showType = 2;
+        }
+        else if (showD.isOn)
+        {
+            showType = 3;
         }
     }
 }

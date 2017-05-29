@@ -393,7 +393,7 @@ namespace HideAndSeek
         {
             bShowing = true;
                         
-            switch (skillManager.destoryType)
+            switch (skillManager.showType)
             {
                 default:
                 case 0: ShowNear(targetPos);

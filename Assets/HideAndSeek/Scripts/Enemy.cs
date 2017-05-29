@@ -26,7 +26,8 @@ namespace HideAndSeek
 			target = GameObject.FindGameObjectWithTag ("Player").transform;
             SetSearch(true);
             base.Start ();
-		}
+            Show(false);
+        }
 
 		public virtual void MoveEnemy ()
 		{

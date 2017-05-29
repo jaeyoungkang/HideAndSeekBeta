@@ -102,15 +102,16 @@ namespace HideAndSeek
                 }
             }
 
-            gridPositionsExcept.Add(new Vector3(0f, 0f, 0f));
+            gridPositionsExcept.AddRange(GameManager.instance.GetShowPositions());
+            //gridPositionsExcept.Add(new Vector3(0f, 0f, 0f));
             gridPositionsExcept.Add(new Vector3(1f, 0f, 0f));
             gridPositionsExcept.Add(new Vector3(0f, 1f, 0f));
 
-            gridPositionsExcept.Add(new Vector3(columns - 1, 0f, 0f));
+            //gridPositionsExcept.Add(new Vector3(columns - 1, 0f, 0f));
             gridPositionsExcept.Add(new Vector3(columns - 2, 0f, 0f));
             gridPositionsExcept.Add(new Vector3(columns - 1, 1f, 0f));
 
-            gridPositionsExcept.Add(new Vector3(0f, rows - 1, 0f));
+            //gridPositionsExcept.Add(new Vector3(0f, rows - 1, 0f));
             gridPositionsExcept.Add(new Vector3(1f, rows - 1, 0f));
             gridPositionsExcept.Add(new Vector3(0f, rows - 2, 0f));
 
@@ -127,7 +128,8 @@ namespace HideAndSeek
 
         void BoardSetup()
         {
-            boardHolder = new GameObject("Board").transform;            
+            boardHolder = new GameObject("Board").transform;
+            Vector3[] range = GameManager.instance.GetShowPositions();
 
             for (int x = -1; x < columns + 1; x++)
             {
@@ -138,24 +140,21 @@ namespace HideAndSeek
                     if (x == -1 || x == columns || y == -1 || y == rows)
                         toInstantiate = outerWallTiles[Random.Range(0, outerWallTiles.Length)];
 
-                    GameObject instance = Instantiate(toInstantiate, new Vector3(x, y, 0f), Quaternion.identity) as GameObject;
-                    bool bShow = false;
-                    if (x == 0 && y == 0) bShow = true;
-                    else if (x == columns-1 && y == rows-1) bShow = true;
-                    else if (x == columns-1 && y == 0) bShow = true;
-                    else if (x == 0 && y == rows-1) bShow = true;
-
-                    if (bShow)
-                    {
-                        Color lerpedColor = instance.GetComponent<Renderer>().material.color;
-                        lerpedColor = Color.Lerp(lerpedColor, Color.red, 0.1f);
-                        instance.GetComponent<Renderer>().material.color = lerpedColor;
-                    }
-
+                    GameObject instance = Instantiate(toInstantiate, new Vector3(x, y, 0f), Quaternion.identity) as GameObject;                    
                     instance.transform.SetParent(boardHolder);
 
                     GameManager.instance.tilesOnStage.Add(instance);
-                }
+
+                    foreach (Vector3 pos in range)
+                    {
+                        if (x == pos.x && y == pos.y)
+                        {
+                            Color lerpedColor = instance.GetComponent<Renderer>().material.color;
+                            lerpedColor = Color.Lerp(lerpedColor, Color.red, 0.1f);
+                            instance.GetComponent<Renderer>().material.color = lerpedColor;
+                        }
+                    }
+                }                
             }
         }
 
@@ -166,9 +165,7 @@ namespace HideAndSeek
             gridPositions.RemoveAt(randomIndex);
             return randomPosition;
         }
-
-
-
+        
         Vector3 RandomGridsPosition()
         {
             if(grids.Count == 0)

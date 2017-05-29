@@ -188,6 +188,7 @@ namespace HideAndSeek
             enemies.Clear();
             boardScript.SetupScene(curDungeon.GetCurLevel());
             ChangeState(GAME_STATE.PLAY);
+            ShowMap(false);
         }
 
         public void StartDungeon()
@@ -368,75 +369,103 @@ namespace HideAndSeek
             ShowObjects(bShow);
         }
 
-        public void ShowMap(Vector3 targetPos)
+        public void ShowNear(Vector3 targetPos)
         {
             Vector3[] range = GetShowRange(targetPos);
-            bShowing = true;
             for (int i = 0; i < enemies.Count; i++)
             {
                 if (enemies[i].tag == "Thief" || enemies[i].tag == "Enemy")
                 {
-                    foreach(Vector3 pos in range)
+                    foreach (Vector3 pos in range)
                     {
-                        if(pos == enemies[i].transform.position)
+                        if (pos == enemies[i].transform.position)
                             enemies[i].Show(true);
-                    }                    
+                    }
                 }
             }
-            
+
 
             ShowObjects(true, range);
+        }
+        
+
+        public void ShowMap(Vector3 targetPos)
+        {
+            bShowing = true;
+                        
+            switch (skillManager.destoryType)
+            {
+                default:
+                case 0: ShowNear(targetPos);
+                    break;
+
+                case 1:
+                    ShowAllUnits(true);
+                    break;
+
+                case 2:
+                    ShowGems(true);
+                    break;
+
+                case 3:
+                    ShowTraps(true);
+                    break;
+            }
+            
+        }
+
+
+        public Vector3[] GetShowPositions()
+        {
+            return new Vector3[]
+                    {
+                        new Vector3(0, 0, 0 ),
+                        new Vector3(2, 2, 0 ),
+                        new Vector3(5, 2, 0 ),
+                        new Vector3(2, 5, 0 ),
+                        new Vector3(5, 5, 0 ),
+//                        new Vector3(7, 7, 0 ),
+                        new Vector3(0, 7, 0 ),
+                        new Vector3(7, 0, 0 )
+                    };
         }
 
         public Vector3[] GetShowRange(Vector3 targetPos)
         {
-            switch (skillManager.destoryType)
+            return new Vector3[]
             {
-                case 0:
-                    return new Vector3[]
-                    {
-                        new Vector3(targetPos.x+1, targetPos.y, 0  ),
-                        new Vector3(targetPos.x+2, targetPos.y, 0  ),
-                        new Vector3(targetPos.x+3, targetPos.y, 0  ),
+                new Vector3(targetPos.x+1, targetPos.y, 0  ),
+                new Vector3(targetPos.x+2, targetPos.y, 0  ),
+                new Vector3(targetPos.x+3, targetPos.y, 0  ),
                         
-                        new Vector3(targetPos.x-1, targetPos.y, 0  ),
-                        new Vector3(targetPos.x-2, targetPos.y, 0  ),
-                        new Vector3(targetPos.x-3, targetPos.y, 0  ),
+                new Vector3(targetPos.x-1, targetPos.y, 0  ),
+                new Vector3(targetPos.x-2, targetPos.y, 0  ),
+                new Vector3(targetPos.x-3, targetPos.y, 0  ),
 
-                        new Vector3(targetPos.x, targetPos.y+1, 0  ),
-                        new Vector3(targetPos.x, targetPos.y+2, 0  ),
-                        new Vector3(targetPos.x, targetPos.y+3, 0  ),
+                new Vector3(targetPos.x, targetPos.y+1, 0  ),
+                new Vector3(targetPos.x, targetPos.y+2, 0  ),
+                new Vector3(targetPos.x, targetPos.y+3, 0  ),
 
-                        new Vector3(targetPos.x, targetPos.y-1, 0  ),
-                        new Vector3(targetPos.x, targetPos.y-2, 0  ),
-                        new Vector3(targetPos.x, targetPos.y-3, 0  ),
+                new Vector3(targetPos.x, targetPos.y-1, 0  ),
+                new Vector3(targetPos.x, targetPos.y-2, 0  ),
+                new Vector3(targetPos.x, targetPos.y-3, 0  ),
 
-                        new Vector3(targetPos.x+2, targetPos.y+1, 0  ),
-                        new Vector3(targetPos.x+1, targetPos.y+1, 0  ),
-                        new Vector3(targetPos.x+1, targetPos.y+2, 0  ),
+                new Vector3(targetPos.x+2, targetPos.y+1, 0  ),
+                new Vector3(targetPos.x+1, targetPos.y+1, 0  ),
+                new Vector3(targetPos.x+1, targetPos.y+2, 0  ),
 
-                        new Vector3(targetPos.x+2, targetPos.y-1, 0  ),
-                        new Vector3(targetPos.x+1, targetPos.y-1, 0  ),
-                        new Vector3(targetPos.x+1, targetPos.y-2, 0  ),
+                new Vector3(targetPos.x+2, targetPos.y-1, 0  ),
+                new Vector3(targetPos.x+1, targetPos.y-1, 0  ),
+                new Vector3(targetPos.x+1, targetPos.y-2, 0  ),
 
-                        new Vector3(targetPos.x-2, targetPos.y+1, 0  ),
-                        new Vector3(targetPos.x-1, targetPos.y+1, 0  ),
-                        new Vector3(targetPos.x-1, targetPos.y+2, 0  ),
+                new Vector3(targetPos.x-2, targetPos.y+1, 0  ),
+                new Vector3(targetPos.x-1, targetPos.y+1, 0  ),
+                new Vector3(targetPos.x-1, targetPos.y+2, 0  ),
 
-                        new Vector3(targetPos.x-2, targetPos.y-1, 0  ),
-                        new Vector3(targetPos.x-1, targetPos.y-1, 0  ),
-                        new Vector3(targetPos.x-1, targetPos.y-2, 0  ),
-                    };
-
-                default:
-                    return new Vector3[]
-                    {
-                        new Vector3(targetPos.x+1, targetPos.y, 0  ),
-                        new Vector3(targetPos.x-1, targetPos.y, 0  ),
-                        new Vector3(targetPos.x, targetPos.y+1, 0  ),
-                        new Vector3(targetPos.x, targetPos.y-1, 0  )
-                    };
-            }
+                new Vector3(targetPos.x-2, targetPos.y-1, 0  ),
+                new Vector3(targetPos.x-1, targetPos.y-1, 0  ),
+                new Vector3(targetPos.x-1, targetPos.y-2, 0  ),
+            };
         }
 
         public void ShowAllUnits(bool bShow)
@@ -492,7 +521,7 @@ namespace HideAndSeek
                         new Vector3(targetPos.x+1, targetPos.y+1, 0  ),
                         new Vector3(targetPos.x+1, targetPos.y-1, 0  ),
                         new Vector3(targetPos.x-1, targetPos.y+1, 0  ),
-                        new Vector3(targetPos.x-1, targetPos.y+1, 0  )
+                        new Vector3(targetPos.x-1, targetPos.y-1, 0  )
                     };
                 case 2:
                     return new Vector3[]
@@ -562,6 +591,10 @@ namespace HideAndSeek
                     color = new Vector4(1, 0.5f, 0.5F, 1);
                     spRenderer.color = color;
                 }
+                if (obj.tag == "Trap")
+                {
+                    spRenderer.enabled = true;
+                }
             }
             yield return new WaitForSeconds(0.5f);
 
@@ -573,6 +606,14 @@ namespace HideAndSeek
                     Color color = spRenderer.color;
                     color = new Vector4(1, 1, 1, 1);
                     spRenderer.color = color;
+                }                
+            }
+
+            foreach (GameObject obj in targetTiles)
+            {
+               if(obj.tag == "Trap")
+                {
+                    RemoveTrap(obj);                    
                 }
             }
         }
@@ -656,6 +697,13 @@ namespace HideAndSeek
             return true;
         }
 
+        public void RemoveTrap(GameObject aTrap)
+        {
+            aTrap.SetActive(false);
+            trapsOnStage.Remove(aTrap);
+
+        }
+
         public GameObject IsTrap(float x, float y)
         {
             foreach (GameObject obj in trapsOnStage)
@@ -666,7 +714,31 @@ namespace HideAndSeek
             return null;
         }
 
-        public void ShowObjects(bool bShow, Vector3[] range = null)
+        public void ShowTraps(bool bShow, Vector3[] range = null)
+        {
+            foreach (GameObject obj in trapsOnStage)
+            {
+                if (obj == null) continue;
+                Renderer renderer = obj.GetComponent<SpriteRenderer>();
+
+                if (range != null)
+                {
+                    foreach (Vector3 pos in range)
+                    {
+                        if (obj.transform.position == pos)
+                        {
+                            if (renderer) renderer.enabled = bShow;
+                        }
+                    }
+                }
+                else
+                {
+                    if (renderer) renderer.enabled = bShow;
+                }
+            }
+        }
+
+        public void ShowGems(bool bShow, Vector3[] range = null)
         {
             foreach (GameObject obj in objsOnStage)
             {
@@ -687,27 +759,12 @@ namespace HideAndSeek
                     if (renderer) renderer.enabled = bShow;
                 }
             }
+        }
 
-            foreach (GameObject obj in trapsOnStage)
-            {
-                if (obj == null) continue;
-                Renderer renderer = obj.GetComponent<SpriteRenderer>();
-                
-                if (range != null)
-                {
-                    foreach (Vector3 pos in range)
-                    {
-                        if (obj.transform.position == pos)
-                        {
-                            if (renderer) renderer.enabled = bShow;
-                        }
-                    }
-                }
-                else
-                {
-                    if (renderer) renderer.enabled = bShow;
-                }
-            }
+        public void ShowObjects(bool bShow, Vector3[] range = null)
+        {
+            ShowGems(bShow, range);
+            ShowTraps(bShow, range);
 
             foreach (GameObject obj in tilesOnStage)
             {

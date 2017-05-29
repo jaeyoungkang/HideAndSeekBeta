@@ -83,10 +83,10 @@ namespace HideAndSeek
         {
             // TAKE ABOUT 1 MINUTE
             Level[] dungeonAInfo = new Level[] {
-                                   new Level(0, 8, 0, 0, 0, 1),
-                                   new Level(1, 9, 0, 0, 0, 1),
-                                    new Level(2, 10, 2, 0, 0, 3),
-                                    new Level(3, 12, 4, 0, 0, 1)
+                                   new Level(0, 8, 0, 0, 0, 2),
+                                   new Level(1, 9, 0, 0, 0, 2),
+                                    new Level(2, 10, 2, 0, 0, 4),
+                                    new Level(3, 12, 4, 0, 0, 2)
                                 };
             dungeonA = new Dungeon(dungeonAInfo, 0, 10, 60);
 

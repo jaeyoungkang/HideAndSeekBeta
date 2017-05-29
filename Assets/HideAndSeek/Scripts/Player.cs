@@ -44,8 +44,6 @@ namespace HideAndSeek
 
         private Animator animator;
 
-        
-        
         protected override void Start ()
 		{   
             animator = GetComponent<Animator>();
@@ -64,6 +62,7 @@ namespace HideAndSeek
             HideBtn.onClick.AddListener(Hide);
 
             base.Start ();
+            if (checkPos(0, 0)) GameManager.instance.ShowNear(transform.position);
         }
 
         void MoveUp()
@@ -122,16 +121,16 @@ namespace HideAndSeek
             float nextPosX = transform.position.x + xDir;
             float nextPosY = transform.position.y + yDir;
 
-            if (nextPosX == 0 && nextPosY == 0) bShow = true;
-            else if (nextPosX == 7 && nextPosY == 7) bShow = true;
-            else if (nextPosX == 0 && nextPosY == 7) bShow = true;
-            else if (nextPosX == 7 && nextPosY == 0) bShow = true;
+            Vector3[] range = GameManager.instance.GetShowPositions();
+            foreach(Vector3 pos in range)
+            {
+                if(nextPosX == pos.x && nextPosY == pos.y) bShow = true;
+            }
 
             if(bShow) SetHideMode(false);
             return bShow;
         }
-                
-        
+
         protected override void AttemptMove <T> (int xDir, int yDir)
 		{
             GameManager.instance.SetHPText(Color.white);
@@ -144,7 +143,7 @@ namespace HideAndSeek
 			{
                 if(bHideMode == false) SoundManager.instance.RandomizeSfx (moveSound1, moveSound2);
 
-                if(checkPos(xDir, yDir)) GameManager.instance.ShowMap(true);
+                if(checkPos(xDir, yDir)) GameManager.instance.ShowNear(new Vector3(transform.position.x + xDir, transform.position.y + yDir, 0));
                 CheckTrap(xDir, yDir);               
             }          
 
@@ -204,7 +203,8 @@ namespace HideAndSeek
         {
             if (other.tag == "Exit")
             {
-				SoundManager.instance.RandomizeSfx(levelClearSound, levelClearSound);
+                GameManager.instance.ShowMap(true);
+                SoundManager.instance.RandomizeSfx(levelClearSound, levelClearSound);
 				GameManager.instance.ShowResult();
 				enabled = false;
 				GameManager.instance.writeLog();
@@ -305,7 +305,6 @@ namespace HideAndSeek
             if (GameManager.instance.playerGem >= costShow)
             {
                 UseGem(costShow);
-//                GameManager.instance.ShowMap(true);
                 GameManager.instance.ShowMap(transform.position);
                 SoundManager.instance.PlaySingle(skillSound);
             }

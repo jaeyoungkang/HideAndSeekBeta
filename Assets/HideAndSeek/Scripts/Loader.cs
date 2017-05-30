@@ -6,22 +6,20 @@ namespace HideAndSeek
 	public class Loader : MonoBehaviour 
 	{
 		public GameObject gameManager;			//GameManager prefab to instantiate.
-		public GameObject soundManager;			//SoundManager prefab to instantiate.
-		
+		public GameObject soundManager;         //SoundManager prefab to instantiate.
+        public GameObject pageManager;
 		
 		void Awake ()
 		{
-			//Check if a GameManager has already been assigned to static variable GameManager.instance or if it's still null
-			if (GameManager.instance == null)
-				
-				//Instantiate gameManager prefab
+            if (PageManager.instance == null)
+                Instantiate(pageManager);
+
+            if (GameManager.instance == null)
 				Instantiate(gameManager);
 			
-			//Check if a SoundManager has already been assigned to static variable GameManager.instance or if it's still null
+
 			if (SoundManager.instance == null)
-				
-				//Instantiate SoundManager prefab
 				Instantiate(soundManager);
-		}
+        }
 	}
 }

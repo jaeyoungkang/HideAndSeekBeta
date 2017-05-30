@@ -45,11 +45,11 @@ namespace HideAndSeek
         private Animator animator;
 
         protected override void Start ()
-		{   
+		{
             animator = GetComponent<Animator>();
 
-            GameManager.instance.SetHPText(Color.white);
-            GameManager.instance.SetGemText(Color.white);
+            PageManager.instance.SetHPText(GameManager.instance.playerHp, Color.white);
+            PageManager.instance.SetGemText(GameManager.instance.playerGem, Color.white);
 
             upBtn.onClick.AddListener(MoveUp);
             downBtn.onClick.AddListener(MoveDown);
@@ -133,8 +133,8 @@ namespace HideAndSeek
 
         protected override void AttemptMove <T> (int xDir, int yDir)
 		{
-            GameManager.instance.SetHPText(Color.white);
-            GameManager.instance.SetGemText(Color.white);            
+            PageManager.instance.SetHPText(GameManager.instance.playerHp, Color.white);
+            PageManager.instance.SetGemText(GameManager.instance.playerGem, Color.white);
             GameManager.instance.ShowMap(false);
 
             base.AttemptMove <T> (xDir, yDir);
@@ -207,7 +207,6 @@ namespace HideAndSeek
                 SoundManager.instance.RandomizeSfx(levelClearSound, levelClearSound);
 				GameManager.instance.ShowResult();
 				enabled = false;
-				GameManager.instance.writeLog();
             }
             else if (other.tag == "Gem")
             {
@@ -223,7 +222,7 @@ namespace HideAndSeek
         void GetGold(int count)
         {
             GameManager.instance.playerGem += count;
-            GameManager.instance.SetGemText(Color.green);
+            PageManager.instance.SetGemText(GameManager.instance.playerGem, Color.green);            
         }
 
         IEnumerator HideAni(GameObject obj)
@@ -238,8 +237,7 @@ namespace HideAndSeek
             animator.SetTrigger ("playerHit");
             GameManager.instance.playerHp -= loss;
 
-            GameManager.instance.SetHPText(Color.red);
-
+            PageManager.instance.SetHPText(GameManager.instance.playerHp, Color.red);
             CheckIfGameOver ();
 		}
 		
@@ -255,7 +253,7 @@ namespace HideAndSeek
         void UseGem(int count)
         {
             GameManager.instance.playerGem -= count;
-            GameManager.instance.SetGemText(Color.red);
+            PageManager.instance.SetGemText(GameManager.instance.playerGem, Color.red);
         }
 
         bool bHideMode = false;
@@ -334,7 +332,7 @@ namespace HideAndSeek
         {
             GameManager.instance.playerHp += delta;
 
-            GameManager.instance.SetHPText(Color.green);            
+            PageManager.instance.SetHPText(GameManager.instance.playerHp, Color.green);
         }
 
         void GameOver()

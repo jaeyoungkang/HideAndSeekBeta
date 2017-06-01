@@ -9,7 +9,7 @@ using System.IO;
 using System;
 
 namespace HideAndSeek
-{
+{    
     public enum GAME_STATE { START, LOBBY, SHOP, SKILL, LEVEL, MAP, PLAY, RESULT, OVER }
 
     public class GameManager : MonoBehaviour
@@ -163,6 +163,11 @@ namespace HideAndSeek
             gameState = nextState;
             PageManager.instance.Setup(gameState);
             PageManager.instance.SetGoldText(playerGold);            
+            if(nextState == GAME_STATE.SKILL)
+            {
+                skillManager.SetMySkills();
+                PageManager.instance.SetSkillText(skillManager.mySkills);
+            }            
         }
 
         void Update()

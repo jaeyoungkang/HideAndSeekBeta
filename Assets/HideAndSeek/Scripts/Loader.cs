@@ -15,8 +15,7 @@ namespace HideAndSeek
                 Instantiate(pageManager);
 
             if (GameManager.instance == null)
-				Instantiate(gameManager);
-			
+				Instantiate(gameManager);			
 
 			if (SoundManager.instance == null)
 				Instantiate(soundManager);

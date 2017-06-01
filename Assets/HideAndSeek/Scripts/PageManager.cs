@@ -38,6 +38,7 @@ namespace HideAndSeek
         public Text GemText;
         public Text TimeText;
 
+        public Text SkillText;
         void Awake()
         {
             if (instance == null)
@@ -73,6 +74,8 @@ namespace HideAndSeek
             dungeonText = GameObject.Find("DungeonText").GetComponent<Text>();
             resultText = GameObject.Find("ResultText").GetComponent<Text>();
             goldText = GameObject.Find("GoldText").GetComponent<Text>();
+
+            SkillText = GameObject.Find("SkillText").GetComponent<Text>();
 
             HpText = GameObject.Find("HpText").GetComponent<Text>();
             GemText = GameObject.Find("GemText").GetComponent<Text>();
@@ -176,8 +179,8 @@ namespace HideAndSeek
 
         public void SetGemText(int playerGem, Color msgColor)
         {
-            HpText.text = playerGem.ToString();
-            HpText.color = msgColor;
+            GemText.text = playerGem.ToString();
+            GemText.color = msgColor;
         }
 
         public void SetTimeTextAndColor(float timeLimit)
@@ -185,6 +188,26 @@ namespace HideAndSeek
             TimeText.text = Mathf.Floor(timeLimit).ToString();
             if (timeLimit <= 10) TimeText.color = Color.red;
             else TimeText.color = Color.white;
+        }
+
+        public void SetSkillText(List<SKILL_TYPE> skills)
+        {
+            string content = "";
+            foreach(SKILL_TYPE st in skills)
+            {
+                string skill_name="";
+                switch(st)
+                {
+                    case SKILL_TYPE.DESTROY_A: skill_name = "공격 상하좌우"; break;
+                    case SKILL_TYPE.DESTROY_B: skill_name = "공격 상하좌우"; break;
+                    case SKILL_TYPE.HEAL_A: skill_name = "회복 10"; break;
+                    case SKILL_TYPE.HEAL_B: skill_name = "회복 20"; break;
+                    case SKILL_TYPE.SHOW_A: skill_name = "보기 근처"; break;
+                    case SKILL_TYPE.SHOW_B: skill_name = "보기 몬스터"; break;
+                }
+                content += skill_name + "\n";
+            }
+            SkillText.text = content;
         }
 
         public void SetGoldText(int gold)

@@ -14,7 +14,6 @@ namespace HideAndSeek
         public GameObject shopImage;
         public GameObject controller;
         public GameObject dungeonMap;
-        public GameObject selectSkillImage;
 
         public Button dungeonABtn;
         public Button dungeonBBtn;
@@ -22,7 +21,6 @@ namespace HideAndSeek
         public Button resultButton;
         public Text dungeonText;
         public Text resultText;
-        public Text goldText;
 
         public Button endSelectSkillBtn;
 
@@ -38,7 +36,6 @@ namespace HideAndSeek
         public Text GemText;
         public Text TimeText;
 
-        public Text SkillText;
         void Awake()
         {
             if (instance == null)
@@ -53,7 +50,6 @@ namespace HideAndSeek
 
         public void InitUI()
         {
-            selectSkillImage = GameObject.Find("SelectSkillImage");
             titleImage = GameObject.Find("FrontPageImage");
             lobbyImage = GameObject.Find("LobbyImage");
             shopImage = GameObject.Find("ShopImage");
@@ -64,7 +60,6 @@ namespace HideAndSeek
 
             shopBtn = GameObject.Find("ShopButton").GetComponent<Button>();
             startButton = GameObject.Find("FrontPageButton").GetComponent<Button>();
-            endSelectSkillBtn = GameObject.Find("EndSelectSkillBtn").GetComponent<Button>();
 
             level1Btn = GameObject.Find("level1").GetComponent<Button>();
             level2Btn = GameObject.Find("level2").GetComponent<Button>();
@@ -73,9 +68,6 @@ namespace HideAndSeek
 
             dungeonText = GameObject.Find("DungeonText").GetComponent<Text>();
             resultText = GameObject.Find("ResultText").GetComponent<Text>();
-            goldText = GameObject.Find("GoldText").GetComponent<Text>();
-
-            SkillText = GameObject.Find("SkillText").GetComponent<Text>();
 
             HpText = GameObject.Find("HpText").GetComponent<Text>();
             GemText = GameObject.Find("GemText").GetComponent<Text>();
@@ -83,7 +75,6 @@ namespace HideAndSeek
             GemImage = GameObject.Find("GemImage").GetComponent<Image>();
 
             resultButton = GameObject.Find("ResultButton").GetComponent<Button>();
-
             dungeonABtn = GameObject.Find("DungeonABtn").GetComponent<Button>();
             dungeonBBtn = GameObject.Find("DungeonBBtn").GetComponent<Button>();
             dungeonCBtn = GameObject.Find("DungeonCBtn").GetComponent<Button>();
@@ -101,14 +92,12 @@ namespace HideAndSeek
             bool bResult = false;
             bool bPlay = false;
             bool bMap = false;
-            bool bSkill = false;
 
             switch (gameState)
             {
                 case GAME_STATE.START: bTitle = true; break;
                 case GAME_STATE.SHOP: bShop = true; break;
                 case GAME_STATE.LOBBY: bLobby = true; break;
-                case GAME_STATE.SKILL: bSkill = true; break;
                 case GAME_STATE.LEVEL: bDungeon = true; break;
                 case GAME_STATE.MAP: bMap = true; break;
                 case GAME_STATE.PLAY: bPlay = true; break;
@@ -116,7 +105,6 @@ namespace HideAndSeek
                 case GAME_STATE.OVER: bResult = true; break;
             }
 
-            selectSkillImage.SetActive(bSkill);
             shopImage.SetActive(bShop);
             lobbyImage.SetActive(bLobby);
             titleImage.SetActive(bTitle);
@@ -125,19 +113,21 @@ namespace HideAndSeek
             controller.SetActive(bPlay);
             dungeonMap.SetActive(bMap);
 
-            if (bMap || bDungeon || bResult || bPlay || bSkill)
+            if (bMap || bDungeon || bResult || bPlay)
             {
                 HpText.enabled = true;
                 GemText.enabled = true;
                 TimeText.enabled = true;
                 GemImage.enabled = true;
+                SetHPText(GameManager.instance.playerHp, Color.white);
+                SetGemText(GameManager.instance.dungeonGem, Color.white);
             }
             else
             {
                 HpText.enabled = false;
                 GemText.enabled = false;
                 TimeText.enabled = false;
-                GemImage.enabled = true;
+                GemImage.enabled = false;
             }            
         }
 
@@ -156,7 +146,6 @@ namespace HideAndSeek
 
             shopBtn.onClick.AddListener(GameManager.instance.EnterShop);
             startButton.onClick.AddListener(GameManager.instance.GoToLobby);
-            endSelectSkillBtn.onClick.AddListener(GameManager.instance.StartDungeon);
         }
 
         public void SetLevelEnterPageText(string content)
@@ -164,9 +153,10 @@ namespace HideAndSeek
             dungeonText.text = content;
         }
 
-        public void SetResultPageText(int reward)
+        public void SetResultPageText(int reward, int gem)
         {
-            string content = "Gold: " + reward.ToString();
+            string content = "Gem Clear Reward : " + reward.ToString() + "\n";
+            content += "Gem discoverd : " + gem;
             resultText.text = content;
         }
 
@@ -188,31 +178,6 @@ namespace HideAndSeek
             TimeText.text = Mathf.Floor(timeLimit).ToString();
             if (timeLimit <= 10) TimeText.color = Color.red;
             else TimeText.color = Color.white;
-        }
-
-        public void SetSkillText(List<SKILL_TYPE> skills)
-        {
-            string content = "";
-            foreach(SKILL_TYPE st in skills)
-            {
-                string skill_name="";
-                switch(st)
-                {
-                    case SKILL_TYPE.DESTROY_A: skill_name = "공격 상하좌우"; break;
-                    case SKILL_TYPE.DESTROY_B: skill_name = "공격 상하좌우"; break;
-                    case SKILL_TYPE.HEAL_A: skill_name = "회복 10"; break;
-                    case SKILL_TYPE.HEAL_B: skill_name = "회복 20"; break;
-                    case SKILL_TYPE.SHOW_A: skill_name = "보기 근처"; break;
-                    case SKILL_TYPE.SHOW_B: skill_name = "보기 몬스터"; break;
-                }
-                content += skill_name + "\n";
-            }
-            SkillText.text = content;
-        }
-
-        public void SetGoldText(int gold)
-        {
-//            goldText.text = "Gold: " + gold;
         }
     }
 }

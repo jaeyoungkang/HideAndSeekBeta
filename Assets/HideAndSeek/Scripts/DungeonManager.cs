@@ -88,7 +88,7 @@ namespace HideAndSeek
                                     new Level(2, 10, 2, 0, 0, 4),
                                     new Level(3, 12, 4, 0, 0, 2)
                                 };
-            dungeonA = new Dungeon(dungeonAInfo, 0, 10, 60);
+            dungeonA = new Dungeon(dungeonAInfo, 0, 4, 60);
 
             // TAKE ABOUT 3 MINUTES
             Level[] dungeonBInfo = new Level[] {
@@ -102,7 +102,7 @@ namespace HideAndSeek
                                     new Level(7, 8, 1, 0, 0, 1),
                                     new Level(8, 9, 1, 0, 0, 0)
             };
-            dungeonB = new Dungeon(dungeonBInfo, 2, 40, 180);
+            dungeonB = new Dungeon(dungeonBInfo, 2, 10, 180);
 
             // TAKE ABOUT 5 MINUTES
             Level[] dungeonCInfo = new Level[] {
@@ -123,7 +123,7 @@ namespace HideAndSeek
                                     new Level(14, 8, 1, 0, 0, 1),
                                     new Level(15, 8, 1, 0, 0, 1)
             };
-            dungeonC = new Dungeon(dungeonCInfo, 3, 100, 300);
+            dungeonC = new Dungeon(dungeonCInfo, 3, 20, 300);
         }
 
         public Dungeon DungeonA()

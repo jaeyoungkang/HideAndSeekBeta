@@ -13,16 +13,7 @@ namespace HideAndSeek
 		public float restartLevelDelay = 1f;
 		public int potionA = 10;
         public int potionB = 20;
-        
-        public int costDestroy = 2;
-        public int costShow = 1;
-        public int costHP = 1;
-        public int costHide = 1;
-        
-        public Button HealBtn;
-        public Button ShowBtn;
-        public Button HideBtn;
-        public Button DestroyBtn;       
+        public Button[] slots;      
 
         public Button upBtn;
         public Button downBtn;
@@ -49,17 +40,21 @@ namespace HideAndSeek
             animator = GetComponent<Animator>();
 
             PageManager.instance.SetHPText(GameManager.instance.playerHp, Color.white);
-            PageManager.instance.SetGemText(GameManager.instance.playerGem, Color.white);
+            PageManager.instance.SetGemText(GameManager.instance.dungeonGem, Color.white);
 
             upBtn.onClick.AddListener(MoveUp);
             downBtn.onClick.AddListener(MoveDown);
             leftBtn.onClick.AddListener(MoveLeft);
             rightBtn.onClick.AddListener(MoveRight);
 
-            HealBtn.onClick.AddListener(UseHPRecover);
-            DestroyBtn.onClick.AddListener(DestoryEnemy);
-            ShowBtn.onClick.AddListener(ShowMap);
-            HideBtn.onClick.AddListener(Hide);
+            SetupSlots();
+            if(slots.Length>0)
+            {
+                slots[0].onClick.AddListener(() => { UseSkill(0); });
+                slots[1].onClick.AddListener(() => { UseSkill(1); });
+                slots[2].onClick.AddListener(() => { UseSkill(2); });
+                slots[3].onClick.AddListener(() => { UseSkill(3); });
+            }            
 
             base.Start ();
             if (checkPos(0, 0)) GameManager.instance.ShowNear(transform.position);
@@ -134,7 +129,7 @@ namespace HideAndSeek
         protected override void AttemptMove <T> (int xDir, int yDir)
 		{
             PageManager.instance.SetHPText(GameManager.instance.playerHp, Color.white);
-            PageManager.instance.SetGemText(GameManager.instance.playerGem, Color.white);
+            PageManager.instance.SetGemText(GameManager.instance.dungeonGem, Color.white);
             GameManager.instance.ShowMap(false);
 
             base.AttemptMove <T> (xDir, yDir);
@@ -221,8 +216,8 @@ namespace HideAndSeek
 
         void GetGold(int count)
         {
-            GameManager.instance.playerGem += count;
-            PageManager.instance.SetGemText(GameManager.instance.playerGem, Color.green);            
+            GameManager.instance.dungeonGem += count;
+            PageManager.instance.SetGemText(GameManager.instance.dungeonGem, Color.green);            
         }
 
         IEnumerator HideAni(GameObject obj)
@@ -249,12 +244,6 @@ namespace HideAndSeek
 				GameOver();
 			}
 		}
-
-        void UseGem(int count)
-        {
-            GameManager.instance.playerGem -= count;
-            PageManager.instance.SetGemText(GameManager.instance.playerGem, Color.red);
-        }
 
         bool bHideMode = false;
 
@@ -289,50 +278,55 @@ namespace HideAndSeek
         void Hide()
         {
             if (bHideMode) return;
-            if (GameManager.instance.playerGem >= costHide)
-            {
-                SetHideMode(true);                
-                UseGem(costHide);                
-                SoundManager.instance.PlaySingle(skillSound);
-            }
-        }
-
-        void ShowMap()
-        {            
-            if (GameManager.instance.IsShowing()) return;
-            if (GameManager.instance.playerGem >= costShow)
-            {
-                UseGem(costShow);
-                GameManager.instance.ShowMap(transform.position);
-                SoundManager.instance.PlaySingle(skillSound);
-            }
-        }
-
-        void DestoryEnemy()
-        {
-            if(GameManager.instance.playerGem >= costDestroy)
-            {
-                UseGem(costDestroy);
-                GameManager.instance.DestoryEnemies(transform.position);
-                SoundManager.instance.PlaySingle(skillSound);
-            }
-        }        
-
-        void UseHPRecover()
-        {
-            if (GameManager.instance.playerGem >= costHP)
-            {
-                RecoverHP(10);
-                UseGem(costHP);                
-                SoundManager.instance.PlaySingle(skillSound);
-            }
+            SetHideMode(true);
         }
 
         void RecoverHP(int delta)
         {
             GameManager.instance.playerHp += delta;
-
             PageManager.instance.SetHPText(GameManager.instance.playerHp, Color.green);
+        }
+
+        void UseSkill(int index)
+        {
+            if (index >= GameManager.instance.inven.Count) return;
+            
+            SoundManager.instance.PlaySingle(skillSound);
+            switch (GameManager.instance.inven[index].skillname)
+            {
+                case "H1":
+                    RecoverHP(10);
+                    break;
+                case "S1":
+                    GameManager.instance.ShowMap(transform.position, 0);
+                    break;
+                case "S2":
+                    GameManager.instance.ShowMap(transform.position, 1);
+                    break;
+                case "D1":
+                    GameManager.instance.DestoryEnemies(transform.position, 0);
+                    break;
+                case "D2":
+                    GameManager.instance.DestoryEnemies(transform.position, 1);
+                    break;
+            }
+            GameManager.instance.inven.RemoveAt(index);
+            SetupSlots();
+        }
+
+        void SetupSlots()
+        {
+            if (slots.Length == 0) return;
+            for (int i = 0; i < 4; i++)
+            {
+                slots[i].GetComponentInChildren<Text>().text = "";
+            }
+
+            for (int i = 0; i < 4; i++)
+            {
+                if (GameManager.instance.inven.Count <= i) break;
+                slots[i].GetComponentInChildren<Text>().text = GameManager.instance.inven[i].skillname;
+            }
         }
 
         void GameOver()

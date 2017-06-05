@@ -10,7 +10,7 @@ using System;
 
 namespace HideAndSeek
 {    
-    public enum GAME_STATE { START, LOBBY, SHOP, SKILL, LEVEL, MAP, PLAY, RESULT, OVER }
+    public enum GAME_STATE { START, LOBBY, SHOP, LEVEL, MAP, PLAY, RESULT, OVER }
 
     public class GameManager : MonoBehaviour
     {
@@ -18,7 +18,6 @@ namespace HideAndSeek
         [HideInInspector]
         public bool playersTurn = true;
 
-        private SkillManager skillManager;
         private DungeonManager dungeonManager;
         private BoardManager boardScript;
         private List<Enemy> enemies;                            //List of all Enemy units, used to issue them move commands.
@@ -30,12 +29,13 @@ namespace HideAndSeek
         public List<GameObject> objsOnStage = new List<GameObject>();
         public List<GameObject> tilesOnStage = new List<GameObject>();
 
-        public int playerHp = 20;
-        public int playerGem = 0;
-        public float timeLimit;
+        public List<Skill> inven = new List<Skill>();
 
-        public int playerGold = 40;
-        
+        public int playerHp = 20;
+        public int invenGem = 0;
+        public int dungeonGem = 0;
+        public float timeLimit;
+       
         void Awake()
         {
             if (instance == null)
@@ -51,8 +51,6 @@ namespace HideAndSeek
             boardScript = GetComponent<BoardManager>();
             dungeonManager = GetComponent<DungeonManager>();            
             dungeonManager.InitDungeons();
-
-            skillManager = GameObject.Find("SkillManager").GetComponent<SkillManager>();
 
             PageManager.instance.InitUI();
             ChangeState(GAME_STATE.START);
@@ -84,8 +82,9 @@ namespace HideAndSeek
             curDungeon.clearCurLevel();
             if(curDungeon.IsEnd())
             {                
-                PageManager.instance.SetResultPageText(curDungeon.GetReward());
-                playerGold += curDungeon.GetReward();
+                PageManager.instance.SetResultPageText(curDungeon.GetReward(), dungeonGem);
+                invenGem += curDungeon.GetReward();
+                invenGem += dungeonGem;
             }
             GameManager.instance.ChangeState(GAME_STATE.RESULT);
         }
@@ -95,22 +94,16 @@ namespace HideAndSeek
             enemies.Clear();
             boardScript.SetupScene(curDungeon.GetCurLevel());
             ChangeState(GAME_STATE.PLAY);
-            ShowMap(false);
-        }
-
-        public void StartDungeon()
-        {
-            skillManager.ActiveToggle();
-            ChangeState(GAME_STATE.MAP);
+            ShowMap(false);            
         }
 
         public void EnterDungeon(Dungeon dungeon)
         {
             curDungeon = dungeon;
             timeLimit = curDungeon.TimeLimit();
-            playerGem = 0;
+            dungeonGem = 0;
             playerHp = 20;
-            ChangeState(GAME_STATE.SKILL);
+            ChangeState(GAME_STATE.MAP);
         }
 
         public void EnterDungeonA()
@@ -162,12 +155,6 @@ namespace HideAndSeek
         {
             gameState = nextState;
             PageManager.instance.Setup(gameState);
-            PageManager.instance.SetGoldText(playerGold);            
-            if(nextState == GAME_STATE.SKILL)
-            {
-                skillManager.SetMySkills();
-                PageManager.instance.SetSkillText(skillManager.mySkills);
-            }            
         }
 
         void Update()
@@ -185,12 +172,12 @@ namespace HideAndSeek
         public void AddEnemyToList(Enemy script)
         {
             enemies.Add(script);
+            ShowNear(GameObject.FindGameObjectWithTag("Player").transform.position);
         }
-
 
         public void GameOver()
         {
-            ChangeState(GAME_STATE.OVER);
+            ChangeState(GAME_STATE.OVER);            
         }
 
         bool bShowing = false;
@@ -223,11 +210,11 @@ namespace HideAndSeek
         }
         
 
-        public void ShowMap(Vector3 targetPos)
+        public void ShowMap(Vector3 targetPos, int type)
         {
             bShowing = true;
                         
-            switch (skillManager.showType)
+            switch (type)
             {
                 default:
                 case 0: ShowNear(targetPos);
@@ -336,9 +323,9 @@ namespace HideAndSeek
         }
 
 
-        public Vector3[] GetDestroyRange(Vector3 targetPos)
+        public Vector3[] GetDestroyRange(Vector3 targetPos, int type)
         {            
-            switch (skillManager.destoryType)
+            switch (type)
             {
                 case 0:
                     return new Vector3[]
@@ -386,9 +373,9 @@ namespace HideAndSeek
 
         }
 
-        public void DestoryEnemies(Vector3 targetPos)
+        public void DestoryEnemies(Vector3 targetPos, int type)
         {
-            Vector3[] range = GetDestroyRange(targetPos);
+            Vector3[] range = GetDestroyRange(targetPos, type);
 
             List<GameObject> targetTiles = new List<GameObject>();
 

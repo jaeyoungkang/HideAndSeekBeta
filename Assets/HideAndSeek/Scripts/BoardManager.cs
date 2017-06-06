@@ -31,6 +31,8 @@ namespace HideAndSeek
         public GameObject[] strongEnemyTiles;
         public GameObject[] outerWallTiles;
 
+        public GameObject[] itemTiles;
+
         public GameObject[] trapTiles;
 
         private Transform boardHolder;                                  //A variable to store a reference to the transform of our Board object.
@@ -259,6 +261,7 @@ namespace HideAndSeek
             int trapCount = levelInfo.trap;
             
             LayoutObjectAtRandom(gemTiles, gemRate, gemRate);
+            LayoutObjectAtRandom(itemTiles, 1, 1);
 
             LayoutTrapAtRandom(trapTiles, trapCount, trapCount);
                         

@@ -212,6 +212,16 @@ namespace HideAndSeek
                 StartCoroutine(HideAni(other.gameObject));
                 SetHideMode(false);                
             }
+            else if (other.tag == "Item")
+            {
+                Item item = other.gameObject.GetComponent<Item>();
+                if (GameManager.instance.AddBag(item.info))
+                {
+                    other.gameObject.SetActive(false);                    
+                    SoundManager.instance.RandomizeSfx(goldASound, goldASound);
+                    SetupSlots();
+                }
+            }
         }
 
         void GetGold(int count)
@@ -289,28 +299,28 @@ namespace HideAndSeek
 
         void UseSkill(int index)
         {
-            if (index >= GameManager.instance.inven.Count) return;
+            if (index >= GameManager.instance.bag.Count) return;
             
             SoundManager.instance.PlaySingle(skillSound);
-            switch (GameManager.instance.inven[index].skillname)
+            switch (GameManager.instance.bag[index].skillname)
             {
-                case "H1":
+                case "회복":
                     RecoverHP(10);
                     break;
-                case "S1":
+                case "근처보기":
                     GameManager.instance.ShowMap(transform.position, 0);
                     break;
-                case "S2":
+                case "괴물보기":
                     GameManager.instance.ShowMap(transform.position, 1);
                     break;
-                case "D1":
+                case "사방공격":
                     GameManager.instance.DestoryEnemies(transform.position, 0);
                     break;
-                case "D2":
+                case "좌우공격":
                     GameManager.instance.DestoryEnemies(transform.position, 1);
                     break;
             }
-            GameManager.instance.inven.RemoveAt(index);
+            GameManager.instance.bag.RemoveAt(index);
             SetupSlots();
         }
 
@@ -324,8 +334,8 @@ namespace HideAndSeek
 
             for (int i = 0; i < 4; i++)
             {
-                if (GameManager.instance.inven.Count <= i) break;
-                slots[i].GetComponentInChildren<Text>().text = GameManager.instance.inven[i].skillname;
+                if (GameManager.instance.bag.Count <= i) break;
+                slots[i].GetComponentInChildren<Text>().text = GameManager.instance.bag[i].skillname;
             }
         }
 

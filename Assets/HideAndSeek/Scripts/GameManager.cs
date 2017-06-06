@@ -10,7 +10,7 @@ using System;
 
 namespace HideAndSeek
 {    
-    public enum GAME_STATE { START, LOBBY, SHOP, LEVEL, MAP, PLAY, RESULT, OVER }
+    public enum GAME_STATE { START, LOBBY, SHOP, INVENTORY, LEVEL, MAP, PLAY, RESULT, OVER }
 
     public class GameManager : MonoBehaviour
     {
@@ -30,12 +30,22 @@ namespace HideAndSeek
         public List<GameObject> tilesOnStage = new List<GameObject>();
 
         public List<Skill> inven = new List<Skill>();
+        public List<Skill> bag = new List<Skill>();
+        public int bagSize;
 
         public int playerHp = 20;
         public int invenGem = 0;
         public int dungeonGem = 0;
         public float timeLimit;
-       
+
+
+        public bool AddBag(Skill skill)
+        {
+            if (bag.Count == bagSize) return false;            
+            bag.Add(skill);            
+            return true;
+        }
+
         void Awake()
         {
             if (instance == null)
@@ -100,7 +110,8 @@ namespace HideAndSeek
         public void EnterDungeon(Dungeon dungeon)
         {
             curDungeon = dungeon;
-            timeLimit = curDungeon.TimeLimit();
+            curDungeon.init();
+            timeLimit = curDungeon.TimeLimit();            
             dungeonGem = 0;
             playerHp = 20;
             ChangeState(GAME_STATE.MAP);
@@ -119,6 +130,11 @@ namespace HideAndSeek
         public void EnterDungeonC()
         {
             EnterDungeon(dungeonManager.DungeonC());
+        }
+
+        public void EnterInven()
+        {
+            ChangeState(GAME_STATE.INVENTORY);
         }
 
         public void EnterShop()
@@ -150,7 +166,7 @@ namespace HideAndSeek
         {
             ChangeState(GAME_STATE.LOBBY);
         }
-
+        
         public void ChangeState(GAME_STATE nextState)
         {
             gameState = nextState;
@@ -339,26 +355,27 @@ namespace HideAndSeek
                 case 1:
                     return new Vector3[]
                     {
-                        new Vector3(targetPos.x+1, targetPos.y+1, 0  ),
-                        new Vector3(targetPos.x+1, targetPos.y-1, 0  ),
-                        new Vector3(targetPos.x-1, targetPos.y+1, 0  ),
-                        new Vector3(targetPos.x-1, targetPos.y-1, 0  )
-                    };
-                case 2:
-                    return new Vector3[]
-                    {
                         new Vector3(targetPos.x+1, targetPos.y, 0  ),
                         new Vector3(targetPos.x+2, targetPos.y, 0  ),
                         new Vector3(targetPos.x-1, targetPos.y, 0  ),
                         new Vector3(targetPos.x-2, targetPos.y, 0  )
                     };
-                case 3:
+                case 2:
                     return new Vector3[]
                     {
                         new Vector3(targetPos.x, targetPos.y-1, 0  ),
                         new Vector3(targetPos.x, targetPos.y-2, 0  ),
                         new Vector3(targetPos.x, targetPos.y+1, 0  ),
                         new Vector3(targetPos.x, targetPos.y+2, 0  )
+                    };
+
+                case 3:
+                    return new Vector3[]
+                    {
+                        new Vector3(targetPos.x+1, targetPos.y+1, 0  ),
+                        new Vector3(targetPos.x+1, targetPos.y-1, 0  ),
+                        new Vector3(targetPos.x-1, targetPos.y+1, 0  ),
+                        new Vector3(targetPos.x-1, targetPos.y-1, 0  )
                     };
 
                 default:

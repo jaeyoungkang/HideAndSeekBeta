@@ -14,6 +14,7 @@ namespace HideAndSeek
         public GameObject shopImage;
         public GameObject controller;
         public GameObject dungeonMap;
+        public GameObject inventoryPage;
 
         public Button dungeonABtn;
         public Button dungeonBBtn;
@@ -29,7 +30,9 @@ namespace HideAndSeek
         public Button level3Btn;
         public Button level4Btn;
         public Button startButton;
+
         public Button shopBtn;
+        public Button invenBtn;
 
         public Image GemImage;
         public Text HpText;
@@ -57,8 +60,11 @@ namespace HideAndSeek
             resultImage = GameObject.Find("ResultImage");
             controller = GameObject.Find("Controller");
             dungeonMap = GameObject.Find("DungeonMap");
+            inventoryPage = GameObject.Find("InventoryPage");
 
             shopBtn = GameObject.Find("ShopButton").GetComponent<Button>();
+            invenBtn = GameObject.Find("InventoryButton").GetComponent<Button>();
+
             startButton = GameObject.Find("FrontPageButton").GetComponent<Button>();
 
             level1Btn = GameObject.Find("level1").GetComponent<Button>();
@@ -92,6 +98,7 @@ namespace HideAndSeek
             bool bResult = false;
             bool bPlay = false;
             bool bMap = false;
+            bool bInventory = false;
 
             switch (gameState)
             {
@@ -103,6 +110,8 @@ namespace HideAndSeek
                 case GAME_STATE.PLAY: bPlay = true; break;
                 case GAME_STATE.RESULT: bResult = true; break;
                 case GAME_STATE.OVER: bResult = true; break;
+                case GAME_STATE.INVENTORY: bInventory = true; break;
+                    
             }
 
             shopImage.SetActive(bShop);
@@ -112,6 +121,7 @@ namespace HideAndSeek
             resultImage.SetActive(bResult);
             controller.SetActive(bPlay);
             dungeonMap.SetActive(bMap);
+            inventoryPage.SetActive(bInventory);
 
             if (bMap || bDungeon || bResult || bPlay)
             {
@@ -145,6 +155,7 @@ namespace HideAndSeek
             dungeonCBtn.onClick.AddListener(GameManager.instance.EnterDungeonC);
 
             shopBtn.onClick.AddListener(GameManager.instance.EnterShop);
+            invenBtn.onClick.AddListener(GameManager.instance.EnterInven);
             startButton.onClick.AddListener(GameManager.instance.GoToLobby);
         }
 

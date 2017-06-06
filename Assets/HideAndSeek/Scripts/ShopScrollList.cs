@@ -3,42 +3,37 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-[System.Serializable]
-public class Item
+namespace HideAndSeek
 {
-    public string itemName;
-    public Sprite icon;
-    public float price = 1f;
-}
-
-public class ShopScrollList : MonoBehaviour
-{
-    public List<Item> itemList;
-    public Transform contentPanel;
-    public ShopScrollList otherShop;
-    public Text myGemDisplay;
-    public SimpleObjectPool buttonObjectPool;
-
-
-	void Start ()
+    public class ShopScrollList : MonoBehaviour
     {
-        RefreshDisplay();
-    }
+        public List<Item> itemList;
+        public Transform contentPanel;
+        public ShopScrollList otherShop;
+        public Text myGemDisplay;
+        public SimpleObjectPool buttonObjectPool;
 
-    private void RefreshDisplay()
-    {
-        AddButton();
-    }
-	
-    private void AddButton()
-    {
-        foreach(Item item in itemList)
+
+        void Start()
         {
-            GameObject newButton = buttonObjectPool.GetObject();
-            newButton.transform.SetParent(contentPanel);
+            RefreshDisplay();
+        }
 
-            SkillButton skillButton = newButton.GetComponent<SkillButton>();
-            skillButton.Setup(item, this);
+        private void RefreshDisplay()
+        {
+            AddButton();
+        }
+
+        private void AddButton()
+        {
+            foreach (Item item in itemList)
+            {
+                GameObject newButton = buttonObjectPool.GetObject();
+                newButton.transform.SetParent(contentPanel);
+
+                SkillButton skillButton = newButton.GetComponent<SkillButton>();
+//                skillButton.Setup(item, this);
+            }
         }
     }
 }

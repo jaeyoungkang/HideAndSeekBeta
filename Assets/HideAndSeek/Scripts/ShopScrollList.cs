@@ -31,7 +31,7 @@ namespace HideAndSeek
                 GameObject newButton = buttonObjectPool.GetObject();
                 newButton.transform.SetParent(contentPanel);
 
-                SkillButton skillButton = newButton.GetComponent<SkillButton>();
+//                SkillButton skillButton = newButton.GetComponent<SkillButton>();
 //                skillButton.Setup(item, this);
             }
         }

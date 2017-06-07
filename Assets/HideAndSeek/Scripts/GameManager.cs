@@ -38,7 +38,6 @@ namespace HideAndSeek
         public int dungeonGem = 0;
         public float timeLimit;
 
-
         public bool AddBag(Skill skill)
         {
             if (bag.Count == bagSize) return false;            
@@ -173,12 +172,29 @@ namespace HideAndSeek
             PageManager.instance.Setup(gameState);
         }
 
+        public void StopTime(bool active)
+        {
+            timeStop = active;
+        }
+
+        public void AddTime(float sec)
+        {
+            timeLimit += sec;
+        }
+
+        public bool timeStop = false;
+        void UpdateTimeLeft()
+        {
+            if (timeStop) return;
+            timeLimit -= Time.deltaTime;
+            PageManager.instance.SetTimeTextAndColor(timeLimit);
+        }
+
         void Update()
         {
             if (gameState == GAME_STATE.PLAY)
             {
-                timeLimit -= Time.deltaTime;
-                PageManager.instance.SetTimeTextAndColor(timeLimit);                                
+                UpdateTimeLeft();
 
                 if (!playersTurn && !enemiesMoving)
                     StartCoroutine(MoveEnemies());
@@ -196,12 +212,8 @@ namespace HideAndSeek
             ChangeState(GAME_STATE.OVER);            
         }
 
-        bool bShowing = false;
-        public bool IsShowing() { return bShowing; }
-
         public void ShowMap(bool bShow)
         {
-            bShowing = bShow;
             ShowAllUnits(bShow);
             ShowObjects(bShow);
         }
@@ -223,13 +235,10 @@ namespace HideAndSeek
 
 
             ShowObjects(true, range);
-        }
-        
+        }        
 
         public void ShowMap(Vector3 targetPos, int type)
         {
-            bShowing = true;
-                        
             switch (type)
             {
                 default:
@@ -241,12 +250,17 @@ namespace HideAndSeek
                     break;
 
                 case 2:
-                    ShowGems(true);
+                    ShowTraps(true);
                     break;
 
                 case 3:
-                    ShowTraps(true);
+                    ShowGems(true);
                     break;
+
+                case 4:
+                    ShowMap(true);
+                    break;
+
             }
             
         }

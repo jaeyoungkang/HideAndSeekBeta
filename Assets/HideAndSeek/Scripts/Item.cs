@@ -6,12 +6,12 @@ namespace HideAndSeek
 {
     public class Item : MonoBehaviour
     {
-        public Skill info;
+        public Skill skill;
 
         // Use this for initialization
         void Start()
         {
 
-        }
+        }        
     }
 }

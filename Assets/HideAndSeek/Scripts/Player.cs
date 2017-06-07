@@ -86,8 +86,7 @@ namespace HideAndSeek
             {
                 GameManager.instance.timeLimit = 10;
                 LoseHP(10);
-                SoundManager.instance.RandomizeSfx(attackedSound1, attackedSound2);
-                SetHideMode(false);
+                SoundManager.instance.RandomizeSfx(attackedSound1, attackedSound2);                
             }      
 
             if (!GameManager.instance.playersTurn) return;
@@ -122,7 +121,6 @@ namespace HideAndSeek
                 if(nextPosX == pos.x && nextPosY == pos.y) bShow = true;
             }
 
-            if(bShow) SetHideMode(false);
             return bShow;
         }
 
@@ -131,6 +129,7 @@ namespace HideAndSeek
             PageManager.instance.SetHPText(GameManager.instance.playerHp, Color.white);
             PageManager.instance.SetGemText(GameManager.instance.dungeonGem, Color.white);
             GameManager.instance.ShowMap(false);
+            GameManager.instance.StopTime(false);
 
             base.AttemptMove <T> (xDir, yDir);
 			RaycastHit2D hit;
@@ -159,8 +158,7 @@ namespace HideAndSeek
                 Renderer renderer = trap.GetComponent<SpriteRenderer>();
                 if (renderer) renderer.enabled = true;
                 LoseHP(10);
-                SoundManager.instance.RandomizeSfx(attackedSound1, attackedSound2);
-                SetHideMode(false);
+                SoundManager.instance.RandomizeSfx(attackedSound1, attackedSound2);                
             }
         }
 
@@ -210,12 +208,11 @@ namespace HideAndSeek
                 SoundManager.instance.RandomizeSfx(goldASound, goldASound);
                 GetGold(1);
                 StartCoroutine(HideAni(other.gameObject));
-                SetHideMode(false);                
             }
             else if (other.tag == "Item")
             {
                 Item item = other.gameObject.GetComponent<Item>();
-                if (GameManager.instance.AddBag(item.info))
+                if (GameManager.instance.AddBag(item.skill))
                 {
                     other.gameObject.SetActive(false);                    
                     SoundManager.instance.RandomizeSfx(goldASound, goldASound);
@@ -239,6 +236,7 @@ namespace HideAndSeek
 
 		public void LoseHP (int loss)
 		{
+            SetHideMode(false);
             animator.SetTrigger ("playerHit");
             GameManager.instance.playerHp -= loss;
 
@@ -304,6 +302,9 @@ namespace HideAndSeek
             SoundManager.instance.PlaySingle(skillSound);
             switch (GameManager.instance.bag[index].skillname)
             {
+                case "은신":
+                    Hide();
+                    break;
                 case "회복":
                     RecoverHP(10);
                     break;
@@ -313,11 +314,32 @@ namespace HideAndSeek
                 case "괴물보기":
                     GameManager.instance.ShowMap(transform.position, 1);
                     break;
+                case "함정보기":
+                    GameManager.instance.ShowMap(transform.position, 2);
+                    break;
+                case "보물보기":
+                    GameManager.instance.ShowMap(transform.position, 3);
+                    break;
+                case "전체보기":
+                    GameManager.instance.ShowMap(transform.position, 4);
+                    break;
                 case "사방공격":
                     GameManager.instance.DestoryEnemies(transform.position, 0);
                     break;
                 case "좌우공격":
                     GameManager.instance.DestoryEnemies(transform.position, 1);
+                    break;
+
+                case "상하공격":
+                    GameManager.instance.DestoryEnemies(transform.position, 2);
+                    break;
+
+                case "30초추가":
+                    GameManager.instance.AddTime(30);
+                    break;
+
+                case "시간멈춤":
+                    GameManager.instance.StopTime(true);
                     break;
             }
             GameManager.instance.bag.RemoveAt(index);

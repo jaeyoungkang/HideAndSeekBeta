@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 namespace HideAndSeek
 {
+    [System.Serializable]
     public class Level
     {
         public int index;
@@ -14,7 +15,9 @@ namespace HideAndSeek
         public int strongEnemy;
         public int thief;
         public int gem;
+        public int[] nextIndex;
         public bool clear;
+        public bool close;
 
         public Level(int _index, int _trap, int _enemy, int _strongEnemy, int _thief, int _gem)
         {
@@ -29,21 +32,27 @@ namespace HideAndSeek
         public void Init() { clear = false; }
     }
 
+    [System.Serializable]
     public class Dungeon
     {
-        private Level[] levels;
+        public string name;
+        public int index;
+        public int nextIndex;        
+        public Level[] levels;        
+        public int cost;
+        public int gem;
+        public float timeLimit;
+
         public int curLevel;
         public int lastLevel;
-        private int cost;
-        private int gold;
-        private float timeLimit;
 
-        public Dungeon(Level[] _levels, int _cost, int _gold, float _timeLimit)
+        public Dungeon(Level[] _levels, string _name,  int _cost, int _gem, float _timeLimit)
         {
             levels = _levels;
+            name = _name;
             cost = _cost;
             lastLevel = levels.Length;
-            gold = _gold;
+            gem = _gem;
             timeLimit = _timeLimit;
         }
 
@@ -65,7 +74,7 @@ namespace HideAndSeek
 
         public void clearCurLevel() { levels[curLevel - 1].clear = true; }
         public bool IsEnd() { return levels[lastLevel - 1].clear; }
-        public int GetReward() { return gold;  }
+        public int GetReward() { return gem;  }
 
         public void SetLevel(int _level)
         {
@@ -74,71 +83,7 @@ namespace HideAndSeek
     }
 
     public class DungeonManager : MonoBehaviour
-    {        
-        private Dungeon dungeonA;
-        private Dungeon dungeonB;
-        private Dungeon dungeonC;
-
-        public void InitDungeons()
-        {
-            // TAKE ABOUT 1 MINUTE
-            Level[] dungeonAInfo = new Level[] {
-                                   new Level(0, 8, 0, 0, 0, 1),
-                                   new Level(1, 9, 0, 0, 0, 1),
-                                    new Level(2, 10, 1, 0, 0, 2),
-                                    new Level(3, 12, 3, 0, 0, 0)
-                                };
-            dungeonA = new Dungeon(dungeonAInfo, 0, 3, 60);
-
-            // TAKE ABOUT 3 MINUTES
-            Level[] dungeonBInfo = new Level[] {
-                                   new Level(0, 6, 1, 0, 0, 1),
-                                   new Level(1, 7, 1, 0, 0, 1),
-                                    new Level(2, 8, 1, 0, 0, 1),
-                                    new Level(3, 8, 1, 0, 0, 1),
-                                    new Level(4, 8, 1, 0, 0, 1),
-                                    new Level(5, 8, 1, 0, 0, 1),
-                                    new Level(6, 8, 1, 0, 0, 1),
-                                    new Level(7, 8, 1, 0, 0, 1),
-                                    new Level(8, 9, 1, 0, 0, 0)
-            };
-            dungeonB = new Dungeon(dungeonBInfo, 2, 10, 180);
-
-            // TAKE ABOUT 5 MINUTES
-            Level[] dungeonCInfo = new Level[] {
-                                   new Level(0, 6, 1, 0, 0, 1),
-                                   new Level(1, 7, 1, 0, 0, 1),
-                                    new Level(2, 8, 1, 0, 0, 1),
-                                    new Level(3, 8, 1, 0, 0, 1),
-                                    new Level(4, 8, 1, 0, 0, 1),
-                                    new Level(5, 8, 1, 0, 0, 1),
-                                    new Level(6, 8, 1, 0, 0, 1),
-                                    new Level(7, 8, 1, 0, 0, 1),
-                                    new Level(8, 8, 1, 0, 0, 1),
-                                    new Level(9, 8, 1, 0, 0, 1),
-                                    new Level(10, 8, 1, 0, 0, 1),
-                                    new Level(11, 8, 1, 0, 0, 1),
-                                    new Level(12, 8, 1, 0, 0, 1),
-                                    new Level(13, 8, 1, 0, 0, 1),
-                                    new Level(14, 8, 1, 0, 0, 1),
-                                    new Level(15, 8, 1, 0, 0, 1)
-            };
-            dungeonC = new Dungeon(dungeonCInfo, 3, 20, 300);
-        }
-
-        public Dungeon DungeonA()
-        {
-            return dungeonA;
-        }
-
-        public Dungeon DungeonB()
-        {
-            return dungeonB;
-        }
-
-        public Dungeon DungeonC()
-        {
-            return dungeonC;
-        }
+    {
+        public Dungeon[] dungeon;
     }
 }

@@ -10,7 +10,7 @@ using System;
 
 namespace HideAndSeek
 {    
-    public enum GAME_STATE { START, LOBBY, SHOP, INVENTORY, LEVEL, MAP, PLAY, RESULT, OVER }
+    public enum GAME_STATE { START, LOBBY, SHOP, INVENTORY, DUNGEON_INFO, LEVEL, MAP, PLAY, RESULT, OVER }
 
     public class GameManager : MonoBehaviour
     {
@@ -59,7 +59,6 @@ namespace HideAndSeek
             enemies = new List<Enemy>();
             boardScript = GetComponent<BoardManager>();
             dungeonManager = GetComponent<DungeonManager>();            
-            dungeonManager.InitDungeons();
 
             PageManager.instance.InitUI();
             ChangeState(GAME_STATE.START);
@@ -85,7 +84,7 @@ namespace HideAndSeek
         }
 
         private Dungeon curDungeon;
-
+        public Dungeon GetDungeonInfo() { return curDungeon; }
         public void ShowResult()
         {
             curDungeon.clearCurLevel();
@@ -113,22 +112,12 @@ namespace HideAndSeek
             timeLimit = curDungeon.TimeLimit();            
             dungeonGem = 0;
             playerHp = 20;
-            ChangeState(GAME_STATE.MAP);
+            ChangeState(GAME_STATE.DUNGEON_INFO);
         }
 
-        public void EnterDungeonA()
+        public void EnterDungeon(int index)
         {
-            EnterDungeon(dungeonManager.DungeonA());
-        }
-
-        public void EnterDungeonB()
-        {
-            EnterDungeon(dungeonManager.DungeonB());
-        }
-
-        public void EnterDungeonC()
-        {
-            EnterDungeon(dungeonManager.DungeonC());
+            EnterDungeon(dungeonManager.dungeon[index]);
         }
 
         public void EnterInven()

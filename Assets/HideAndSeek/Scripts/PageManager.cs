@@ -15,6 +15,7 @@ namespace HideAndSeek
         public GameObject controller;
         public GameObject dungeonMap;
         public GameObject inventoryPage;
+        public GameObject dungeonInfoPage;
 
         public Button dungeonABtn;
         public Button dungeonBBtn;
@@ -61,6 +62,7 @@ namespace HideAndSeek
             controller = GameObject.Find("Controller");
             dungeonMap = GameObject.Find("DungeonMap");
             inventoryPage = GameObject.Find("InventoryPage");
+            dungeonInfoPage = GameObject.Find("DungeonInfo");
 
             shopBtn = GameObject.Find("ShopButton").GetComponent<Button>();
             invenBtn = GameObject.Find("InventoryButton").GetComponent<Button>();
@@ -95,6 +97,7 @@ namespace HideAndSeek
             bool bLobby = false;
             bool bShop = false;
             bool bDungeon = false;
+            bool bDungeonInfo = false;
             bool bResult = false;
             bool bPlay = false;
             bool bMap = false;
@@ -106,6 +109,7 @@ namespace HideAndSeek
                 case GAME_STATE.SHOP: bShop = true; break;
                 case GAME_STATE.LOBBY: bLobby = true; break;
                 case GAME_STATE.LEVEL: bDungeon = true; break;
+                case GAME_STATE.DUNGEON_INFO: bDungeonInfo = true; break;                    
                 case GAME_STATE.MAP: bMap = true; break;
                 case GAME_STATE.PLAY: bPlay = true; break;
                 case GAME_STATE.RESULT: bResult = true; break;
@@ -118,10 +122,11 @@ namespace HideAndSeek
             lobbyImage.SetActive(bLobby);
             titleImage.SetActive(bTitle);
             dungeonImage.SetActive(bDungeon);
+            dungeonInfoPage.SetActive(bDungeonInfo);
             resultImage.SetActive(bResult);
             controller.SetActive(bPlay);
             dungeonMap.SetActive(bMap);
-            inventoryPage.SetActive(bInventory);
+            inventoryPage.SetActive(bInventory);            
 
             if (bMap || bDungeon || bResult || bPlay)
             {
@@ -150,9 +155,9 @@ namespace HideAndSeek
             level3Btn.onClick.AddListener(() => { GameManager.instance.EnterLevel(3); });
             level4Btn.onClick.AddListener(() => { GameManager.instance.EnterLevel(4); });
 
-            dungeonABtn.onClick.AddListener(GameManager.instance.EnterDungeonA);
-            dungeonBBtn.onClick.AddListener(GameManager.instance.EnterDungeonB);
-            dungeonCBtn.onClick.AddListener(GameManager.instance.EnterDungeonC);
+            dungeonABtn.onClick.AddListener(() => { GameManager.instance.EnterDungeon(0); });
+            dungeonBBtn.onClick.AddListener(() => { GameManager.instance.EnterDungeon(1); });
+            dungeonCBtn.onClick.AddListener(() => { GameManager.instance.EnterDungeon(2); });
 
             shopBtn.onClick.AddListener(GameManager.instance.EnterShop);
             invenBtn.onClick.AddListener(GameManager.instance.EnterInven);

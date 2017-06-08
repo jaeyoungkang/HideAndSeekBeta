@@ -15,7 +15,7 @@ namespace HideAndSeek
         void Start()
         {
             SetupInfo();
-            enterBtn.onClick.AddListener(GameManager.instance.GotoDungeonMap);
+            enterBtn.onClick.AddListener(GameManager.instance.EnterDungeon);
             returnBtn.onClick.AddListener(GameManager.instance.GoToLobby);
         }
 

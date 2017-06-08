@@ -39,9 +39,6 @@ namespace HideAndSeek
 		{
             animator = GetComponent<Animator>();
 
-            PageManager.instance.SetHPText(GameManager.instance.playerHp, Color.white);
-            PageManager.instance.SetGemText(GameManager.instance.dungeonGem, Color.white);
-
             upBtn.onClick.AddListener(MoveUp);
             downBtn.onClick.AddListener(MoveDown);
             leftBtn.onClick.AddListener(MoveLeft);
@@ -81,17 +78,17 @@ namespace HideAndSeek
         }
 		
         private void Update ()
-		{   
+		{
+            if (GameManager.instance.IsPlay() == false) return;
+            if (GameManager.instance.playerHp <= 0) return;
+
             if (GameManager.instance.timeLimit <= 0)
             {
                 GameManager.instance.timeLimit = 10;
                 LoseHP(10);
-                SoundManager.instance.RandomizeSfx(attackedSound1, attackedSound2);                
-            }      
+            }
 
-            if (!GameManager.instance.playersTurn) return;
-
-            if (GameManager.instance.playerHp <= 0) return;
+            if (!GameManager.instance.playersTurn) return;            
 
             int horizontal = 0;  	//Used to store the horizontal move direction.
 			int vertical = 0;		//Used to store the vertical move direction.
@@ -126,8 +123,6 @@ namespace HideAndSeek
 
         protected override void AttemptMove <T> (int xDir, int yDir)
 		{
-            PageManager.instance.SetHPText(GameManager.instance.playerHp, Color.white);
-            PageManager.instance.SetGemText(GameManager.instance.dungeonGem, Color.white);
             GameManager.instance.ShowMap(false);
             GameManager.instance.StopTime(false);
 
@@ -224,7 +219,6 @@ namespace HideAndSeek
         void GetGold(int count)
         {
             GameManager.instance.dungeonGem += count;
-            PageManager.instance.SetGemText(GameManager.instance.dungeonGem, Color.green);            
         }
 
         IEnumerator HideAni(GameObject obj)
@@ -240,7 +234,6 @@ namespace HideAndSeek
             animator.SetTrigger ("playerHit");
             GameManager.instance.playerHp -= loss;
 
-            PageManager.instance.SetHPText(GameManager.instance.playerHp, Color.red);
             CheckIfGameOver ();
 		}
 		
@@ -292,7 +285,6 @@ namespace HideAndSeek
         void RecoverHP(int delta)
         {
             GameManager.instance.playerHp += delta;
-            PageManager.instance.SetHPText(GameManager.instance.playerHp, Color.green);
         }
 
         void UseSkill(int index)
@@ -302,12 +294,10 @@ namespace HideAndSeek
             SoundManager.instance.PlaySingle(skillSound);
             switch (GameManager.instance.bag[index].skillname)
             {
-                case "은신":
-                    Hide();
-                    break;
-                case "회복":
-                    RecoverHP(10);
-                    break;
+                case "은신": Hide(); break;
+                case "회복10": RecoverHP(10); break;
+                case "회복20": RecoverHP(20); break;
+                case "회복30": RecoverHP(30); break;
                 case "근처보기":
                     GameManager.instance.ShowMap(transform.position, 0);
                     break;

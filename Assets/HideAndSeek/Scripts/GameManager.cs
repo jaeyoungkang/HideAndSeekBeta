@@ -105,19 +105,29 @@ namespace HideAndSeek
             ShowMap(false);            
         }
 
-        public void EnterDungeon(Dungeon dungeon)
+        public void ShowDungeonInfo(Dungeon dungeon)
         {
             curDungeon = dungeon;
-            curDungeon.init();
-            timeLimit = curDungeon.TimeLimit();            
-            dungeonGem = 0;
-            playerHp = 20;
             ChangeState(GAME_STATE.DUNGEON_INFO);
         }
 
-        public void EnterDungeon(int index)
+        public void SelectDungeon(int index)
         {
-            EnterDungeon(dungeonManager.dungeon[index]);
+            ShowDungeonInfo(dungeonManager.dungeon[index]);
+        }
+
+        public void EnterDungeon()
+        {
+            if(curDungeon.cost > invenGem)
+            {
+                print("Popup: You need more gem to enter the Dungeon");
+                return;
+            }
+            curDungeon.init();
+            timeLimit = curDungeon.TimeLimit();
+            dungeonGem = 0;
+            playerHp = 20;
+            ChangeState(GAME_STATE.MAP);
         }
 
         public void EnterInven()
@@ -176,8 +186,9 @@ namespace HideAndSeek
         {
             if (timeStop) return;
             timeLimit -= Time.deltaTime;
-            PageManager.instance.SetTimeTextAndColor(timeLimit);
         }
+
+        public bool IsPlay() { return gameState == GAME_STATE.PLAY; }
 
         void Update()
         {

@@ -9,6 +9,7 @@ namespace HideAndSeek
     [System.Serializable]
     public class Level
     {
+        public string name;
         public int index;
         public int trap;
         public int enemy;
@@ -29,7 +30,6 @@ namespace HideAndSeek
             gem = _gem;
             clear = false;
         }
-        public void Init() { clear = false; }
     }
 
     [System.Serializable]
@@ -44,14 +44,12 @@ namespace HideAndSeek
         public float timeLimit;
 
         public int curLevel;
-        public int lastLevel;
 
         public Dungeon(Level[] _levels, string _name,  int _cost, int _gem, float _timeLimit)
         {
             levels = _levels;
             name = _name;
             cost = _cost;
-            lastLevel = levels.Length;
             gem = _gem;
             timeLimit = _timeLimit;
         }
@@ -60,20 +58,54 @@ namespace HideAndSeek
         {
             foreach(Level alevel in levels)
             {
-                alevel.Init();
+                alevel.clear = false;
+                alevel.close = true;
             }
+            if (levels[0].index == 1) levels[0].close = false;
         }
 
-        public override string ToString() { return curLevel + "/" + lastLevel; }
+        public override string ToString() { return GetCurLevel().name; }
 
         public int Cost() { return cost; }
         public float TimeLimit() { return timeLimit; }
 
-        public Level GetCurLevel() { return levels[curLevel - 1]; }
-        public Level[] GetLevels() { return levels; }
+        public Level GetCurLevel()
+        {
+            foreach (Level lv in levels)
+            {
+                if (lv.index == curLevel)
+                {
+                    return lv;
+                }
+            }
 
-        public void clearCurLevel() { levels[curLevel - 1].clear = true; }
-        public bool IsEnd() { return levels[lastLevel - 1].clear; }
+            return null;
+        }
+
+        public void clearCurLevel()
+        {
+            foreach (Level lv in levels)
+            {
+                if (lv.index == curLevel)
+                {
+                    lv.clear = true;
+                    OpenNextLevel(lv.nextIndex);
+                }                    
+            }
+        }
+
+        public void OpenNextLevel(int[] nextIndexs)
+        {            
+            foreach (int index in nextIndexs)
+            {
+                foreach (Level lv in levels)
+                {
+                    if (lv.index == index) lv.close = false;
+                }
+            }
+        }
+
+        public bool IsEnd() { return levels[levels.Length - 1].clear; }
         public int GetReward() { return gem;  }
 
         public void SetLevel(int _level)

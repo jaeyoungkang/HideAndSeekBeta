@@ -17,6 +17,8 @@ namespace HideAndSeek
         public GameObject inventoryPage;
         public GameObject dungeonInfoPage;
 
+        public GameObject statusPanel;
+
         public Button dungeonABtn;
         public Button dungeonBBtn;
         public Button dungeonCBtn;
@@ -26,10 +28,6 @@ namespace HideAndSeek
 
         public Button endSelectSkillBtn;
 
-        public Button level1Btn;
-        public Button level2Btn;
-        public Button level3Btn;
-        public Button level4Btn;
         public Button startButton;
 
         public Button shopBtn;
@@ -64,15 +62,12 @@ namespace HideAndSeek
             inventoryPage = GameObject.Find("InventoryPage");
             dungeonInfoPage = GameObject.Find("DungeonInfo");
 
+            statusPanel = GameObject.Find("Status");
+
             shopBtn = GameObject.Find("ShopButton").GetComponent<Button>();
             invenBtn = GameObject.Find("InventoryButton").GetComponent<Button>();
 
             startButton = GameObject.Find("FrontPageButton").GetComponent<Button>();
-
-            level1Btn = GameObject.Find("level1").GetComponent<Button>();
-            level2Btn = GameObject.Find("level2").GetComponent<Button>();
-            level3Btn = GameObject.Find("level3").GetComponent<Button>();
-            level4Btn = GameObject.Find("level4").GetComponent<Button>();
 
             dungeonText = GameObject.Find("DungeonText").GetComponent<Text>();
             resultText = GameObject.Find("ResultText").GetComponent<Text>();
@@ -130,19 +125,11 @@ namespace HideAndSeek
 
             if (bMap || bDungeon || bResult || bPlay)
             {
-                HpText.enabled = true;
-                GemText.enabled = true;
-                TimeText.enabled = true;
-                GemImage.enabled = true;
-                SetHPText(GameManager.instance.playerHp, Color.white);
-                SetGemText(GameManager.instance.dungeonGem, Color.white);
+                statusPanel.gameObject.SetActive(true);
             }
             else
             {
-                HpText.enabled = false;
-                GemText.enabled = false;
-                TimeText.enabled = false;
-                GemImage.enabled = false;
+                statusPanel.gameObject.SetActive(false);
             }            
         }
 
@@ -150,14 +137,9 @@ namespace HideAndSeek
         {            
             resultButton.onClick.AddListener(GameManager.instance.GotoDungeonMap);
             
-            level1Btn.onClick.AddListener(() => { GameManager.instance.EnterLevel(1); });
-            level2Btn.onClick.AddListener(() => { GameManager.instance.EnterLevel(2); });
-            level3Btn.onClick.AddListener(() => { GameManager.instance.EnterLevel(3); });
-            level4Btn.onClick.AddListener(() => { GameManager.instance.EnterLevel(4); });
-
-            dungeonABtn.onClick.AddListener(() => { GameManager.instance.EnterDungeon(0); });
-            dungeonBBtn.onClick.AddListener(() => { GameManager.instance.EnterDungeon(1); });
-            dungeonCBtn.onClick.AddListener(() => { GameManager.instance.EnterDungeon(2); });
+            dungeonABtn.onClick.AddListener(() => { GameManager.instance.SelectDungeon(0); });
+            dungeonBBtn.onClick.AddListener(() => { GameManager.instance.SelectDungeon(1); });
+            dungeonCBtn.onClick.AddListener(() => { GameManager.instance.SelectDungeon(2); });
 
             shopBtn.onClick.AddListener(GameManager.instance.EnterShop);
             invenBtn.onClick.AddListener(GameManager.instance.EnterInven);
@@ -174,26 +156,6 @@ namespace HideAndSeek
             string content = "Gem Clear Reward : " + reward.ToString() + "\n";
             content += "Gem discoverd : " + gem;
             resultText.text = content;
-        }
-
-        public void SetHPText(int playerHp, Color msgColor)
-        {
-            string content = "HP:" + playerHp;
-            HpText.text = content;
-            HpText.color = msgColor;
-        }
-
-        public void SetGemText(int playerGem, Color msgColor)
-        {
-            GemText.text = playerGem.ToString();
-            GemText.color = msgColor;
-        }
-
-        public void SetTimeTextAndColor(float timeLimit)
-        {
-            TimeText.text = Mathf.Floor(timeLimit).ToString();
-            if (timeLimit <= 10) TimeText.color = Color.red;
-            else TimeText.color = Color.white;
-        }
+        }        
     }
 }

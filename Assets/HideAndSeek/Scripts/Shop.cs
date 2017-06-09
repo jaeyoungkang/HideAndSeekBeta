@@ -21,9 +21,7 @@ namespace HideAndSeek
         public Button[] InvenBtns;
         public Button ReturnBtn;
 
-        public Text GemText;
-
-        public int invenSize;
+        public Text GemText;        
 
         void EnableInvenSlot()
         {
@@ -32,7 +30,7 @@ namespace HideAndSeek
                 invenBtn.gameObject.SetActive(false);
             }
 
-            for (int i = 0; i < invenSize; i++)
+            for (int i = 0; i < GameManager.instance.invenSize; i++)
             {
                 InvenBtns[i].gameObject.SetActive(true);
             }
@@ -82,14 +80,15 @@ namespace HideAndSeek
 
             if(display[index].skillname == "인벤추가")
             {
-                GameManager.instance.invenGem -= display[index].price;
-                
-                if (invenSize < InvenBtns.Length) invenSize++;
-                EnableInvenSlot();
+                if (GameManager.instance.ExtendInvenSize(InvenBtns.Length))
+                {
+                    GameManager.instance.invenGem -= display[index].price;
+                    EnableInvenSlot();
+                }
             }
             else
             {
-                if (invenSize == GameManager.instance.inven.Count) return;
+                if (GameManager.instance.invenSize == GameManager.instance.inven.Count) return;
                 GameManager.instance.inven.Add(display[index]);
                 GameManager.instance.invenGem -= display[index].price;
                 SetupInventory();

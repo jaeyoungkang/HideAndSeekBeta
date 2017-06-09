@@ -10,19 +10,19 @@ namespace HideAndSeek
     public class Level
     {
         public string name;
-        public int index;
+        public int id;
         public int trap;
         public int enemy;
         public int strongEnemy;
         public int thief;
         public int gem;
-        public int[] nextIndex;
+        public int[] nextIds;
         public bool clear;
         public bool close;
 
-        public Level(int _index, int _trap, int _enemy, int _strongEnemy, int _thief, int _gem)
+        public Level(int _id, int _trap, int _enemy, int _strongEnemy, int _thief, int _gem)
         {
-            index = _index;
+            id = _id;
             trap = _trap;
             enemy = _enemy;
             strongEnemy = _strongEnemy;
@@ -36,14 +36,13 @@ namespace HideAndSeek
     public class Dungeon
     {
         public string name;
-        public int index;
+        public int id;
         public int nextIndex;        
         public Level[] levels;        
         public int cost;
         public int gem;
         public float timeLimit;
-
-        public int curLevel;
+        public int curLevelId;        
 
         public Dungeon(Level[] _levels, string _name,  int _cost, int _gem, float _timeLimit)
         {
@@ -61,7 +60,7 @@ namespace HideAndSeek
                 alevel.clear = false;
                 alevel.close = true;
             }
-            if (levels[0].index == 1) levels[0].close = false;
+            if (levels[0].id == 1) levels[0].close = false;
         }
 
         public override string ToString() { return GetCurLevel().name; }
@@ -73,7 +72,7 @@ namespace HideAndSeek
         {
             foreach (Level lv in levels)
             {
-                if (lv.index == curLevel)
+                if (lv.id == curLevelId)
                 {
                     return lv;
                 }
@@ -86,21 +85,21 @@ namespace HideAndSeek
         {
             foreach (Level lv in levels)
             {
-                if (lv.index == curLevel)
+                if (lv.id == curLevelId)
                 {
                     lv.clear = true;
-                    OpenNextLevel(lv.nextIndex);
+                    OpenNextLevel(lv.nextIds);
                 }                    
             }
         }
 
-        public void OpenNextLevel(int[] nextIndexs)
+        public void OpenNextLevel(int[] nextIds)
         {            
-            foreach (int index in nextIndexs)
+            foreach (int id in nextIds)
             {
                 foreach (Level lv in levels)
                 {
-                    if (lv.index == index) lv.close = false;
+                    if (lv.id == id) lv.close = false;
                 }
             }
         }
@@ -110,12 +109,7 @@ namespace HideAndSeek
 
         public void SetLevel(int _level)
         {
-            curLevel = _level;
+            curLevelId = _level;
         }
-    }
-
-    public class DungeonManager : MonoBehaviour
-    {
-        public Dungeon[] dungeon;
     }
 }

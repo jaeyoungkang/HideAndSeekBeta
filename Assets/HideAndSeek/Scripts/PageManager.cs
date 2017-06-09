@@ -19,25 +19,10 @@ namespace HideAndSeek
 
         public GameObject statusPanel;
 
-        public Button dungeonABtn;
-        public Button dungeonBBtn;
-        public Button dungeonCBtn;
-        public Button resultButton;
         public Text dungeonText;
-        public Text resultText;
-
-        public Button endSelectSkillBtn;
 
         public Button startButton;
-
-        public Button shopBtn;
-        public Button invenBtn;
-
-        public Image GemImage;
-        public Text HpText;
-        public Text GemText;
-        public Text TimeText;
-
+        
         void Awake()
         {
             if (instance == null)
@@ -64,25 +49,11 @@ namespace HideAndSeek
 
             statusPanel = GameObject.Find("Status");
 
-            shopBtn = GameObject.Find("ShopButton").GetComponent<Button>();
-            invenBtn = GameObject.Find("InventoryButton").GetComponent<Button>();
-
             startButton = GameObject.Find("FrontPageButton").GetComponent<Button>();
 
             dungeonText = GameObject.Find("DungeonText").GetComponent<Text>();
-            resultText = GameObject.Find("ResultText").GetComponent<Text>();
-
-            HpText = GameObject.Find("HpText").GetComponent<Text>();
-            GemText = GameObject.Find("GemText").GetComponent<Text>();
-            TimeText = GameObject.Find("TimeText").GetComponent<Text>();
-            GemImage = GameObject.Find("GemImage").GetComponent<Image>();
-
-            resultButton = GameObject.Find("ResultButton").GetComponent<Button>();
-            dungeonABtn = GameObject.Find("DungeonABtn").GetComponent<Button>();
-            dungeonBBtn = GameObject.Find("DungeonBBtn").GetComponent<Button>();
-            dungeonCBtn = GameObject.Find("DungeonCBtn").GetComponent<Button>();
-
-            SetupListners();
+            
+            SetupListners();            
         }
 
 
@@ -135,14 +106,6 @@ namespace HideAndSeek
 
         public void SetupListners()
         {            
-            resultButton.onClick.AddListener(GameManager.instance.GotoDungeonMap);
-            
-            dungeonABtn.onClick.AddListener(() => { GameManager.instance.SelectDungeon(0); });
-            dungeonBBtn.onClick.AddListener(() => { GameManager.instance.SelectDungeon(1); });
-            dungeonCBtn.onClick.AddListener(() => { GameManager.instance.SelectDungeon(2); });
-
-            shopBtn.onClick.AddListener(GameManager.instance.EnterShop);
-            invenBtn.onClick.AddListener(GameManager.instance.EnterInven);
             startButton.onClick.AddListener(GameManager.instance.GoToLobby);
         }
 
@@ -150,12 +113,5 @@ namespace HideAndSeek
         {
             dungeonText.text = content;
         }
-
-        public void SetResultPageText(int reward, int gem)
-        {
-            string content = "Gem Clear Reward : " + reward.ToString() + "\n";
-            content += "Gem discoverd : " + gem;
-            resultText.text = content;
-        }        
     }
 }

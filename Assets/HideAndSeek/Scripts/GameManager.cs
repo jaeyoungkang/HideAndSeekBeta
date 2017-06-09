@@ -18,26 +18,74 @@ namespace HideAndSeek
         [HideInInspector]
         public bool playersTurn = true;
 
-        private DungeonManager dungeonManager;
+        public Dungeon[] dungeons;
         private BoardManager boardScript;
-        private List<Enemy> enemies;                            //List of all Enemy units, used to issue them move commands.
-        private bool enemiesMoving;                             //Boolean to check if enemies are moving.
+        
+        private bool enemiesMoving;
                 
         private GAME_STATE gameState;
-                
-        public List<GameObject> trapsOnStage = new List<GameObject>();
-        public List<GameObject> objsOnStage = new List<GameObject>();
-        public List<GameObject> tilesOnStage = new List<GameObject>();
+
+        public List<GameObject> curTrapsOnStage = new List<GameObject>();
+        public List<GameObject> curObjsOnStage = new List<GameObject>();
+        public List<GameObject> curTilesOnStage = new List<GameObject>();
+        public List<GameObject> curEnemiesOnStage = new List<GameObject>();
+        
+        public Dictionary<int, List<GameObject>> enemiesOnStages = new Dictionary<int, List<GameObject>>();
+
+        public Dictionary<int, List<GameObject>> trapsOnStages = new Dictionary<int, List<GameObject>>();
+        public Dictionary<int, List<GameObject>> objsOnStages = new Dictionary<int, List<GameObject>>();
+        public Dictionary<int, List<GameObject>> tilesOnStages = new Dictionary<int, List<GameObject>>();
 
         public List<Skill> inven = new List<Skill>();
         public List<Skill> bag = new List<Skill>();
         public int bagSize;
+        public int invenSize;
 
         public int playerHp = 20;
         public int invenGem = 0;
         public int dungeonGem = 0;
         public float timeLimit;
 
+        public void RemoveObj(GameObject obj)
+        {
+            curObjsOnStage.Remove(obj);
+        }
+
+        public void RemoveEnemy(GameObject obj)
+        {
+            curEnemiesOnStage.Remove(obj);
+        }
+
+        public void AddEnemy(GameObject enemy, int id)
+        {
+            enemiesOnStages[id].Add(enemy);
+        }
+
+        public void AddTrap(GameObject trap, int id)
+        {
+            trapsOnStages[id].Add(trap);
+        }
+
+        public void AddObj(GameObject obj, int id)
+        {
+            objsOnStages[id].Add(obj);
+        }
+
+        public void AddTile(GameObject tile, int id)
+        {
+            tilesOnStages[id].Add(tile);
+        }
+
+        public bool ExtendInvenSize(int limit)
+        {
+            if (invenSize < limit)
+            {
+                invenSize++;
+                return true;
+            }
+
+            return false;
+        }
         public bool AddBag(Skill skill)
         {
             if (bag.Count == bagSize) return false;            
@@ -56,9 +104,7 @@ namespace HideAndSeek
 
             DontDestroyOnLoad(gameObject);
 
-            enemies = new List<Enemy>();
             boardScript = GetComponent<BoardManager>();
-            dungeonManager = GetComponent<DungeonManager>();            
 
             PageManager.instance.InitUI();
             ChangeState(GAME_STATE.START);
@@ -79,30 +125,75 @@ namespace HideAndSeek
             if (instance != null)
             {
                 PageManager.instance.InitUI();
-                instance.setupLevel();
+                instance.ChangeState(instance.gameState);
             }
         }
 
         private Dungeon curDungeon;
         public Dungeon GetDungeonInfo() { return curDungeon; }
+
+        public void GetResult()
+        {
+            invenGem += curDungeon.GetReward();
+            invenGem += dungeonGem;
+        }
+
         public void ShowResult()
         {
             curDungeon.clearCurLevel();
             if(curDungeon.IsEnd())
-            {                
-                PageManager.instance.SetResultPageText(curDungeon.GetReward(), dungeonGem);
-                invenGem += curDungeon.GetReward();
-                invenGem += dungeonGem;
+            {
+                GetResult();
             }
             GameManager.instance.ChangeState(GAME_STATE.RESULT);
+        }
+
+        void SetActiveObjs(List<GameObject> objs, bool active)
+        {
+            foreach (GameObject obj in objs)
+            {
+                obj.SetActive(active);
+            }
+        }
+
+        void SetActiveMap(Dictionary<int, List<GameObject>> map, bool active)
+        {
+            foreach (KeyValuePair<int, List<GameObject>> pair in map)
+            {
+                SetActiveObjs(pair.Value, active);
+            }
         }
         
         void setupLevel()
         {
-            enemies.Clear();
-            boardScript.SetupScene(curDungeon.GetCurLevel());
+            int levelId =  curDungeon.GetCurLevel().id;
+            
+            if(!trapsOnStages.ContainsKey(levelId) || !objsOnStages.ContainsKey(levelId) || !tilesOnStages.ContainsKey(levelId) || !enemiesOnStages.ContainsKey(levelId))
+            {
+                print("Error: wrong level id " + levelId);
+                return;
+            }
+
+            SetActiveMap(trapsOnStages, false);
+            SetActiveMap(objsOnStages, false);
+            SetActiveMap(tilesOnStages, false);
+            SetActiveMap(enemiesOnStages, false);
+            
+            curTrapsOnStage = trapsOnStages[levelId];
+            curObjsOnStage = objsOnStages[levelId];
+            curTilesOnStage = tilesOnStages[levelId];
+            curEnemiesOnStage = enemiesOnStages[levelId];
+
+            SetActiveObjs(curTrapsOnStage, true);
+            SetActiveObjs(curObjsOnStage, true);
+            SetActiveObjs(curTilesOnStage, true);
+            SetActiveObjs(curEnemiesOnStage, true);
+           
             ChangeState(GAME_STATE.PLAY);
-            ShowMap(false);            
+            ShowMap(false);
+
+            Player player = FindObjectOfType(typeof(Player)) as Player;
+            player.Init();
         }
 
         public void ShowDungeonInfo(Dungeon dungeon)
@@ -113,7 +204,7 @@ namespace HideAndSeek
 
         public void SelectDungeon(int index)
         {
-            ShowDungeonInfo(dungeonManager.dungeon[index]);
+            ShowDungeonInfo(dungeons[index]);
         }
 
         public void EnterDungeon()
@@ -127,6 +218,22 @@ namespace HideAndSeek
             timeLimit = curDungeon.TimeLimit();
             dungeonGem = 0;
             playerHp = 20;
+
+            GameManager.instance.tilesOnStages.Clear();
+            GameManager.instance.objsOnStages.Clear();
+            GameManager.instance.trapsOnStages.Clear();
+            GameManager.instance.enemiesOnStages.Clear();
+
+            foreach(Level lv in curDungeon.levels)
+            {
+                GameManager.instance.tilesOnStages[lv.id] = new List<GameObject>();
+                GameManager.instance.objsOnStages[lv.id] = new List<GameObject>();
+                GameManager.instance.trapsOnStages[lv.id] = new List<GameObject>();
+                GameManager.instance.enemiesOnStages[lv.id] = new List<GameObject>();
+            }
+            
+            boardScript.SetupScene(curDungeon.levels);
+
             ChangeState(GAME_STATE.MAP);
         }
 
@@ -142,9 +249,7 @@ namespace HideAndSeek
 
         public void GotoDungeonMap()
         {
-            if (curDungeon.IsEnd()) ChangeState(GAME_STATE.LOBBY);
-            else if (playerHp == 0) ChangeState(GAME_STATE.LOBBY);
-            else ChangeState(GAME_STATE.MAP);
+            ChangeState(GAME_STATE.MAP);
         }
 
         public void EnterLevel(int level)
@@ -152,16 +257,12 @@ namespace HideAndSeek
             curDungeon.SetLevel(level);
             GameManager.instance.ChangeState(GAME_STATE.LEVEL);
             PageManager.instance.SetLevelEnterPageText(curDungeon.ToString());
-            Invoke("InitiateLevel", 2f);
-        }
-
-        void InitiateLevel()
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
+            Invoke("setupLevel", 2f);
         }
 
         public void GoToLobby()
-        {
+        {               
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
             ChangeState(GAME_STATE.LOBBY);
         }
         
@@ -201,10 +302,9 @@ namespace HideAndSeek
             }
         }
 
-        public void AddEnemyToList(Enemy script)
+        public bool IsGameOver()
         {
-            enemies.Add(script);
-            ShowNear(GameObject.FindGameObjectWithTag("Player").transform.position);
+            return gameState == GAME_STATE.OVER;
         }
 
         public void GameOver()
@@ -221,14 +321,16 @@ namespace HideAndSeek
         public void ShowNear(Vector3 targetPos)
         {
             Vector3[] range = GetShowRange(targetPos);
-            for (int i = 0; i < enemies.Count; i++)
+            for (int i = 0; i < curEnemiesOnStage.Count; i++)
             {
-                if (enemies[i].tag == "Thief" || enemies[i].tag == "Enemy")
+                if (curEnemiesOnStage[i].tag == "Thief" || curEnemiesOnStage[i].tag == "Enemy")
                 {
                     foreach (Vector3 pos in range)
                     {
-                        if (pos == enemies[i].transform.position)
-                            enemies[i].Show(true);
+                        if (pos == curEnemiesOnStage[i].transform.position)
+                        {
+                            ShowObject(curEnemiesOnStage[i], true);
+                        }
                     }
                 }
             }
@@ -319,33 +421,47 @@ namespace HideAndSeek
             };
         }
 
+        public void ShowObject(GameObject obj, bool bShow)
+        {
+            SpriteRenderer sprite = obj.GetComponent<SpriteRenderer>();
+
+            if (sprite)
+            {
+                Color color = sprite.material.color;
+                if (bShow) color.a = 1.0f;
+                else color.a = 0f;
+
+                sprite.material.color = color;
+            }
+        }
+
         public void ShowAllUnits(bool bShow)
         {
             ShowEnemies(bShow);
-            for (int i = 0; i < enemies.Count; i++)
+            for (int i = 0; i < curEnemiesOnStage.Count; i++)
             {
-                if (enemies[i].tag == "Thief") enemies[i].Show(bShow);
+                if (curEnemiesOnStage[i].tag == "Thief") ShowObject(curEnemiesOnStage[i], bShow);
             }
         }
 
         public void ShowEnemies(bool bShow)
         {
-            for (int i = 0; i < enemies.Count; i++)
+            for (int i = 0; i < curEnemiesOnStage.Count; i++)
             {
-                if (enemies[i].tag == "Enemy") enemies[i].Show(bShow);
+                if (curEnemiesOnStage[i].tag == "Enemy") ShowObject(curEnemiesOnStage[i], bShow);
             }
         }
 
-        public List<Enemy> SearchEnemies(Vector3[] range)
+        public List<GameObject> SearchEnemies(Vector3[] range)
         {
-            List<Enemy> result = new List<Enemy>();
+            List<GameObject> result = new List<GameObject>();
 
             foreach (Vector3 v in range)
             {
-                for (int i = 0; i < enemies.Count; i++)
+                for (int i = 0; i < curEnemiesOnStage.Count; i++)
                 {
-                    if (enemies[i].tag == "Thief") continue;
-                    if (enemies[i].transform.position == v) result.Add(enemies[i]);
+                    if (curEnemiesOnStage[i].tag == "Thief") continue;
+                    if (curEnemiesOnStage[i].transform.position == v) result.Add(curEnemiesOnStage[i]);
                 }
             }
 
@@ -404,34 +520,6 @@ namespace HideAndSeek
 
         }
 
-        public void DestoryEnemies(Vector3 targetPos, int type)
-        {
-            Vector3[] range = GetDestroyRange(targetPos, type);
-
-            List<GameObject> targetTiles = new List<GameObject>();
-
-            foreach (GameObject obj in tilesOnStage)
-            {
-                foreach (Vector3 v in range)
-                {
-                    if (obj.tag == "Wall") continue;
-                    if (obj.transform.position == v) targetTiles.Add(obj);
-                }
-            }
-
-            foreach (GameObject obj in trapsOnStage)
-            {
-                foreach (Vector3 v in range)
-                {
-                    if (obj.transform.position == v) targetTiles.Add(obj);
-                }
-            }
-
-            List<Enemy> targetEnemies = SearchEnemies(range);
-            StartCoroutine(DestroyEffectFloor(targetTiles));
-            StartCoroutine(DestroyEffect(targetEnemies));
-        }
-
         IEnumerator DestroyEffectFloor(List<GameObject> targetTiles)
         {
             foreach (GameObject obj in targetTiles)
@@ -470,26 +558,26 @@ namespace HideAndSeek
             }
         }
 
-        IEnumerator DestroyEffect(List<Enemy> targetEnemies)
+        IEnumerator DestroyEffect(List<GameObject> targetEnemies)
         {
-            foreach (Enemy en in targetEnemies) en.Show(true);
+            foreach (GameObject en in targetEnemies) ShowObject(en, true);
             yield return new WaitForSeconds(0.1f);
-            foreach (Enemy en in targetEnemies) en.Show(false);
+            foreach (GameObject en in targetEnemies) ShowObject(en, false);
             yield return new WaitForSeconds(0.1f);
-            foreach (Enemy en in targetEnemies) en.Show(true);
+            foreach (GameObject en in targetEnemies) ShowObject(en, true);
             yield return new WaitForSeconds(0.05f);
-            foreach (Enemy en in targetEnemies) en.Show(false);
+            foreach (GameObject en in targetEnemies) ShowObject(en, false);
             yield return new WaitForSeconds(0.05f);
-            foreach (Enemy en in targetEnemies) en.Show(true);
+            foreach (GameObject en in targetEnemies) ShowObject(en, true);
             yield return new WaitForSeconds(0.1f);
-            foreach (Enemy en in targetEnemies) en.gameObject.SetActive(false);
+            foreach (GameObject en in targetEnemies) en.SetActive(false);
         }
 
         public void SetSearchEnemies(bool value)
         {
-            foreach (Enemy en in enemies)
+            foreach (GameObject en in curEnemiesOnStage)
             {
-                en.SetSearch(value);
+                Enemy script = en.GetComponent<Enemy>();
             }
         }
 
@@ -500,9 +588,14 @@ namespace HideAndSeek
 
             yield return new WaitForSeconds(0.08f);
 
-            for (int i = 0; i < enemies.Count; i++)
+            for (int i = 0; i < curEnemiesOnStage.Count; i++)
             {
-                if (enemies[i].gameObject.activeSelf) enemies[i].MoveEnemy();
+                if (curEnemiesOnStage[i].gameObject.activeSelf)
+                {
+                    Enemy anEnemy = curEnemiesOnStage[i].GetComponent<Enemy>();
+                    anEnemy.MoveEnemy();
+                }
+
 
                 yield return new WaitForSeconds(0.03f);
                 totalTime -= 0.03f;
@@ -526,7 +619,7 @@ namespace HideAndSeek
                 }
             }
 
-            foreach (Enemy en in enemies)
+            foreach (GameObject en in curEnemiesOnStage)
             {
                 Vector2 pos = en.transform.position;
                 int x = (int)pos.x;
@@ -541,7 +634,7 @@ namespace HideAndSeek
 
         public bool IsAvailablePos(Vector2 dest)
         {
-            foreach (Enemy en in enemies)
+            foreach (GameObject en in curEnemiesOnStage)
             {
                 Vector2 pos = en.transform.position;
                 if (pos == dest) return false;
@@ -552,13 +645,12 @@ namespace HideAndSeek
         public void RemoveTrap(GameObject aTrap)
         {
             aTrap.SetActive(false);
-            trapsOnStage.Remove(aTrap);
-
+            curTrapsOnStage.Remove(aTrap);
         }
 
         public GameObject IsTrap(float x, float y)
         {
-            foreach (GameObject obj in trapsOnStage)
+            foreach (GameObject obj in curTrapsOnStage)
             {
                 if (obj.transform.position.x == x && obj.transform.position.y == y) return obj;
             }
@@ -568,7 +660,7 @@ namespace HideAndSeek
 
         public void ShowTraps(bool bShow, Vector3[] range = null)
         {
-            foreach (GameObject obj in trapsOnStage)
+            foreach (GameObject obj in curTrapsOnStage)
             {
                 if (obj == null) continue;
                 Renderer renderer = obj.GetComponent<SpriteRenderer>();
@@ -592,7 +684,7 @@ namespace HideAndSeek
 
         public void ShowGems(bool bShow, Vector3[] range = null)
         {
-            foreach (GameObject obj in objsOnStage)
+            foreach (GameObject obj in curObjsOnStage)
             {
                 if (obj == null) continue;
                 Renderer renderer = obj.GetComponent<SpriteRenderer>();
@@ -618,7 +710,7 @@ namespace HideAndSeek
             ShowGems(bShow, range);
             ShowTraps(bShow, range);
 
-            foreach (GameObject obj in tilesOnStage)
+            foreach (GameObject obj in curTilesOnStage)
             {
                 if (obj == null) continue;
                 Renderer renderer = obj.GetComponent<SpriteRenderer>();
@@ -680,5 +772,32 @@ namespace HideAndSeek
             sr.Close();
         }
 
+        public void DestoryEnemies(Vector3 targetPos, int type)
+        {
+            Vector3[] range = GetDestroyRange(targetPos, type);
+
+            List<GameObject> targetTiles = new List<GameObject>();
+
+            foreach (GameObject obj in curTilesOnStage)
+            {
+                foreach (Vector3 v in range)
+                {
+                    if (obj.tag == "Wall") continue;
+                    if (obj.transform.position == v) targetTiles.Add(obj);
+                }
+            }
+
+            foreach (GameObject obj in curTrapsOnStage)
+            {
+                foreach (Vector3 v in range)
+                {
+                    if (obj.transform.position == v) targetTiles.Add(obj);
+                }
+            }
+
+            List<GameObject> targetEnemies = SearchEnemies(range);
+            StartCoroutine(DestroyEffectFloor(targetTiles));
+            StartCoroutine(DestroyEffect(targetEnemies));
+        }
     }
 }

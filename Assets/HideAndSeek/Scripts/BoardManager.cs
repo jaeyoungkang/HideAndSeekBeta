@@ -46,7 +46,6 @@ namespace HideAndSeek
 
         private List<Vector3> gridPositionsExcept = new List<Vector3>();
 
-        //Clears our list gridPositions and prepares it to generate a new board.
         void InitialiseList()
         {
             gridPositions.Clear();
@@ -127,8 +126,7 @@ namespace HideAndSeek
             grids.Add(gridPositions4);
         }
 
-
-        void BoardSetup()
+        void BoardSetup(int id)
         {
             boardHolder = new GameObject("Board").transform;
             Vector3[] range = GameManager.instance.GetShowPositions();
@@ -145,7 +143,7 @@ namespace HideAndSeek
                     GameObject instance = Instantiate(toInstantiate, new Vector3(x, y, 0f), Quaternion.identity) as GameObject;                    
                     instance.transform.SetParent(boardHolder);
 
-                    GameManager.instance.tilesOnStage.Add(instance);
+                    GameManager.instance.AddTile(instance, id);
 
                     foreach (Vector3 pos in range)
                     {
@@ -197,7 +195,7 @@ namespace HideAndSeek
         }
 
 
-        void LayoutObjectAtRandom(GameObject[] tileArray, int minimum, int maximum)
+        void LayoutObjectAtRandom(int id, GameObject[] tileArray, int minimum, int maximum)
         {            
             int objectCount = Random.Range(minimum, maximum + 1);
 
@@ -206,11 +204,11 @@ namespace HideAndSeek
                 Vector3 randomPosition = RandomGridsPosition();
                 GameObject tileChoice = tileArray[Random.Range(0, tileArray.Length)];
                 GameObject instance = Instantiate(tileChoice, randomPosition, Quaternion.identity);
-                GameManager.instance.objsOnStage.Add(instance);
+                GameManager.instance.AddObj(instance, id);
             }
         }
 
-        void LayoutTrapAtRandom(GameObject[] tileArray, int minimum, int maximum)
+        void LayoutTrapAtRandom(int id, GameObject[] tileArray, int minimum, int maximum)
         {
             int objectCount = Random.Range(minimum, maximum + 1);
 
@@ -219,11 +217,11 @@ namespace HideAndSeek
                 Vector3 randomPosition = RandomGridsPosition();
                 GameObject tileChoice = tileArray[Random.Range(0, tileArray.Length)];
                 GameObject instance = Instantiate(tileChoice, randomPosition, Quaternion.identity);
-                GameManager.instance.trapsOnStage.Add(instance);
+                GameManager.instance.AddTrap(instance, id);
             }
         }
 
-        void LayoutEnemiesAtRandom(GameObject[] tileArray, int minimum, int maximum)
+        void LayoutEnemiesAtRandom(int id, GameObject[] tileArray, int minimum, int maximum)
         {
             int objectCount = Random.Range(minimum, maximum + 1);
 
@@ -231,25 +229,22 @@ namespace HideAndSeek
             {
                 Vector3 randomPosition = RandomGridsPosition();
                 GameObject tileChoice = tileArray[Random.Range(0, tileArray.Length)];
-                Instantiate(tileChoice, randomPosition, Quaternion.identity);
+                GameObject instance = Instantiate(tileChoice, randomPosition, Quaternion.identity);
+                GameManager.instance.AddEnemy(instance, id);
             }
         }
 
-
-        public void SetupScene(Level levelInfo)
+        public void SetupScene(Level[] levelInfos)
         {
-            GameManager.instance.tilesOnStage.Clear();
-            GameManager.instance.objsOnStage.Clear();
-            GameManager.instance.trapsOnStage.Clear();
+            foreach(Level lv in levelInfos)
+            {
+                BoardSetup(lv.id);
+                InitialiseList();
+                SetupLevelRandom(lv);
 
-            BoardSetup();
-
-            InitialiseList();
-
-            SetupLevelRandom(levelInfo);
-
-            GameObject instance = Instantiate(exit, new Vector3(columns - 1, rows - 1, 0f), Quaternion.identity);
-            GameManager.instance.tilesOnStage.Add(instance);
+                GameObject instance = Instantiate(exit, new Vector3(columns - 1, rows - 1, 0f), Quaternion.identity);
+                GameManager.instance.curTilesOnStage.Add(instance);
+            }           
         }
 
         public void SetupLevelRandom(Level levelInfo)
@@ -260,14 +255,14 @@ namespace HideAndSeek
             int thiefCount = levelInfo.thief;
             int trapCount = levelInfo.trap;
             
-            LayoutObjectAtRandom(gemTiles, gemRate, gemRate);
-            LayoutObjectAtRandom(itemTiles, 1, 1);
+            LayoutObjectAtRandom(levelInfo.id, gemTiles, gemRate, gemRate);
+            LayoutObjectAtRandom(levelInfo.id, itemTiles, 1, 1);
 
-            LayoutTrapAtRandom(trapTiles, trapCount, trapCount);
+            LayoutTrapAtRandom(levelInfo.id, trapTiles, trapCount, trapCount);
                         
-            LayoutEnemiesAtRandom(enemyTiles, enemyCount, enemyCount);
-            LayoutEnemiesAtRandom(strongEnemyTiles, strongEnemyCount, strongEnemyCount);
-            LayoutEnemiesAtRandom(thiefTiles, thiefCount, thiefCount);
+            LayoutEnemiesAtRandom(levelInfo.id, enemyTiles, enemyCount, enemyCount);
+            LayoutEnemiesAtRandom(levelInfo.id, strongEnemyTiles, strongEnemyCount, strongEnemyCount);
+            LayoutEnemiesAtRandom(levelInfo.id, thiefTiles, thiefCount, thiefCount);
         }
     }
 }

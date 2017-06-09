@@ -14,6 +14,16 @@ namespace HideAndSeek
 
         void EnableBagSlot()
         {
+            foreach (Button invenBtn in InvenBtns)
+            {
+                invenBtn.gameObject.SetActive(false);
+            }
+
+            for (int i = 0; i < GameManager.instance.invenSize; i++)
+            {
+                InvenBtns[i].gameObject.SetActive(true);
+            }
+
             foreach (Button bagBtn in BagBtns)
             {
                 bagBtn.gameObject.SetActive(false);

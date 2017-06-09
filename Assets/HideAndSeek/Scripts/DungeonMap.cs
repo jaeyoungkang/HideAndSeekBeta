@@ -10,11 +10,21 @@ namespace HideAndSeek
         public Button[] levelBtns;
         private Level[] levels;
 
+        void OnEnable()
+        {
+            if (GameManager.instance == null) return;
+            if (GameManager.instance.GetDungeonInfo() == null) return;
+            
+            SetupBtns(GameManager.instance.GetDungeonInfo().levels);
+            SetupLineImages(GameManager.instance.GetDungeonInfo().levels);            
+        }
+
         void Start() {
-            Dungeon curDungeon = GameManager.instance.GetDungeonInfo();
-            levels = curDungeon.levels;
-            SetupBtns();
-            SetupLineImages();
+            if (GameManager.instance == null) return;
+            if (GameManager.instance.GetDungeonInfo() == null) return;
+
+            SetupBtns(GameManager.instance.GetDungeonInfo().levels);
+            SetupLineImages(GameManager.instance.GetDungeonInfo().levels);
 
             levelBtns[0].onClick.AddListener(() => { GameManager.instance.EnterLevel(1); });
             levelBtns[1].onClick.AddListener(() => { GameManager.instance.EnterLevel(2); });
@@ -27,7 +37,7 @@ namespace HideAndSeek
             levelBtns[8].onClick.AddListener(() => { GameManager.instance.EnterLevel(9); });
         }
 
-        void SetupBtns()
+        void SetupBtns(Level[] levels)
         {
             for (int i = 0; i < levelBtns.Length; i++)
             {
@@ -38,21 +48,21 @@ namespace HideAndSeek
             {
                 foreach(Level lv in levels)
                 {
-                    if (lv.index - 1 == i)
+                    if (lv.id - 1 == i)
                         levelBtns[i].gameObject.SetActive(true);
                 }                
             }
             
             for(int i =0; i< levels.Length; i++)
             {
-                int btnIndex = levels[i].index-1;
+                int btnIndex = levels[i].id-1;
                 if (btnIndex >= levelBtns.Length) continue;
                 levelBtns[btnIndex].GetComponentInChildren<Text>().text = levels[i].name;
                 levelBtns[btnIndex].enabled = !levels[i].close;
             }           
         }
 
-        void SetupLineImages()
+        void SetupLineImages(Level[] levels)
         {
             foreach(Image img in lineImages)
             {
@@ -61,9 +71,9 @@ namespace HideAndSeek
 
             foreach (Level lv in levels)
             {
-                foreach(int index in lv.nextIndex)
+                foreach(int id in lv.nextIds)
                 {
-                    string lineName = "line" + lv.index.ToString() + index.ToString();
+                    string lineName = "line" + lv.id.ToString() + id.ToString();
                     foreach (Image img in lineImages)
                     {
                         if (img.gameObject.name == lineName) img.gameObject.SetActive(true);

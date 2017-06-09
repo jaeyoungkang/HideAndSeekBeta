@@ -35,6 +35,13 @@ namespace HideAndSeek
 
         private Animator animator;
 
+        public void Init()
+        {
+            enabled = true;
+            transform.position = new Vector3(0, 0, 0);
+            if (checkPos(0, 0)) GameManager.instance.ShowNear(transform.position);
+        }
+
         protected override void Start ()
 		{
             animator = GetComponent<Animator>();
@@ -53,8 +60,7 @@ namespace HideAndSeek
                 slots[3].onClick.AddListener(() => { UseSkill(3); });
             }            
 
-            base.Start ();
-            if (checkPos(0, 0)) GameManager.instance.ShowNear(transform.position);
+            base.Start ();            
         }
 
         void MoveUp()
@@ -179,7 +185,7 @@ namespace HideAndSeek
                 if (thiefAnimator) thiefAnimator.SetTrigger("playerHit");
                 
                 SoundManager.instance.RandomizeSfx(attackedSound1, attackedSound2);
-                GetGold(2);
+                GetGem(2);
                 SoundManager.instance.RandomizeSfx(goldASound, goldASound);
                 Analytics.CustomEvent("Attack Thief", new Dictionary<string, object>{{ "Attack Thief", 1}});
 
@@ -201,22 +207,22 @@ namespace HideAndSeek
                 Renderer renderer = other.gameObject.GetComponent<SpriteRenderer>();
                 if (renderer) renderer.enabled = true;
                 SoundManager.instance.RandomizeSfx(goldASound, goldASound);
-                GetGold(1);
+                GetGem(1);
                 StartCoroutine(HideAni(other.gameObject));
             }
             else if (other.tag == "Item")
             {
                 Item item = other.gameObject.GetComponent<Item>();
                 if (GameManager.instance.AddBag(item.skill))
-                {
-                    other.gameObject.SetActive(false);                    
+                {                    
                     SoundManager.instance.RandomizeSfx(goldASound, goldASound);
+                    StartCoroutine(HideAni(other.gameObject));
                     SetupSlots();
                 }
             }
         }
 
-        void GetGold(int count)
+        void GetGem(int count)
         {
             GameManager.instance.dungeonGem += count;
         }
@@ -226,6 +232,7 @@ namespace HideAndSeek
             yield return new WaitForSeconds(0.1f);
 
             obj.SetActive(false);
+            GameManager.instance.RemoveObj(obj);
         }
 
 		public void LoseHP (int loss)
@@ -319,11 +326,9 @@ namespace HideAndSeek
                 case "좌우공격":
                     GameManager.instance.DestoryEnemies(transform.position, 1);
                     break;
-
                 case "상하공격":
                     GameManager.instance.DestoryEnemies(transform.position, 2);
                     break;
-
                 case "30초추가":
                     GameManager.instance.AddTime(30);
                     break;

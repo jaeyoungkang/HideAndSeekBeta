@@ -36,6 +36,12 @@ namespace HideAndSeek
             }
         }
 
+        void onEnable()
+        {
+            if (GameManager.instance == null) return;
+            Start();
+        }
+
         void Start()
         {
             SetupDisplay();
@@ -70,7 +76,11 @@ namespace HideAndSeek
             DisplayBtns[14].onClick.AddListener(() => { BuySkill(14); });
 
             ReturnBtn.onClick.AddListener(GameManager.instance.GoToLobby);
+        }
 
+        void Update()
+        {
+            GemText.text = "Gem: " + GameManager.instance.invenGem.ToString();
         }
 
         void BuySkill(int index)
@@ -93,8 +103,6 @@ namespace HideAndSeek
                 GameManager.instance.invenGem -= display[index].price;
                 SetupInventory();
             }
-
-            GemText.text = "Gem: " + GameManager.instance.invenGem.ToString();
         }
 
         void SellSkill(int index)
@@ -102,9 +110,7 @@ namespace HideAndSeek
             if (index >= GameManager.instance.inven.Count) return;
             GameManager.instance.invenGem += GameManager.instance.inven[index].price;
             GameManager.instance.inven.RemoveAt(index);            
-            SetupInventory();
-
-            GemText.text = "Gem: " + GameManager.instance.invenGem.ToString();
+            SetupInventory();            
         }
 
         private void SetupInventory()

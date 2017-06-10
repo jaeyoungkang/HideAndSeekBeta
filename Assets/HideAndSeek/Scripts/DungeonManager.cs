@@ -16,6 +16,7 @@ namespace HideAndSeek
         public int strongEnemy;
         public int thief;
         public int gem;
+        public int[] itemTileNumbers;
         public int[] nextIds;
         public bool clear;
         public bool close;

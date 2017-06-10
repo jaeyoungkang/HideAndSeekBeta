@@ -7,19 +7,13 @@ using UnityEngine.Analytics;
 
 namespace HideAndSeek
 {
-	//Player inherits from MovingObject, our base class for objects that can move, Enemy also inherits from this.
-	public class Player : MovingObject
+    public enum MOVE_DIR { UP = 0, DOWN, RIGHT, LEFT };
+
+    public class Player : MovingObject
 	{
 		public float restartLevelDelay = 1f;
 		public int potionA = 10;
         public int potionB = 20;
-        public Button[] slots;      
-
-        public Button upBtn;
-        public Button downBtn;
-        public Button rightBtn;
-        public Button leftBtn;
-        enum MOVE_DIR { UP, DOWN, RIGHT, LEFT };
 
         public AudioClip attackedSound1;
         public AudioClip attackedSound2;
@@ -46,41 +40,19 @@ namespace HideAndSeek
 		{
             animator = GetComponent<Animator>();
 
-            upBtn.onClick.AddListener(MoveUp);
-            downBtn.onClick.AddListener(MoveDown);
-            leftBtn.onClick.AddListener(MoveLeft);
-            rightBtn.onClick.AddListener(MoveRight);
-
-            SetupSlots();
-            if(slots.Length>0)
-            {
-                slots[0].onClick.AddListener(() => { UseSkill(0); });
-                slots[1].onClick.AddListener(() => { UseSkill(1); });
-                slots[2].onClick.AddListener(() => { UseSkill(2); });
-                slots[3].onClick.AddListener(() => { UseSkill(3); });
-            }            
-
             base.Start ();            
         }
 
-        void MoveUp()
+        
+        public void MoveByControlPanel(MOVE_DIR dir)
         {
-            AttemptMove<Enemy>(0, 1);
-        }
-
-        void MoveDown()
-        {
-            AttemptMove<Enemy>(0, -1);
-        }
-
-        void MoveRight()
-        {
-            AttemptMove<Enemy>(1, 0);
-        }
-
-        void MoveLeft()
-        {
-            AttemptMove<Enemy>(-1, 0);
+            switch (dir)
+            {
+                case MOVE_DIR.UP: AttemptMove<Enemy>(0, 1); break;
+                case MOVE_DIR.DOWN: AttemptMove<Enemy>(0, -1); break;
+                case MOVE_DIR.LEFT: AttemptMove<Enemy>(-1, 0); break;
+                case MOVE_DIR.RIGHT: AttemptMove<Enemy>(1, 0); break;
+            }
         }
 		
         private void Update ()
@@ -217,7 +189,8 @@ namespace HideAndSeek
                 {                    
                     SoundManager.instance.RandomizeSfx(goldASound, goldASound);
                     StartCoroutine(HideAni(other.gameObject));
-                    SetupSlots();
+                    Controller controller = FindObjectOfType(typeof(Controller)) as Controller;
+                    controller.SetupSlots();
                 }
             }
         }
@@ -294,7 +267,7 @@ namespace HideAndSeek
             GameManager.instance.playerHp += delta;
         }
 
-        void UseSkill(int index)
+        public void UseSkill(int index)
         {
             if (index >= GameManager.instance.bag.Count) return;
             
@@ -338,23 +311,9 @@ namespace HideAndSeek
                     break;
             }
             GameManager.instance.bag.RemoveAt(index);
-            SetupSlots();
         }
 
-        void SetupSlots()
-        {
-            if (slots.Length == 0) return;
-            for (int i = 0; i < 4; i++)
-            {
-                slots[i].GetComponentInChildren<Text>().text = "";
-            }
-
-            for (int i = 0; i < 4; i++)
-            {
-                if (GameManager.instance.bag.Count <= i) break;
-                slots[i].GetComponentInChildren<Text>().text = GameManager.instance.bag[i].skillname;
-            }
-        }
+        
 
         void GameOver()
         {

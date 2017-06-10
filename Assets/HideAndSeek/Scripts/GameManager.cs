@@ -10,14 +10,17 @@ using System;
 
 namespace HideAndSeek
 {    
-    public enum GAME_STATE { START, LOBBY, SHOP, INVENTORY, DUNGEON_INFO, LEVEL, MAP, PLAY, RESULT, OVER }
+    public enum GAME_STATE { START, TUTORIAL, LOBBY, SHOP, INVENTORY, DUNGEON_INFO, LEVEL, MAP, PLAY, RESULT, OVER }
 
     public class GameManager : MonoBehaviour
     {
+        public bool isClearTutorial = false;
+
         public static GameManager instance = null;
         [HideInInspector]
         public bool playersTurn = true;
 
+        public Dungeon tutorial;
         public Dungeon[] dungeons;
         private BoardManager boardScript;
         
@@ -196,15 +199,15 @@ namespace HideAndSeek
             player.Init();
         }
 
-        public void ShowDungeonInfo(Dungeon dungeon)
+        public void ShowDungeonInfo(int index)
         {
-            curDungeon = dungeon;
+            SelectDungeon(dungeons[index]);
             ChangeState(GAME_STATE.DUNGEON_INFO);
         }
 
-        public void SelectDungeon(int index)
+        public void SelectDungeon(Dungeon dungeonSelected)
         {
-            ShowDungeonInfo(dungeons[index]);
+            curDungeon = dungeonSelected;            
         }
 
         public void EnterDungeon()
@@ -263,7 +266,9 @@ namespace HideAndSeek
         public void GoToLobby()
         {               
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
-            ChangeState(GAME_STATE.LOBBY);
+
+            if(isClearTutorial) ChangeState(GAME_STATE.LOBBY);
+            else ChangeState(GAME_STATE.TUTORIAL);
         }
         
         public void ChangeState(GAME_STATE nextState)

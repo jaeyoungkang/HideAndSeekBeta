@@ -16,6 +16,7 @@ namespace HideAndSeek
         public GameObject dungeonMap;
         public GameObject inventoryPage;
         public GameObject dungeonInfoPage;
+        public GameObject tutorialPage;
 
         public GameObject statusPanel;
 
@@ -46,14 +47,15 @@ namespace HideAndSeek
             dungeonMap = GameObject.Find("DungeonMap");
             inventoryPage = GameObject.Find("InventoryPage");
             dungeonInfoPage = GameObject.Find("DungeonInfo");
+            tutorialPage = GameObject.Find("TutorialInfo");
 
             statusPanel = GameObject.Find("Status");
 
             startButton = GameObject.Find("FrontPageButton").GetComponent<Button>();
 
             dungeonText = GameObject.Find("DungeonText").GetComponent<Text>();
-            
-            SetupListners();            
+
+            startButton.onClick.AddListener(GameManager.instance.GoToLobby);
         }
 
 
@@ -68,9 +70,12 @@ namespace HideAndSeek
             bool bPlay = false;
             bool bMap = false;
             bool bInventory = false;
+            bool bTutorial = false;
 
             switch (gameState)
             {
+                case GAME_STATE.TUTORIAL: bTutorial = true; break;
+
                 case GAME_STATE.START: bTitle = true; break;
                 case GAME_STATE.SHOP: bShop = true; break;
                 case GAME_STATE.LOBBY: bLobby = true; break;
@@ -83,6 +88,8 @@ namespace HideAndSeek
                 case GAME_STATE.INVENTORY: bInventory = true; break;
                     
             }
+
+            tutorialPage.SetActive(bTutorial);
 
             shopImage.SetActive(bShop);
             lobbyImage.SetActive(bLobby);
@@ -103,12 +110,7 @@ namespace HideAndSeek
                 statusPanel.gameObject.SetActive(false);
             }            
         }
-
-        public void SetupListners()
-        {            
-            startButton.onClick.AddListener(GameManager.instance.GoToLobby);
-        }
-
+        
         public void SetLevelEnterPageText(string content)
         {
             dungeonText.text = content;

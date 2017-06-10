@@ -29,10 +29,10 @@ namespace HideAndSeek
             dungeons = GameManager.instance.dungeons;
 
             SetupDungeonBtns();
-            dungeonBtns[0].onClick.AddListener(() => { GameManager.instance.SelectDungeon(0); });
-            dungeonBtns[1].onClick.AddListener(() => { GameManager.instance.SelectDungeon(1); });
-            dungeonBtns[2].onClick.AddListener(() => { GameManager.instance.SelectDungeon(2); });
-            dungeonBtns[3].onClick.AddListener(() => { GameManager.instance.SelectDungeon(3); });
+            dungeonBtns[0].onClick.AddListener(() => { GameManager.instance.ShowDungeonInfo(0); });
+            dungeonBtns[1].onClick.AddListener(() => { GameManager.instance.ShowDungeonInfo(1); });
+            dungeonBtns[2].onClick.AddListener(() => { GameManager.instance.ShowDungeonInfo(2); });
+            dungeonBtns[3].onClick.AddListener(() => { GameManager.instance.ShowDungeonInfo(3); });
 
             shopBtn.onClick.AddListener(GameManager.instance.EnterShop);
             invenBtn.onClick.AddListener(GameManager.instance.EnterInven);

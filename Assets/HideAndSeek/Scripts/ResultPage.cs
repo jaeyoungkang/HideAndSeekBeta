@@ -26,18 +26,27 @@ namespace HideAndSeek
             contentsText.text = "";
             if (curDungeon.IsEnd())
             {
-                titleText.text = "던전 클리어!";
+                if(GameManager.instance.isClearTutorial == false)
+                {
+                    GameManager.instance.isClearTutorial = true;
+                    titleText.text = "튜토리얼 클리어!";
+                }
+                else
+                {
+                    titleText.text = "던전 클리어!";
+                }
+                
                 string content = "Gem Clear Reward : " + curDungeon.GetReward() + "\n";
                 content += "Gem discoverd : " + GameManager.instance.dungeonGem;
                 contentsText.text = content;
 
-                retunrBtn.GetComponentInChildren<Text>().text = "RETUN TO LOBBY";
+                retunrBtn.GetComponentInChildren<Text>().text = "GO TO LOBBY";
                 retunrBtn.onClick.AddListener(GameManager.instance.GoToLobby);
             }
             else if(GameManager.instance.IsGameOver())
             {
                 titleText.text = "실패!";
-                retunrBtn.GetComponentInChildren<Text>().text = "RETUN TO LOBBY";
+                retunrBtn.GetComponentInChildren<Text>().text = "GO TO LOBBY";
                 retunrBtn.onClick.AddListener(GameManager.instance.GoToLobby);
             }
             else

@@ -270,10 +270,10 @@ namespace HideAndSeek
 
         public void UseSkill(int index)
         {
-            if (index >= GameManager.instance.bag.Count) return;
+            if (index >= GameManager.instance.info.bag.Count) return;
             
             SoundManager.instance.PlaySingle(skillSound);
-            string name = ItemManager.instance.GetNameByItemId(GameManager.instance.bag[index]);
+            string name = ItemManager.instance.GetNameByItemId(GameManager.instance.info.bag[index]);
             switch (name)
             {
                 case "은신": Hide(); break;
@@ -312,7 +312,7 @@ namespace HideAndSeek
                     GameManager.instance.StopTime(true);
                     break;
             }
-            GameManager.instance.bag.RemoveAt(index);
+            GameManager.instance.info.bag.RemoveAt(index);
         }
 
         

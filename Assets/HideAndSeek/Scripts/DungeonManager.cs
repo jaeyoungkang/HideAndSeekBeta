@@ -38,12 +38,13 @@ namespace HideAndSeek
     {
         public string name;
         public int id;
-        public int nextIndex;        
+        public int nextId;        
         public Level[] levels;        
         public int cost;
         public int gem;
         public float timeLimit;
-        public int curLevelId;        
+        public int curLevelId;
+        public bool open;    
 
         public Dungeon(Level[] _levels, string _name,  int _cost, int _gem, float _timeLimit)
         {

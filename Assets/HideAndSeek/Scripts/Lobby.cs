@@ -16,17 +16,29 @@ namespace HideAndSeek
 
         void SetupDungeonBtns()
         {
-                        
+                       
+
             for (int i = 0; i < dungeons.Length; i++)
             {
                 if (dungeonBtns.Length <= i) break;
                 dungeonBtns[i].GetComponentInChildren<Text>().text = dungeons[i].name;
             }
+
+            for (int i = 0; i < dungeonBtns.Length; i++)
+            {
+                dungeonBtns[i].enabled = false;
+            }
+
+            for (int i = 0; i < dungeons.Length; i++)
+            {
+                if (dungeonBtns.Length <= i) break;
+                dungeonBtns[i].enabled = dungeons[i].open;
+            }
         }
 
         void Start()
         {
-            dungeons = GameManager.instance.dungeons;
+            dungeons = GameManager.instance.dungeons;           
 
             SetupDungeonBtns();
             dungeonBtns[0].onClick.AddListener(() => { GameManager.instance.ShowDungeonInfo(0); });

@@ -37,9 +37,7 @@ namespace HideAndSeek
         public Dictionary<int, List<GameObject>> objsOnStages = new Dictionary<int, List<GameObject>>();
         public Dictionary<int, List<GameObject>> tilesOnStages = new Dictionary<int, List<GameObject>>();
 
-        public GameInfo info = new GameInfo();
-        public List<int> inven = new List<int>();
-        public List<int> bag = new List<int>();
+        public GameInfo info = new GameInfo();        
 
         public int playerHp = 20;
         public int dungeonGem = 0;
@@ -87,8 +85,8 @@ namespace HideAndSeek
         }
         public bool AddBag(int itemId)
         {
-            if (bag.Count == info.bagSize) return false;            
-            bag.Add(itemId);            
+            if (info.bag.Count == info.bagSize) return false;
+            info.bag.Add(itemId);            
             return true;
         }
 
@@ -139,11 +137,27 @@ namespace HideAndSeek
             info.invenGem += dungeonGem;
         }
 
+        public void OpenNextDungeon()
+        {
+            int nextId = curDungeon.nextId;
+            foreach (Dungeon dungeon in dungeons)
+            {
+                if (dungeon.id == nextId) dungeon.open = true;
+            }
+
+            info.dungeonIdsOpened.Clear();
+            foreach (Dungeon dungeon in dungeons)
+            {
+                if(dungeon.open) info.dungeonIdsOpened.Add(dungeon.id);
+            }
+        }
+
         public void ShowResult()
         {
             curDungeon.clearCurLevel();
             if(curDungeon.IsEnd())
             {
+                OpenNextDungeon();
                 GetResult();
             }
             GameManager.instance.ChangeState(GAME_STATE.RESULT);
@@ -263,6 +277,14 @@ namespace HideAndSeek
 
         public void GoToLobby()
         {
+            foreach (int openedId in GameManager.instance.info.dungeonIdsOpened)
+            {
+                foreach (Dungeon dungeon in dungeons)
+                {
+                    if (dungeon.id == openedId) dungeon.open = true;
+                }
+            }
+
             SaveLoad.Save();
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
 

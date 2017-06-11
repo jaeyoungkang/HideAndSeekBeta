@@ -56,8 +56,8 @@ namespace HideAndSeek
 
             for (int i = 0; i < slotBtns.Length; i++)
             {
-                if (GameManager.instance.bag.Count <= i) break;
-                Item item = ItemManager.instance.GetItemByItemId(GameManager.instance.bag[i]);
+                if (GameManager.instance.info.bag.Count <= i) break;
+                Item item = ItemManager.instance.GetItemByItemId(GameManager.instance.info.bag[i]);
                 slotBtns[i].GetComponentInChildren<Text>().text = item.name;
 
                 Color itemGradeColor = ItemManager.instance.GetColorByItemGrade(item.grade);

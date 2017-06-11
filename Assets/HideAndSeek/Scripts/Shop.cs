@@ -103,8 +103,8 @@ namespace HideAndSeek
             }
             else
             {
-                if (GameManager.instance.info.invenSize == GameManager.instance.inven.Count) return;
-                GameManager.instance.inven.Add(display[index]);
+                if (GameManager.instance.info.invenSize == GameManager.instance.info.inven.Count) return;
+                GameManager.instance.info.inven.Add(display[index]);
                 GameManager.instance.info.invenGem -= price;
                 SetupInventory();
             }
@@ -112,10 +112,10 @@ namespace HideAndSeek
 
         void SellSkill(int index)
         {
-            if (index >= GameManager.instance.inven.Count) return;
-            int price = ItemManager.instance.GetPriceByItemId(GameManager.instance.inven[index]);
+            if (index >= GameManager.instance.info.inven.Count) return;
+            int price = ItemManager.instance.GetPriceByItemId(GameManager.instance.info.inven[index]);
             GameManager.instance.info.invenGem += price;
-            GameManager.instance.inven.RemoveAt(index);            
+            GameManager.instance.info.inven.RemoveAt(index);            
             SetupInventory();            
         }
 
@@ -128,8 +128,8 @@ namespace HideAndSeek
 
             for (int i = 0; i < InvenBtns.Length; i++)
             {
-                if (GameManager.instance.inven.Count <= i) break;
-                Item item = ItemManager.instance.GetItemByItemId(GameManager.instance.inven[i]);
+                if (GameManager.instance.info.inven.Count <= i) break;
+                Item item = ItemManager.instance.GetItemByItemId(GameManager.instance.info.inven[i]);
                 InvenBtns[i].GetComponentInChildren<Text>().text = item.name;
 
                 Color itemGradeColor = ItemManager.instance.GetColorByItemGrade(item.grade);

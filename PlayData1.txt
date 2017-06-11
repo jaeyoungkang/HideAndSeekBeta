@@ -1,0 +1,89 @@
+dungeonName 	 levelName 	 gemCount 	 deathCount 	 attackedCount 	 damagedByTimeCount 	 (getItem, useItem, hps)
+		0	0	0	0
+	
+	
+튜토리얼	단계1	1	0	0	0
+근처보기, 	
+20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 	
+튜토리얼		0	0	0	0
+	
+	
+튜토리얼	단계2	1	0	0	0
+사방공격, 	
+20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 	
+튜토리얼	단계3	0	0	0	0
+회복10, 	사방공격, 
+20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 	
+튜토리얼		0	0	0	0
+	
+	
+튜토리얼		0	0	0	0
+	
+	
+튜토리얼		0	0	0	0
+	
+	
+dungeonName 	 levelName 	 gemCount 	 deathCount 	 attackedCount 	 damagedByTimeCount 	 (getItem, useItem, hps)
+		0	0	0	0
+	
+	
+		0	0	0	0
+	
+	
+dungeonName 	 levelName 	 gemCount 	 deathCount 	 attackedCount 	 damagedByTimeCount 	 (getItem, useItem, hps)
+옛 유적지	시작 방	0	1	0	0
+	근처보기, 
+20, 20, 10, 	
+옛 유적지		0	1	0	0
+	
+0, 	
+옛 유적지		0	0	0	0
+	
+	
+옛 유적지		0	0	0	0
+	
+	
+dungeonName 	 levelName 	 gemCount 	 deathCount 	 attackedCount 	 damagedByTimeCount 	 (getItem, useItem, hps)
+dungeonName 	 levelName 	 gemCount 	 deathCount 	 attackedCount 	 damagedByTimeCount 	 (getItem, useItem, hps)
+dungeonName 	 levelName 	 gemCount 	 deathCount 	 attackedCount 	 damagedByTimeCount 	 (getItem, useItem, hps)
+옛 유적지	시작 방	0	1	0	0
+	
+20, 10, 10, 	
+옛 유적지		0	1	0	0
+	
+0, 	
+옛 유적지		0	0	0	0
+	
+	
+옛 유적지		0	0	0	0
+	
+	
+옛 유적지		0	0	0	0
+	
+	
+옛 유적지		0	0	0	0
+	
+	
+옛 유적지		0	0	0	0
+	
+	
+dungeonName 	 levelName 	 gemCount 	 deathCount 	 attackedCount 	 damagedByTimeCount 	 (getItem, useItem, hps)
+		0	0	0	0
+	
+	
+dungeonName 	 levelName 	 gemCount 	 deathCount 	 attackedCount 	 damagedByTimeCount 	 (getItem, useItem, hps)
+옛 유적지	시작 방	1	0	0	0
+	
+20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 	
+옛 유적지		0	0	0	0
+	
+	
+옛 유적지	방2	0	0	0	0
+	근처보기, 
+20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 	
+옛 유적지	최종방	0	1	2	0
+	사방공격, 회복10, 
+20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 10, 10, 	
+옛 유적지		0	0	1	0
+	
+	

@@ -48,38 +48,17 @@ namespace HideAndSeek
             }
         }
 
-        public static void SaveFile()
+        public static void WriteFile(string fileName, string info)
         {
-            string fileName = "/savedGames.gd";
-            //if (File.Exists(fileName))
-            //{
-            //    Debug.Log(fileName + " already exists.");
-            //    return;
-            //}
-            var sr = File.CreateText(fileName);
-            sr.WriteLine(GameManager.instance.info.isClearTutorial);
-            sr.Close();
-        }
-
-        public static void LoadFile()
-        {
-            string fileName = "/savedGames.gd";
             if (File.Exists(fileName))
             {
-                var sr = File.OpenText(fileName);
-                string line = sr.ReadLine();
-                while (line != null)
-                {
-                    GameManager.instance.info.isClearTutorial = Convert.ToBoolean(line);
-                    Debug.Log(line); // prints each line of the file
-                    line = sr.ReadLine();
-                }
-            }
-            else
-            {
-                Debug.Log("Could not Open the file: " + fileName + " for reading.");
+                File.AppendAllText(fileName, info + Environment.NewLine);
                 return;
             }
+
+            var sr = File.CreateText(fileName);
+            sr.WriteLine(info);
+            sr.Close();
         }
     }
 }

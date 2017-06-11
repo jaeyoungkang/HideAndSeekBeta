@@ -92,6 +92,7 @@ namespace HideAndSeek
 
             skipMove = true;
 
+            GameManager.instance.playData.attackedCount++;
         }        
     }
 }

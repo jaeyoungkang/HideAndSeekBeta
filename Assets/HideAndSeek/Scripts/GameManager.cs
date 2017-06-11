@@ -42,6 +42,7 @@ namespace HideAndSeek
         public int playerHp = 20;
         public int dungeonGem = 0;
         public float timeLimit;
+        public LevelPlayData playData = new LevelPlayData();
 
         public void RemoveObj(GameObject obj)
         {
@@ -95,6 +96,10 @@ namespace HideAndSeek
             if (instance == null)
             {
                 instance = this;
+
+                string culomnName = "";
+                culomnName += "dungeonName \t levelName \t gemCount \t deathCount \t attackedCount \t damagedByTimeCount \t (getItem, useItem, hps)";
+                SaveLoad.WriteFile("PlayData.txt", culomnName);
             }
             else if (instance != this)
                 Destroy(gameObject);
@@ -107,7 +112,6 @@ namespace HideAndSeek
 
             PageManager.instance.InitUI();
             ChangeState(GAME_STATE.START);
-            
         }
 
         //this is called only once, and the paramter tell it to be called only after the scene was loaded
@@ -222,6 +226,12 @@ namespace HideAndSeek
             curDungeon = dungeonSelected;            
         }
 
+        public void SetupPlayerData()
+        {
+            playData.Init();
+            playData.dungeonName = curDungeon.name;
+        }
+
         public void EnterDungeon()
         {
             if(curDungeon.cost > info.invenGem)
@@ -233,6 +243,8 @@ namespace HideAndSeek
             timeLimit = curDungeon.TimeLimit();
             dungeonGem = 0;
             playerHp = 20;
+
+            SetupPlayerData();
 
             GameManager.instance.tilesOnStages.Clear();
             GameManager.instance.objsOnStages.Clear();
@@ -273,6 +285,8 @@ namespace HideAndSeek
             GameManager.instance.ChangeState(GAME_STATE.LEVEL);
             PageManager.instance.SetLevelEnterPageText(curDungeon.ToString());
             Invoke("setupLevel", 2f);
+
+            playData.levelName = curDungeon.GetCurLevel().name;
         }
 
         public void GoToLobby()
@@ -335,6 +349,8 @@ namespace HideAndSeek
 
         public void GameOver()
         {
+            playData.deathCount++;
+            info.bag.Clear();
             ChangeState(GAME_STATE.OVER);            
         }
 

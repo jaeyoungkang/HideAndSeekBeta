@@ -65,6 +65,7 @@ namespace HideAndSeek
             {
                 GameManager.instance.timeLimit = 10;
                 LoseHP(10);
+                GameManager.instance.playData.damagedByTimeCount++;
             }
 
             if (!GameManager.instance.playersTurn) return;            
@@ -112,7 +113,9 @@ namespace HideAndSeek
                 if(bHideMode == false) SoundManager.instance.RandomizeSfx (moveSound1, moveSound2);
 
                 if(checkPos(xDir, yDir)) GameManager.instance.ShowNear(new Vector3(transform.position.x + xDir, transform.position.y + yDir, 0));
-                CheckTrap(xDir, yDir);               
+                CheckTrap(xDir, yDir);
+
+                GameManager.instance.playData.hps.Add(GameManager.instance.playerHp);
             }          
 
 			CheckIfGameOver ();
@@ -132,7 +135,9 @@ namespace HideAndSeek
                 Renderer renderer = trap.GetComponent<SpriteRenderer>();
                 if (renderer) renderer.enabled = true;
                 LoseHP(10);
-                SoundManager.instance.RandomizeSfx(attackedSound1, attackedSound2);                
+                SoundManager.instance.RandomizeSfx(attackedSound1, attackedSound2);
+
+                GameManager.instance.playData.trappedCount++;
             }
         }
 
@@ -182,6 +187,8 @@ namespace HideAndSeek
                 SoundManager.instance.RandomizeSfx(goldASound, goldASound);
                 GetGem(1);
                 StartCoroutine(HideAni(other.gameObject));
+
+                GameManager.instance.playData.gemCount++;
             }
             else if (other.tag == "Item")
             {
@@ -192,6 +199,9 @@ namespace HideAndSeek
                     StartCoroutine(HideAni(other.gameObject));
                     Controller controller = FindObjectOfType(typeof(Controller)) as Controller;
                     controller.SetupSlots();
+
+                    string itemName = ItemManager.instance.GetNameByItemId(item.itemId);
+                    GameManager.instance.playData.getItems.Add(itemName);
                 }
             }
         }
@@ -274,6 +284,8 @@ namespace HideAndSeek
             
             SoundManager.instance.PlaySingle(skillSound);
             string name = ItemManager.instance.GetNameByItemId(GameManager.instance.info.bag[index]);
+
+            GameManager.instance.playData.useItems.Add(name);
             switch (name)
             {
                 case "은신": Hide(); break;

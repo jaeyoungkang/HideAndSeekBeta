@@ -4,14 +4,15 @@ using UnityEngine;
 
 namespace HideAndSeek
 {
-    public class Item : MonoBehaviour
+    [System.Serializable]
+    public class Item 
     {
-        public Skill skill;
+        public string name;
+        public int id;
+        public int price;
+        public int grade;
+        public bool enableSell;
 
-        // Use this for initialization
-        void Start()
-        {
-
-        }        
+        public GameObject tile;
     }
 }

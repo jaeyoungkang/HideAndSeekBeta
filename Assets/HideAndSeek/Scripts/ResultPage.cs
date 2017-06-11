@@ -26,9 +26,9 @@ namespace HideAndSeek
             contentsText.text = "";
             if (curDungeon.IsEnd())
             {
-                if(GameManager.instance.isClearTutorial == false)
+                if(GameManager.instance.info.isClearTutorial == false)
                 {
-                    GameManager.instance.isClearTutorial = true;
+                    GameManager.instance.info.isClearTutorial = true;
                     titleText.text = "튜토리얼 클리어!";
                 }
                 else
@@ -41,7 +41,7 @@ namespace HideAndSeek
                 contentsText.text = content;
 
                 retunrBtn.GetComponentInChildren<Text>().text = "GO TO LOBBY";
-                retunrBtn.onClick.AddListener(GameManager.instance.GoToLobby);
+                retunrBtn.onClick.AddListener(GameManager.instance.GoToLobby);                
             }
             else if(GameManager.instance.IsGameOver())
             {

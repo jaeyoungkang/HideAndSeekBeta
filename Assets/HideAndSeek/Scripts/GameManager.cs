@@ -14,8 +14,6 @@ namespace HideAndSeek
 
     public class GameManager : MonoBehaviour
     {
-        public bool isClearTutorial = false;
-
         public static GameManager instance = null;
         [HideInInspector]
         public bool playersTurn = true;
@@ -23,7 +21,7 @@ namespace HideAndSeek
         public Dungeon tutorial;
         public Dungeon[] dungeons;
         private BoardManager boardScript;
-        
+
         private bool enemiesMoving;
                 
         private GAME_STATE gameState;
@@ -39,13 +37,11 @@ namespace HideAndSeek
         public Dictionary<int, List<GameObject>> objsOnStages = new Dictionary<int, List<GameObject>>();
         public Dictionary<int, List<GameObject>> tilesOnStages = new Dictionary<int, List<GameObject>>();
 
-        public List<Skill> inven = new List<Skill>();
-        public List<Skill> bag = new List<Skill>();
-        public int bagSize;
-        public int invenSize;
+        public GameInfo info = new GameInfo();
+        public List<int> inven = new List<int>();
+        public List<int> bag = new List<int>();
 
         public int playerHp = 20;
-        public int invenGem = 0;
         public int dungeonGem = 0;
         public float timeLimit;
 
@@ -81,18 +77,18 @@ namespace HideAndSeek
 
         public bool ExtendInvenSize(int limit)
         {
-            if (invenSize < limit)
+            if (info.invenSize < limit)
             {
-                invenSize++;
+                info.invenSize++;
                 return true;
             }
 
             return false;
         }
-        public bool AddBag(Skill skill)
+        public bool AddBag(int itemId)
         {
-            if (bag.Count == bagSize) return false;            
-            bag.Add(skill);            
+            if (bag.Count == info.bagSize) return false;            
+            bag.Add(itemId);            
             return true;
         }
 
@@ -108,6 +104,8 @@ namespace HideAndSeek
             DontDestroyOnLoad(gameObject);
 
             boardScript = GetComponent<BoardManager>();
+
+            SaveLoad.Load();
 
             PageManager.instance.InitUI();
             ChangeState(GAME_STATE.START);
@@ -137,8 +135,8 @@ namespace HideAndSeek
 
         public void GetResult()
         {
-            invenGem += curDungeon.GetReward();
-            invenGem += dungeonGem;
+            info.invenGem += curDungeon.GetReward();
+            info.invenGem += dungeonGem;
         }
 
         public void ShowResult()
@@ -212,7 +210,7 @@ namespace HideAndSeek
 
         public void EnterDungeon()
         {
-            if(curDungeon.cost > invenGem)
+            if(curDungeon.cost > info.invenGem)
             {
                 print("Popup: You need more gem to enter the Dungeon");
                 return;
@@ -264,10 +262,11 @@ namespace HideAndSeek
         }
 
         public void GoToLobby()
-        {               
+        {
+            SaveLoad.Save();
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
 
-            if(isClearTutorial) ChangeState(GAME_STATE.LOBBY);
+            if(info.isClearTutorial) ChangeState(GAME_STATE.LOBBY);
             else ChangeState(GAME_STATE.TUTORIAL);
         }
         
@@ -762,19 +761,6 @@ namespace HideAndSeek
                     }
                 }                
             }
-        }
-
-        public void WriteFile(string fileName, string info)
-        {
-            if (File.Exists(fileName))
-            {
-                File.AppendAllText(fileName, info + Environment.NewLine);
-                return;
-            }
-
-            var sr = File.CreateText(fileName);
-            sr.WriteLine(info);
-            sr.Close();
         }
 
         public void DestoryEnemies(Vector3 targetPos, int type)

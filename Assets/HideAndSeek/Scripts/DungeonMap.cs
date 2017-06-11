@@ -8,7 +8,6 @@ namespace HideAndSeek
     public class DungeonMap : MonoBehaviour {
         public Image[] lineImages;
         public Button[] levelBtns;
-        private Level[] levels;
 
         void OnEnable()
         {

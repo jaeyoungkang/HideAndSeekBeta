@@ -57,6 +57,7 @@ namespace HideAndSeek
 		
         private void Update ()
 		{
+            if (GameManager.instance == null) return;
             if (GameManager.instance.IsPlay() == false) return;
             if (GameManager.instance.playerHp <= 0) return;
 
@@ -184,8 +185,8 @@ namespace HideAndSeek
             }
             else if (other.tag == "Item")
             {
-                Item item = other.gameObject.GetComponent<Item>();
-                if (GameManager.instance.AddBag(item.skill))
+                ItemObject item = other.gameObject.GetComponent<ItemObject>();
+                if (GameManager.instance.AddBag(item.itemId))
                 {                    
                     SoundManager.instance.RandomizeSfx(goldASound, goldASound);
                     StartCoroutine(HideAni(other.gameObject));
@@ -272,7 +273,8 @@ namespace HideAndSeek
             if (index >= GameManager.instance.bag.Count) return;
             
             SoundManager.instance.PlaySingle(skillSound);
-            switch (GameManager.instance.bag[index].skillname)
+            string name = ItemManager.instance.GetNameByItemId(GameManager.instance.bag[index]);
+            switch (name)
             {
                 case "은신": Hide(); break;
                 case "회복10": RecoverHP(10); break;

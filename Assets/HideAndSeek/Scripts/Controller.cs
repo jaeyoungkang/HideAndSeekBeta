@@ -45,7 +45,7 @@ namespace HideAndSeek
 
             for (int i = 0; i < slotBtns.Length; i++)
             {
-                if (GameManager.instance.bagSize <= i) break;
+                if (GameManager.instance.info.bagSize <= i) break;
                 slotBtns[i].gameObject.SetActive(true);
             }
 
@@ -57,7 +57,11 @@ namespace HideAndSeek
             for (int i = 0; i < slotBtns.Length; i++)
             {
                 if (GameManager.instance.bag.Count <= i) break;
-                slotBtns[i].GetComponentInChildren<Text>().text = GameManager.instance.bag[i].skillname;
+                Item item = ItemManager.instance.GetItemByItemId(GameManager.instance.bag[i]);
+                slotBtns[i].GetComponentInChildren<Text>().text = item.name;
+
+                Color itemGradeColor = ItemManager.instance.GetColorByItemGrade(item.grade);
+                ItemManager.instance.SetItemUIColor(slotBtns[i], itemGradeColor);
             }
         }
 

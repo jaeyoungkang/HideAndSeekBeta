@@ -19,7 +19,7 @@ namespace HideAndSeek
                 invenBtn.gameObject.SetActive(false);
             }
 
-            for (int i = 0; i < GameManager.instance.invenSize; i++)
+            for (int i = 0; i < GameManager.instance.info.invenSize; i++)
             {
                 InvenBtns[i].gameObject.SetActive(true);
             }
@@ -29,7 +29,7 @@ namespace HideAndSeek
                 bagBtn.gameObject.SetActive(false);
             }
 
-            for (int i = 0; i < GameManager.instance.bagSize; i++)
+            for (int i = 0; i < GameManager.instance.info.bagSize; i++)
             {
                 BagBtns[i].gameObject.SetActive(true);
             }
@@ -64,8 +64,8 @@ namespace HideAndSeek
         void MoveToInven(int index)
         {
             if (index >= GameManager.instance.bag.Count) return;
-            Skill skill = GameManager.instance.bag[index];
-            GameManager.instance.inven.Add(skill);
+            int itemId = GameManager.instance.bag[index];
+            GameManager.instance.inven.Add(itemId);
             GameManager.instance.bag.RemoveAt(index);
             SetupInventory();
         }
@@ -90,7 +90,11 @@ namespace HideAndSeek
             for (int i = 0; i < InvenBtns.Length; i++)
             {
                 if (GameManager.instance.inven.Count <= i) break;
-                InvenBtns[i].GetComponentInChildren<Text>().text = GameManager.instance.inven[i].skillname;
+                Item item = ItemManager.instance.GetItemByItemId(GameManager.instance.inven[i]);
+                InvenBtns[i].GetComponentInChildren<Text>().text = item.name;
+
+                Color itemGradeColor = ItemManager.instance.GetColorByItemGrade(item.grade);
+                ItemManager.instance.SetItemUIColor(InvenBtns[i], itemGradeColor);
             }
 
             for (int i = 0; i < BagBtns.Length; i++)
@@ -101,7 +105,11 @@ namespace HideAndSeek
             for (int i = 0; i < BagBtns.Length; i++)
             {
                 if (GameManager.instance.bag.Count <= i) break;
-                BagBtns[i].GetComponentInChildren<Text>().text = GameManager.instance.bag[i].skillname;
+                Item item = ItemManager.instance.GetItemByItemId(GameManager.instance.bag[i]);
+                BagBtns[i].GetComponentInChildren<Text>().text = item.name;
+
+                Color itemGradeColor = ItemManager.instance.GetColorByItemGrade(item.grade);
+                ItemManager.instance.SetItemUIColor(BagBtns[i], itemGradeColor);
             }
         }
     }

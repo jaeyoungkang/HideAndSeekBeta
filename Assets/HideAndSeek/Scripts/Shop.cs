@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 namespace HideAndSeek
 {
@@ -16,7 +17,7 @@ namespace HideAndSeek
     public class Shop : MonoBehaviour
     {
         public Button[] DisplayBtns;
-        public Skill[] display;
+        public int[] display;
 
         public Button[] InvenBtns;
         public Button ReturnBtn;
@@ -30,7 +31,7 @@ namespace HideAndSeek
                 invenBtn.gameObject.SetActive(false);
             }
 
-            for (int i = 0; i < GameManager.instance.invenSize; i++)
+            for (int i = 0; i < GameManager.instance.info.invenSize; i++)
             {
                 InvenBtns[i].gameObject.SetActive(true);
             }
@@ -80,27 +81,31 @@ namespace HideAndSeek
 
         void Update()
         {
-            GemText.text = "Gem: " + GameManager.instance.invenGem.ToString();
+            GemText.text = "Gem: " + GameManager.instance.info.invenGem.ToString();
         }
 
         void BuySkill(int index)
         {            
             if (index >= display.Length) return;
-            if (GameManager.instance.invenGem < display[index].price) return;
 
-            if(display[index].skillname == "인벤추가")
+            int price = ItemManager.instance.GetPriceByItemId(display[index]);
+
+            if (GameManager.instance.info.invenGem < price) return;
+
+            string name = ItemManager.instance.GetNameByItemId(display[index]);
+            if (name == "인벤추가")
             {
                 if (GameManager.instance.ExtendInvenSize(InvenBtns.Length))
                 {
-                    GameManager.instance.invenGem -= display[index].price;
+                    GameManager.instance.info.invenGem -= price;
                     EnableInvenSlot();
                 }
             }
             else
             {
-                if (GameManager.instance.invenSize == GameManager.instance.inven.Count) return;
+                if (GameManager.instance.info.invenSize == GameManager.instance.inven.Count) return;
                 GameManager.instance.inven.Add(display[index]);
-                GameManager.instance.invenGem -= display[index].price;
+                GameManager.instance.info.invenGem -= price;
                 SetupInventory();
             }
         }
@@ -108,7 +113,8 @@ namespace HideAndSeek
         void SellSkill(int index)
         {
             if (index >= GameManager.instance.inven.Count) return;
-            GameManager.instance.invenGem += GameManager.instance.inven[index].price;
+            int price = ItemManager.instance.GetPriceByItemId(GameManager.instance.inven[index]);
+            GameManager.instance.info.invenGem += price;
             GameManager.instance.inven.RemoveAt(index);            
             SetupInventory();            
         }
@@ -123,15 +129,27 @@ namespace HideAndSeek
             for (int i = 0; i < InvenBtns.Length; i++)
             {
                 if (GameManager.instance.inven.Count <= i) break;
-                InvenBtns[i].GetComponentInChildren<Text>().text = GameManager.instance.inven[i].skillname;
+                Item item = ItemManager.instance.GetItemByItemId(GameManager.instance.inven[i]);
+                InvenBtns[i].GetComponentInChildren<Text>().text = item.name;
+
+                Color itemGradeColor = ItemManager.instance.GetColorByItemGrade(item.grade);
+                ItemManager.instance.SetItemUIColor(InvenBtns[i], itemGradeColor);
             }            
         }
 
         private void SetupDisplay()
         {
+            display = ItemManager.instance.GetEnableToSellItemIds();
+            Array.Sort(display);
             for (int i = 0; i < DisplayBtns.Length; i++)
             {
-                DisplayBtns[i].GetComponentInChildren<Text>().text = display[i].skillname + "\n(" + display[i].price + ")";
+                if (display.Length <= i) break;                
+                Item itemInfo = ItemManager.instance.GetItemByItemId(display[i]);
+                if (itemInfo == null) continue;
+                DisplayBtns[i].GetComponentInChildren<Text>().text = itemInfo.name + "\n(" + itemInfo.price + ")";
+
+                Color itemGradeColor = ItemManager.instance.GetColorByItemGrade(itemInfo.grade);
+                ItemManager.instance.SetItemUIColor(DisplayBtns[i], itemGradeColor);                         
             }
         }
     }

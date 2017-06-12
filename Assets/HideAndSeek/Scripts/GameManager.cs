@@ -2,6 +2,7 @@
 using UnityEngine.SceneManagement;
 using UnityEngine.Analytics;
 using UnityEngine.UI;                   //Allows us to use UI.
+using Random = UnityEngine.Random; 		//Tells Random to use the Unity Engine random number generator.
 
 using System.Collections;
 using System.Collections.Generic;       //Allows us to use Lists. 
@@ -52,6 +53,11 @@ namespace HideAndSeek
 
         public void RemoveEnemy(GameObject obj)
         {
+            int randomValue = Random.Range(0, 9);
+            if (randomValue < 5) DropGem(obj.transform.position);
+            else if (randomValue == 9) DropItem(obj.transform.position);
+
+            obj.SetActive(false);
             curEnemiesOnStage.Remove(obj);
         }
 
@@ -633,7 +639,10 @@ namespace HideAndSeek
             yield return new WaitForSeconds(0.05f);
             foreach (GameObject en in targetEnemies) ShowObject(en, true);
             yield return new WaitForSeconds(0.1f);
-            foreach (GameObject en in targetEnemies) en.SetActive(false);
+            foreach (GameObject en in targetEnemies)
+            {
+                RemoveEnemy(en);
+            }
         }
 
         public void SetSearchEnemies(bool value)
@@ -707,8 +716,40 @@ namespace HideAndSeek
 
         public void RemoveTrap(GameObject aTrap)
         {
+            if(Random.Range(0,4) == 1) DropGem(aTrap.transform.position);
+
             aTrap.SetActive(false);
             curTrapsOnStage.Remove(aTrap);
+        }
+
+        public void DropItem(Vector3 dropPos)
+        {
+            int randomIndex = Random.Range(0, 2);
+            GameObject instance = Instantiate(boardScript.itemTiles[randomIndex], dropPos, Quaternion.identity);
+            GameManager.instance.AddObj(instance, curDungeon.GetCurLevel().id);
+
+            StartCoroutine(DropObjectEffect(instance));
+        }
+
+        public void DropGem(Vector3 dropPos)
+        {
+            GameObject instance = Instantiate(boardScript.gemTiles[0], dropPos, Quaternion.identity);
+            GameManager.instance.AddObj(instance, curDungeon.GetCurLevel().id);
+
+            StartCoroutine(DropObjectEffect(instance));
+        }
+
+        IEnumerator DropObjectEffect(GameObject dropOjb)
+        {
+            ShowObject(dropOjb, true);
+            yield return new WaitForSeconds(0.1f);
+            ShowObject(dropOjb, false);
+            yield return new WaitForSeconds(0.1f);
+            ShowObject(dropOjb, true);
+            yield return new WaitForSeconds(0.1f);
+            ShowObject(dropOjb, false);
+            yield return new WaitForSeconds(0.1f);
+            ShowObject(dropOjb, true);
         }
 
         public GameObject IsTrap(float x, float y)

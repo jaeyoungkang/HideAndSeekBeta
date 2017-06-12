@@ -77,3 +77,10 @@ dungeonName 	 levelName 	 gemCount 	 deathCount 	 attackedCount 	 damagedByTimeC
 옛 유적지	방1	0	0	1	0	근처보기, 	근처보기, 회복20, 	20, 20, 20, 20, 20, 20, 20, 20, 10, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 	
 옛 유적지	최종방	1	0	0	0		사방공격, 	30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 	
 dungeonName 	 levelName 	 gemCount 	 deathCount 	 attackedCount 	 damagedByTimeCount 	 (getItem, useItem, hps)
+dungeonName 	 levelName 	 gemCount 	 deathCount 	 attackedCount 	 damagedByTimeCount 	 (getItem, useItem, hps)
+dungeonName 	 levelName 	 gemCount 	 deathCount 	 attackedCount 	 damagedByTimeCount 	 (getItem, useItem, hps)
+dungeonName 	 levelName 	 gemCount 	 deathCount 	 attackedCount 	 damagedByTimeCount 	 (getItem, useItem, hps)
+옛 유적지	시작 방	3	1	1	0		사방공격, 사방공격, 사방공격, 	20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 	
+옛 유적지	시작 방	3	1	1	0		사방공격, 사방공격, 사방공격, 	20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 10, 	
+옛 유적지	시작 방	0	1	0	0			20, 10, 	
+옛 유적지	시작 방	2	1	1	0		상하공격, 좌우공격, 사방공격, 	20, 20, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 	

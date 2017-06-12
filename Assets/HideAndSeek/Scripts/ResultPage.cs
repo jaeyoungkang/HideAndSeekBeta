@@ -13,7 +13,10 @@ namespace HideAndSeek
         public Button retunrBtn;
 
         void OnEnable()
-        {            
+        {
+            if (GameManager.instance == null) return;
+            if (!GameManager.instance.CheckState(GAME_STATE.RESULT) &&
+                !GameManager.instance.CheckState(GAME_STATE.OVER)) return;
             Start();
         }
 
@@ -46,6 +49,7 @@ namespace HideAndSeek
             else if(GameManager.instance.IsGameOver())
             {
                 titleText.text = "실패!";
+                contentsText.text = "던전에서 획득한 보석을 모두 잃어버렸습니다.";
                 retunrBtn.GetComponentInChildren<Text>().text = "GO TO LOBBY";
                 retunrBtn.onClick.AddListener(GameManager.instance.GoToLobby);
             }

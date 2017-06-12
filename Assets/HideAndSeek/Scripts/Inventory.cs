@@ -58,7 +58,7 @@ namespace HideAndSeek
             BagBtns[4].onClick.AddListener(() => { MoveToInven(4); });
             BagBtns[5].onClick.AddListener(() => { MoveToInven(5); });
 
-            ReturnBtn.onClick.AddListener(GameManager.instance.GoToLobby);
+            ReturnBtn.onClick.AddListener(GameManager.instance.BacktoPreState);
         }
 
         void MoveToInven(int index)

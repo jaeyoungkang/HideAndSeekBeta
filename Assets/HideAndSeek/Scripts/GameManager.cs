@@ -10,7 +10,7 @@ using System;
 
 namespace HideAndSeek
 {    
-    public enum GAME_STATE { START, TUTORIAL, LOBBY, SHOP, INVENTORY, DUNGEON_INFO, LEVEL, MAP, PLAY, RESULT, OVER }
+    public enum GAME_STATE { START, TUTORIAL, LOBBY, SHOP, INVENTORY, DUNGEON_INFO, LEVEL, LEVEL_INFO, MAP, PLAY, RESULT, OVER }
 
     public class GameManager : MonoBehaviour
     {
@@ -25,6 +25,7 @@ namespace HideAndSeek
         private bool enemiesMoving;
                 
         private GAME_STATE gameState;
+        private GAME_STATE preGameState;
 
         public List<GameObject> curTrapsOnStage = new List<GameObject>();
         public List<GameObject> curObjsOnStage = new List<GameObject>();
@@ -193,6 +194,8 @@ namespace HideAndSeek
                 return;
             }
 
+            playData.levelName = curDungeon.GetCurLevel().name;
+
             SetActiveMap(trapsOnStages, false);
             SetActiveMap(objsOnStages, false);
             SetActiveMap(tilesOnStages, false);
@@ -213,6 +216,11 @@ namespace HideAndSeek
 
             Player player = FindObjectOfType(typeof(Player)) as Player;
             player.Init();
+        }
+
+        public void BacktoPreState()
+        {
+            ChangeState(preGameState);
         }
 
         public void ShowDungeonInfo(int index)
@@ -279,14 +287,17 @@ namespace HideAndSeek
             ChangeState(GAME_STATE.MAP);
         }
 
-        public void EnterLevel(int level)
+        public void SelectLevel(int level)
         {
             curDungeon.SetLevel(level);
-            GameManager.instance.ChangeState(GAME_STATE.LEVEL);
-            PageManager.instance.SetLevelEnterPageText(curDungeon.ToString());
-            Invoke("setupLevel", 2f);
+            GameManager.instance.ChangeState(GAME_STATE.LEVEL_INFO);
+        }
 
-            playData.levelName = curDungeon.GetCurLevel().name;
+        public void EnterLevel()
+        {            
+            GameManager.instance.ChangeState(GAME_STATE.LEVEL);
+            PageManager.instance.SetLevelEnterPageText(curDungeon.name, curDungeon.GetCurLevel().name);
+            Invoke("setupLevel", 2f);            
         }
 
         public void GoToLobby()
@@ -302,12 +313,22 @@ namespace HideAndSeek
             SaveLoad.Save();
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
 
-            if(info.isClearTutorial) ChangeState(GAME_STATE.LOBBY);
-            else ChangeState(GAME_STATE.TUTORIAL);
+            if (info.isClearTutorial) ChangeState(GAME_STATE.LOBBY);
+            else
+            {
+                SelectDungeon(tutorial);
+                ChangeState(GAME_STATE.TUTORIAL);
+            }
         }
         
+        public bool CheckState(GAME_STATE state)
+        {
+            return state == gameState;
+        }
+
         public void ChangeState(GAME_STATE nextState)
         {
+            preGameState = gameState;
             gameState = nextState;
             PageManager.instance.Setup(gameState);
         }

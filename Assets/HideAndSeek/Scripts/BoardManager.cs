@@ -247,7 +247,8 @@ namespace HideAndSeek
                 SetupLevelRandom(lv);
 
                 GameObject instance = Instantiate(exit, new Vector3(columns - 1, rows - 1, 0f), Quaternion.identity);
-                GameManager.instance.curTilesOnStage.Add(instance);
+                GameManager.instance.AddTile(instance, lv.id);                
+//                GameManager.instance.curTilesOnStage.Add(instance);
             }           
         }
 

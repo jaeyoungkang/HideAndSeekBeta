@@ -40,6 +40,7 @@ namespace HideAndSeek
         void onEnable()
         {
             if (GameManager.instance == null) return;
+            if (!GameManager.instance.CheckState(GAME_STATE.SHOP)) return;
             Start();
         }
 

@@ -14,14 +14,14 @@ namespace HideAndSeek
         void OnEnable()
         {
             if (GameManager.instance == null) return;
+            if (!GameManager.instance.CheckState(GAME_STATE.TUTORIAL)) return;
             SetupInfo();
             enterBtn.onClick.AddListener(GameManager.instance.EnterDungeon);
         }
 
         void SetupInfo()
-        {
-            GameManager.instance.SelectDungeon(GameManager.instance.tutorial);
-            Dungeon curDungeon = GameManager.instance.tutorial;
+        {            
+            Dungeon curDungeon = GameManager.instance.GetDungeonInfo();
             if (curDungeon == null) return;
 
             titleText.text = curDungeon.name;

@@ -7,6 +7,8 @@ namespace HideAndSeek
 {
     public class Lobby : MonoBehaviour
     {
+        public Text gemText;
+
         public Button shopBtn;
         public Button invenBtn;
 
@@ -16,8 +18,6 @@ namespace HideAndSeek
 
         void SetupDungeonBtns()
         {
-                       
-
             for (int i = 0; i < dungeons.Length; i++)
             {
                 if (dungeonBtns.Length <= i) break;
@@ -38,7 +38,9 @@ namespace HideAndSeek
 
         void Start()
         {
-            dungeons = GameManager.instance.dungeons;           
+            dungeons = GameManager.instance.dungeons;
+
+            gemText.text = "보유 보석: " + GameManager.instance.info.invenGem;
 
             SetupDungeonBtns();
             dungeonBtns[0].onClick.AddListener(() => { GameManager.instance.ShowDungeonInfo(0); });

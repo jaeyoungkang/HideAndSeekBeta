@@ -9,18 +9,20 @@ namespace HideAndSeek
         public static PageManager instance = null;
         public GameObject titleImage;
         public GameObject lobbyImage;
-        public GameObject dungeonImage;
+        public GameObject levelEnterImage;
         public GameObject resultImage;
         public GameObject shopImage;
         public GameObject controller;
         public GameObject dungeonMap;
         public GameObject inventoryPage;
         public GameObject dungeonInfoPage;
+        public GameObject levelInfoPage;
         public GameObject tutorialPage;
 
         public GameObject statusPanel;
 
-        public Text dungeonText;
+        public Text dungeonTitleText;
+        public Text levelTitleText;
 
         public Button startButton;
         
@@ -41,19 +43,21 @@ namespace HideAndSeek
             titleImage = GameObject.Find("FrontPageImage");
             lobbyImage = GameObject.Find("LobbyImage");
             shopImage = GameObject.Find("ShopImage");
-            dungeonImage = GameObject.Find("DungeonImage");
+            levelEnterImage = GameObject.Find("LevelEnterImage");
             resultImage = GameObject.Find("ResultImage");
             controller = GameObject.Find("Controller");
             dungeonMap = GameObject.Find("DungeonMap");
             inventoryPage = GameObject.Find("InventoryPage");
             dungeonInfoPage = GameObject.Find("DungeonInfo");
+            levelInfoPage = GameObject.Find("LevelInfo");
             tutorialPage = GameObject.Find("TutorialInfo");
 
             statusPanel = GameObject.Find("Status");
 
             startButton = GameObject.Find("FrontPageButton").GetComponent<Button>();
 
-            dungeonText = GameObject.Find("DungeonText").GetComponent<Text>();
+            dungeonTitleText = GameObject.Find("DungeonTitleText").GetComponent<Text>();
+            levelTitleText = GameObject.Find("LevelTitleText").GetComponent<Text>();
 
             startButton.onClick.AddListener(GameManager.instance.GoToLobby);
         }
@@ -66,6 +70,7 @@ namespace HideAndSeek
             bool bShop = false;
             bool bDungeon = false;
             bool bDungeonInfo = false;
+            bool bLevelInfo = false;
             bool bResult = false;
             bool bPlay = false;
             bool bMap = false;
@@ -80,6 +85,7 @@ namespace HideAndSeek
                 case GAME_STATE.SHOP: bShop = true; break;
                 case GAME_STATE.LOBBY: bLobby = true; break;
                 case GAME_STATE.LEVEL: bDungeon = true; break;
+                case GAME_STATE.LEVEL_INFO: bLevelInfo = true; break;
                 case GAME_STATE.DUNGEON_INFO: bDungeonInfo = true; break;                    
                 case GAME_STATE.MAP: bMap = true; break;
                 case GAME_STATE.PLAY: bPlay = true; break;
@@ -94,8 +100,9 @@ namespace HideAndSeek
             shopImage.SetActive(bShop);
             lobbyImage.SetActive(bLobby);
             titleImage.SetActive(bTitle);
-            dungeonImage.SetActive(bDungeon);
+            levelEnterImage.SetActive(bDungeon);
             dungeonInfoPage.SetActive(bDungeonInfo);
+            levelInfoPage.SetActive(bLevelInfo);
             resultImage.SetActive(bResult);
             controller.SetActive(bPlay);
             dungeonMap.SetActive(bMap);
@@ -111,9 +118,10 @@ namespace HideAndSeek
             }            
         }
         
-        public void SetLevelEnterPageText(string content)
+        public void SetLevelEnterPageText(string dungeonTitle, string levelTitle)
         {
-            dungeonText.text = content;
+            dungeonTitleText.text = dungeonTitle;
+            levelTitleText.text = levelTitle;
         }
     }
 }

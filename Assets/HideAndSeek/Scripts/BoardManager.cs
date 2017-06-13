@@ -46,7 +46,7 @@ namespace HideAndSeek
 
         private List<Vector3> gridPositionsExcept = new List<Vector3>();
 
-        void InitialiseList()
+        void InitialiseList(Level lv)
         {
             gridPositions.Clear();
 
@@ -103,7 +103,11 @@ namespace HideAndSeek
                 }
             }
 
-            gridPositionsExcept.AddRange(GameManager.instance.GetShowPositions());
+            foreach(ShowTile sTile in lv.showTiles)
+            {
+                Vector3 pos = new Vector3(sTile.pos.x, sTile.pos.y, 0f);
+                gridPositionsExcept.Add(pos);
+            }
             //gridPositionsExcept.Add(new Vector3(0f, 0f, 0f));
             gridPositionsExcept.Add(new Vector3(1f, 0f, 0f));
             gridPositionsExcept.Add(new Vector3(0f, 1f, 0f));
@@ -126,10 +130,9 @@ namespace HideAndSeek
             grids.Add(gridPositions4);
         }
 
-        void BoardSetup(int id)
+        void BoardSetup(Level lv)
         {
-            boardHolder = new GameObject("Board").transform;
-            Vector3[] range = GameManager.instance.GetShowPositions();
+            boardHolder = new GameObject("Board").transform;            
 
             for (int x = -1; x < columns + 1; x++)
             {
@@ -143,19 +146,31 @@ namespace HideAndSeek
                     GameObject instance = Instantiate(toInstantiate, new Vector3(x, y, 0f), Quaternion.identity) as GameObject;                    
                     instance.transform.SetParent(boardHolder);
 
-                    GameManager.instance.AddTile(instance, id);
-
-                    foreach (Vector3 pos in range)
+                    GameManager.instance.AddTile(instance, lv.id);
+                                        
+                    foreach (ShowTile tile in lv.showTiles)
                     {
-                        if (x == pos.x && y == pos.y)
+                        if (x == tile.pos.x && y == tile.pos.y)
                         {
-                            Color lerpedColor = instance.GetComponent<Renderer>().material.color;
-                            lerpedColor = Color.Lerp(lerpedColor, Color.red, 0.1f);
-                            instance.GetComponent<Renderer>().material.color = lerpedColor;
+                            switch(tile.type)
+                            {
+                                case SHOW_TYPE.NEAR: SetTileColor(instance, Color.blue); break;
+                                case SHOW_TYPE.MONSTER: SetTileColor(instance, Color.red); break;
+                                case SHOW_TYPE.TRAP: SetTileColor(instance, Color.yellow); break;
+                                case SHOW_TYPE.GEM_ITEM: SetTileColor(instance, Color.green); break;
+                                case SHOW_TYPE.ALL: SetTileColor(instance, Color.white); break;
+                            }                            
                         }
-                    }
+                    }                    
                 }                
             }
+        }
+
+        void SetTileColor(GameObject tile, Color color)
+        {
+            Color lerpedColor = tile.GetComponent<Renderer>().material.color;
+            lerpedColor = Color.Lerp(lerpedColor, color, 0.2f);
+            tile.GetComponent<Renderer>().material.color = lerpedColor;
         }
 
         Vector3 RandomPosition()
@@ -242,8 +257,8 @@ namespace HideAndSeek
         {
             foreach(Level lv in levelInfos)
             {
-                BoardSetup(lv.id);
-                InitialiseList();
+                BoardSetup(lv);
+                InitialiseList(lv);
                 SetupLevelRandom(lv);
 
                 GameObject instance = Instantiate(exit, new Vector3(columns - 1, rows - 1, 0f), Quaternion.identity);

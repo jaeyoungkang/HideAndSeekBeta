@@ -6,6 +6,21 @@ using UnityEngine.SceneManagement;
 
 namespace HideAndSeek
 {
+    public enum SHOW_TYPE { NONE, NEAR, MONSTER, TRAP, GEM_ITEM, ALL };
+
+    [System.Serializable]
+    public class ShowTile
+    {
+        public Vector2 pos;
+        public SHOW_TYPE type;
+
+        public ShowTile(Vector2 _pos, SHOW_TYPE _type)
+        {
+            pos = _pos;
+            type = _type;
+        }
+    }
+
     [System.Serializable]
     public class Level
     {
@@ -20,17 +35,16 @@ namespace HideAndSeek
         public int[] nextIds;
         public bool clear;
         public bool close;
-
-        public Level(int _id, int _trap, int _enemy, int _strongEnemy, int _thief, int _gem)
-        {
-            id = _id;
-            trap = _trap;
-            enemy = _enemy;
-            strongEnemy = _strongEnemy;
-            thief = _thief;
-            gem = _gem;
-            clear = false;
-        }
+        public ShowTile[] showTiles = 
+                    {
+                        new ShowTile(new Vector3(0, 0, 0 ), SHOW_TYPE.NEAR),
+                        new ShowTile(new Vector3(2, 2, 0 ), SHOW_TYPE.NEAR),
+                        new ShowTile(new Vector3(5, 2, 0 ), SHOW_TYPE.NEAR),
+                        new ShowTile(new Vector3(2, 5, 0 ), SHOW_TYPE.NEAR),
+                        new ShowTile(new Vector3(5, 5, 0 ), SHOW_TYPE.NEAR),
+                        new ShowTile(new Vector3(7, 0, 0 ), SHOW_TYPE.MONSTER),
+                        new ShowTile(new Vector3(0, 7, 0 ), SHOW_TYPE.TRAP)
+                    };
     }
 
     [System.Serializable]

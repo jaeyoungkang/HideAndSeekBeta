@@ -33,7 +33,8 @@ namespace HideAndSeek
         {
             enabled = true;
             transform.position = new Vector3(0, 0, 0);
-            if (checkPos(0, 0)) GameManager.instance.ShowNear(transform.position);
+            SHOW_TYPE type = checkPos(0, 0);
+            GameManager.instance.ShowMap(transform.position, type);
         }
 
         protected override void Start ()
@@ -86,19 +87,13 @@ namespace HideAndSeek
             }
 		}
 
-        bool checkPos(int xDir, int yDir)
+        SHOW_TYPE checkPos(int xDir, int yDir)
         {
-            bool bShow = false;
             float nextPosX = transform.position.x + xDir;
             float nextPosY = transform.position.y + yDir;
+            Vector2 pos = new Vector2(nextPosX, nextPosY);
 
-            Vector3[] range = GameManager.instance.GetShowPositions();
-            foreach(Vector3 pos in range)
-            {
-                if(nextPosX == pos.x && nextPosY == pos.y) bShow = true;
-            }
-
-            return bShow;
+            return  GameManager.instance.CheckShowTile(pos);
         }
 
         protected override void AttemptMove <T> (int xDir, int yDir)
@@ -112,7 +107,7 @@ namespace HideAndSeek
 			{
                 if(bHideMode == false) SoundManager.instance.RandomizeSfx (moveSound1, moveSound2);
 
-                if(checkPos(xDir, yDir)) GameManager.instance.ShowNear(new Vector3(transform.position.x + xDir, transform.position.y + yDir, 0));
+                GameManager.instance.ShowMap(new Vector3(transform.position.x + xDir, transform.position.y + yDir, 0), checkPos(xDir, yDir));
                 CheckTrap(xDir, yDir);
 
                 GameManager.instance.playData.hps.Add(GameManager.instance.playerHp);
@@ -293,19 +288,19 @@ namespace HideAndSeek
                 case "회복20": RecoverHP(20); break;
                 case "회복30": RecoverHP(30); break;
                 case "근처보기":
-                    GameManager.instance.ShowMap(transform.position, 0);
+                    GameManager.instance.ShowMap(transform.position, SHOW_TYPE.NEAR);
                     break;
                 case "괴물보기":
-                    GameManager.instance.ShowMap(transform.position, 1);
+                    GameManager.instance.ShowMap(transform.position, SHOW_TYPE.MONSTER);
                     break;
                 case "함정보기":
-                    GameManager.instance.ShowMap(transform.position, 2);
+                    GameManager.instance.ShowMap(transform.position, SHOW_TYPE.TRAP);
                     break;
                 case "보물보기":
-                    GameManager.instance.ShowMap(transform.position, 3);
+                    GameManager.instance.ShowMap(transform.position, SHOW_TYPE.GEM_ITEM);
                     break;
                 case "전체보기":
-                    GameManager.instance.ShowMap(transform.position, 4);
+                    GameManager.instance.ShowMap(transform.position, SHOW_TYPE.ALL);
                     break;
                 case "사방공격":
                     GameManager.instance.DestoryEnemies(transform.position, 0);

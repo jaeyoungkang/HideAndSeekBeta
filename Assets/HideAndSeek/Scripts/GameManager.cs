@@ -135,7 +135,11 @@ namespace HideAndSeek
 
                 string culomnName = "";
                 culomnName += "dungeonName \t levelName \t gemCount \t deathCount \t attackedCount \t damagedByTimeCount \t (getItem, useItem, hps)";
-                SaveLoad.WriteFile("PlayData.txt", culomnName);
+
+                DateTime dt = DateTime.Now;
+                String strDate = dt.ToString("MMdd_HHmmss");
+                string fileName = "log/" + strDate + "_playData.txt";
+                SaveLoad.WriteFile(fileName, culomnName);
             }
             else if (instance != this)
                 Destroy(gameObject);
@@ -218,12 +222,15 @@ namespace HideAndSeek
                 SetActiveObjs(pair.Value, active);
             }
         }
-        
+
         void setupLevel()
         {
             int levelId =  curDungeon.GetCurLevel().id;
             
-            if(!trapsOnStages.ContainsKey(levelId) || !objsOnStages.ContainsKey(levelId) || !tilesOnStages.ContainsKey(levelId) || !enemiesOnStages.ContainsKey(levelId))
+            if(!trapsOnStages.ContainsKey(levelId) ||
+                !objsOnStages.ContainsKey(levelId) ||
+                !tilesOnStages.ContainsKey(levelId) ||
+                !enemiesOnStages.ContainsKey(levelId))
             {
                 print("Error: wrong level id " + levelId);
                 return;
@@ -234,8 +241,8 @@ namespace HideAndSeek
             SetActiveMap(trapsOnStages, false);
             SetActiveMap(objsOnStages, false);
             SetActiveMap(tilesOnStages, false);
-            SetActiveMap(enemiesOnStages, false);
-            
+            SetActiveMap(enemiesOnStages, false);            
+
             curTrapsOnStage = trapsOnStages[levelId];
             curObjsOnStage = objsOnStages[levelId];
             curTilesOnStage = tilesOnStages[levelId];
@@ -437,48 +444,45 @@ namespace HideAndSeek
             ShowObjects(true, range);
         }        
 
-        public void ShowMap(Vector3 targetPos, int type)
+        public void ShowMap(Vector3 targetPos, SHOW_TYPE type)
         {
+            if (type == SHOW_TYPE.NONE) return;
             switch (type)
             {
                 default:
-                case 0: ShowNear(targetPos);
+                case SHOW_TYPE.NEAR: ShowNear(targetPos);
                     break;
 
-                case 1:
+                case SHOW_TYPE.MONSTER:
                     ShowAllUnits(true);
                     break;
 
-                case 2:
+                case SHOW_TYPE.TRAP:
                     ShowTraps(true);
                     break;
 
-                case 3:
+                case SHOW_TYPE.GEM_ITEM:
                     ShowGems(true);
                     break;
 
-                case 4:
+                case SHOW_TYPE.ALL:
                     ShowMap(true);
                     break;
-
-            }
-            
+            }            
         }
 
 
-        public Vector3[] GetShowPositions()
+        public SHOW_TYPE CheckShowTile(Vector2 pos)
         {
-            return new Vector3[]
-                    {
-                        new Vector3(0, 0, 0 ),
-                        new Vector3(2, 2, 0 ),
-                        new Vector3(5, 2, 0 ),
-                        new Vector3(2, 5, 0 ),
-                        new Vector3(5, 5, 0 ),
-//                        new Vector3(7, 7, 0 ),
-                        new Vector3(0, 7, 0 ),
-                        new Vector3(7, 0, 0 )
-                    };
+            Level curLv = curDungeon.GetCurLevel();
+
+            foreach(ShowTile sTile in curLv.showTiles)
+            {
+                if (sTile.pos == pos) return sTile.type;
+
+            }
+            
+            return SHOW_TYPE.NONE;
         }
 
         public Vector3[] GetShowRange(Vector3 targetPos)

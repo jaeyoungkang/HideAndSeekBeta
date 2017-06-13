@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 namespace HideAndSeek
 {
@@ -85,7 +86,11 @@ namespace HideAndSeek
                 info += hp + ", ";
             }
             info += "\t";
-            if (data.levelName != "") SaveLoad.WriteFile("PlayData.txt", info);
+
+            DateTime dt = DateTime.Now;
+            String strDate = dt.ToString("MMdd_HHmmss");
+            string fileName = "log/" + strDate + "_playData.txt";
+            if (data.levelName != "") SaveLoad.WriteFile(fileName, info);
 
             GameManager.instance.playData.InitLevelPlayData();
         }

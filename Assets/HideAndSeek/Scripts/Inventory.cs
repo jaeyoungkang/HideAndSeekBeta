@@ -7,12 +7,36 @@ namespace HideAndSeek
 {
     public class Inventory : MonoBehaviour
     {
-        public Button ReturnBtn;        
+        public Button ExtendBagBtn;
+        public Button ExtendInvenBtn;
+        public Button ReturnBtn;
+
+        public Text GemText;
 
         public Button[] BagBtns;
         public Button[] InvenBtns;
 
+        void Update()
+        {
+            GemText.text = "Gem: " + GameManager.instance.info.invenGem.ToString();
+        }
+
         void EnableBagSlot()
+        {
+            foreach (Button bagBtn in BagBtns)
+            {
+                bagBtn.gameObject.SetActive(false);
+            }
+
+            for (int i = 0; i < GameManager.instance.info.bagSize; i++)
+            {
+                BagBtns[i].gameObject.SetActive(true);
+            }
+
+            ExtendBagBtn.GetComponentInChildren<Text>().text = "가방확장(" + GameManager.instance.GetPriceExtendBag(BagBtns.Length, GameManager.instance.info.bagSize) + ")";
+        }
+
+        void EnableInvenSlot()
         {
             foreach (Button invenBtn in InvenBtns)
             {
@@ -24,20 +48,13 @@ namespace HideAndSeek
                 InvenBtns[i].gameObject.SetActive(true);
             }
 
-            foreach (Button bagBtn in BagBtns)
-            {
-                bagBtn.gameObject.SetActive(false);
-            }
-
-            for (int i = 0; i < GameManager.instance.info.bagSize; i++)
-            {
-                BagBtns[i].gameObject.SetActive(true);
-            }
+            ExtendInvenBtn.GetComponentInChildren<Text>().text = "창고확장(" + GameManager.instance.GetPriceExtendInven(InvenBtns.Length, GameManager.instance.info.invenSize) + ")";
         }
 
         void Start()
         {
             SetupInventory();
+            EnableInvenSlot();
             EnableBagSlot();
 
             InvenBtns[0].onClick.AddListener(() => { MoveToBag(0); });
@@ -59,6 +76,41 @@ namespace HideAndSeek
             BagBtns[5].onClick.AddListener(() => { MoveToInven(5); });
 
             ReturnBtn.onClick.AddListener(GameManager.instance.BacktoPreState);
+            ExtendBagBtn.onClick.AddListener(ExtendBagSize);
+            ExtendInvenBtn.onClick.AddListener(ExtendInvenSize);            
+        }
+
+        void ExtendBagSize()
+        {
+            int extendPrice = GameManager.instance.GetPriceExtendBag(BagBtns.Length, GameManager.instance.info.bagSize);            
+            if (GameManager.instance.info.invenGem < extendPrice)
+            {
+                print("Popup: Not enough gem.");
+                return;
+            }
+
+            if (GameManager.instance.ExtendBagSize(BagBtns.Length))
+            {
+                GameManager.instance.info.invenGem -= extendPrice;
+                EnableBagSlot();
+            }
+                        
+        }
+
+        void ExtendInvenSize()
+        {
+            int extendPrice = GameManager.instance.GetPriceExtendInven(InvenBtns.Length, GameManager.instance.info.invenSize);
+            if (GameManager.instance.info.invenGem < extendPrice)
+            {
+                print("Popup: Not enough gem.");
+                return;
+            }
+
+            if (GameManager.instance.ExtendInvenSize(InvenBtns.Length))
+            {
+                GameManager.instance.info.invenGem -= extendPrice;
+                EnableInvenSlot();
+            }
         }
 
         void MoveToInven(int index)
@@ -110,7 +162,7 @@ namespace HideAndSeek
 
                 Color itemGradeColor = ItemManager.instance.GetColorByItemGrade(item.grade);
                 ItemManager.instance.SetItemUIColor(BagBtns[i], itemGradeColor);
-            }
+            }            
         }
     }
 

@@ -6,35 +6,30 @@ using System;
 
 namespace HideAndSeek
 {
-
-    [System.Serializable]
-    public class Skill
-    {
-        public string skillname;
-        public int price;
-    }
-
     public class Shop : MonoBehaviour
     {
         public Button[] DisplayBtns;
         public int[] display;
 
-        public Button[] InvenBtns;
+        public Button[] BagBtns;
         public Button ReturnBtn;
+        public Button ExtendBtn;
 
         public Text GemText;        
 
-        void EnableInvenSlot()
+        void EnableBagSlot()
         {
-            foreach (Button invenBtn in InvenBtns)
+            foreach (Button bagBtn in BagBtns)
             {
-                invenBtn.gameObject.SetActive(false);
+                bagBtn.gameObject.SetActive(false);
             }
 
-            for (int i = 0; i < GameManager.instance.info.invenSize; i++)
+            for (int i = 0; i < GameManager.instance.info.bagSize; i++)
             {
-                InvenBtns[i].gameObject.SetActive(true);
+                BagBtns[i].gameObject.SetActive(true);
             }
+
+            ExtendBtn.GetComponentInChildren<Text>().text = "가방확장(" + GameManager.instance.GetPriceExtendBag(BagBtns.Length, GameManager.instance.info.bagSize) + ")";
         }
 
         void onEnable()
@@ -47,37 +42,34 @@ namespace HideAndSeek
         void Start()
         {
             SetupDisplay();
-            SetupInventory();
-            EnableInvenSlot();
+            SetupBag();
+            EnableBagSlot();
 
-            InvenBtns[0].onClick.AddListener(() => { SellSkill(0); });
-            InvenBtns[1].onClick.AddListener(() => { SellSkill(1); });
-            InvenBtns[2].onClick.AddListener(() => { SellSkill(2); });
-            InvenBtns[3].onClick.AddListener(() => { SellSkill(3); });
-            InvenBtns[4].onClick.AddListener(() => { SellSkill(4); });
-            InvenBtns[5].onClick.AddListener(() => { SellSkill(5); });
-            InvenBtns[6].onClick.AddListener(() => { SellSkill(6); });
-            InvenBtns[7].onClick.AddListener(() => { SellSkill(7); });
-            InvenBtns[8].onClick.AddListener(() => { SellSkill(8); });
-            InvenBtns[9].onClick.AddListener(() => { SellSkill(9); });
+            BagBtns[0].onClick.AddListener(() => { SellItem(0); });
+            BagBtns[1].onClick.AddListener(() => { SellItem(1); });
+            BagBtns[2].onClick.AddListener(() => { SellItem(2); });
+            BagBtns[3].onClick.AddListener(() => { SellItem(3); });
+            BagBtns[4].onClick.AddListener(() => { SellItem(4); });
+            BagBtns[5].onClick.AddListener(() => { SellItem(5); });
             
-            DisplayBtns[0].onClick.AddListener(() => { BuySkill(0); });
-            DisplayBtns[1].onClick.AddListener(() => { BuySkill(1); });
-            DisplayBtns[2].onClick.AddListener(() => { BuySkill(2); });
-            DisplayBtns[3].onClick.AddListener(() => { BuySkill(3); });
-            DisplayBtns[4].onClick.AddListener(() => { BuySkill(4); });
-            DisplayBtns[5].onClick.AddListener(() => { BuySkill(5); });
-            DisplayBtns[6].onClick.AddListener(() => { BuySkill(6); });
-            DisplayBtns[7].onClick.AddListener(() => { BuySkill(7); });
-            DisplayBtns[8].onClick.AddListener(() => { BuySkill(8); });
-            DisplayBtns[9].onClick.AddListener(() => { BuySkill(9); });
-            DisplayBtns[10].onClick.AddListener(() => { BuySkill(10); });
-            DisplayBtns[11].onClick.AddListener(() => { BuySkill(11); });
-            DisplayBtns[12].onClick.AddListener(() => { BuySkill(12); });
-            DisplayBtns[13].onClick.AddListener(() => { BuySkill(13); });
-            DisplayBtns[14].onClick.AddListener(() => { BuySkill(14); });
+            DisplayBtns[0].onClick.AddListener(() => { BuyItem(0); });
+            DisplayBtns[1].onClick.AddListener(() => { BuyItem(1); });
+            DisplayBtns[2].onClick.AddListener(() => { BuyItem(2); });
+            DisplayBtns[3].onClick.AddListener(() => { BuyItem(3); });
+            DisplayBtns[4].onClick.AddListener(() => { BuyItem(4); });
+            DisplayBtns[5].onClick.AddListener(() => { BuyItem(5); });
+            DisplayBtns[6].onClick.AddListener(() => { BuyItem(6); });
+            DisplayBtns[7].onClick.AddListener(() => { BuyItem(7); });
+            DisplayBtns[8].onClick.AddListener(() => { BuyItem(8); });
+            DisplayBtns[9].onClick.AddListener(() => { BuyItem(9); });
+            DisplayBtns[10].onClick.AddListener(() => { BuyItem(10); });
+            DisplayBtns[11].onClick.AddListener(() => { BuyItem(11); });
+            DisplayBtns[12].onClick.AddListener(() => { BuyItem(12); });
+            DisplayBtns[13].onClick.AddListener(() => { BuyItem(13); });
+            DisplayBtns[14].onClick.AddListener(() => { BuyItem(14); });
 
             ReturnBtn.onClick.AddListener(GameManager.instance.GoToLobby);
+            ExtendBtn.onClick.AddListener(ExtendBagSize);
         }
 
         void Update()
@@ -85,7 +77,23 @@ namespace HideAndSeek
             GemText.text = "Gem: " + GameManager.instance.info.invenGem.ToString();
         }
 
-        void BuySkill(int index)
+        void ExtendBagSize()
+        {
+            int extendPrice = GameManager.instance.GetPriceExtendBag(BagBtns.Length, GameManager.instance.info.bagSize);
+            if (GameManager.instance.info.invenGem < extendPrice)
+            {
+                print("Popup: Not enough gem.");
+                return;
+            }
+
+            if (GameManager.instance.ExtendBagSize(BagBtns.Length))
+            {
+                GameManager.instance.info.invenGem -= extendPrice;
+                EnableBagSlot();
+            }
+        } 
+
+        void BuyItem(int index)
         {            
             if (index >= display.Length) return;
 
@@ -94,47 +102,37 @@ namespace HideAndSeek
             if (GameManager.instance.info.invenGem < price) return;
 
             string name = ItemManager.instance.GetNameByItemId(display[index]);
-            if (name == "인벤추가")
-            {
-                if (GameManager.instance.ExtendInvenSize(InvenBtns.Length))
-                {
-                    GameManager.instance.info.invenGem -= price;
-                    EnableInvenSlot();
-                }
-            }
-            else
-            {
-                if (GameManager.instance.info.invenSize == GameManager.instance.info.inven.Count) return;
-                GameManager.instance.info.inven.Add(display[index]);
-                GameManager.instance.info.invenGem -= price;
-                SetupInventory();
-            }
+            
+            if (GameManager.instance.info.bagSize == GameManager.instance.info.bag.Count) return;
+            GameManager.instance.info.bag.Add(display[index]);
+            GameManager.instance.info.invenGem -= price;
+            SetupBag();
+            
         }
 
-        void SellSkill(int index)
+        void SellItem(int index)
         {
-            if (index >= GameManager.instance.info.inven.Count) return;
-            int price = ItemManager.instance.GetPriceByItemId(GameManager.instance.info.inven[index]);
+            if (index >= GameManager.instance.info.bag.Count) return;
+            int price = ItemManager.instance.GetPriceByItemId(GameManager.instance.info.bag[index]);
             GameManager.instance.info.invenGem += price;
-            GameManager.instance.info.inven.RemoveAt(index);            
-            SetupInventory();            
+            GameManager.instance.info.bag.RemoveAt(index);
         }
 
-        private void SetupInventory()
+        private void SetupBag()
         {
-            for (int i = 0; i < InvenBtns.Length; i++)
+            for (int i = 0; i < BagBtns.Length; i++)
             {
-                InvenBtns[i].GetComponentInChildren<Text>().text = "";
+                BagBtns[i].GetComponentInChildren<Text>().text = "";
             }
 
-            for (int i = 0; i < InvenBtns.Length; i++)
+            for (int i = 0; i < BagBtns.Length; i++)
             {
-                if (GameManager.instance.info.inven.Count <= i) break;
-                Item item = ItemManager.instance.GetItemByItemId(GameManager.instance.info.inven[i]);
-                InvenBtns[i].GetComponentInChildren<Text>().text = item.name;
+                if (GameManager.instance.info.bag.Count <= i) break;
+                Item item = ItemManager.instance.GetItemByItemId(GameManager.instance.info.bag[i]);
+                BagBtns[i].GetComponentInChildren<Text>().text = item.name;
 
                 Color itemGradeColor = ItemManager.instance.GetColorByItemGrade(item.grade);
-                ItemManager.instance.SetItemUIColor(InvenBtns[i], itemGradeColor);
+                ItemManager.instance.SetItemUIColor(BagBtns[i], itemGradeColor);
             }            
         }
 

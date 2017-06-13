@@ -39,7 +39,7 @@ namespace HideAndSeek
         public Dictionary<int, List<GameObject>> objsOnStages = new Dictionary<int, List<GameObject>>();
         public Dictionary<int, List<GameObject>> tilesOnStages = new Dictionary<int, List<GameObject>>();
 
-        public GameInfo info = new GameInfo();        
+        public GameInfo info = new GameInfo();
 
         public int playerHp = 20;
         public int dungeonGem = 0;
@@ -91,6 +91,35 @@ namespace HideAndSeek
 
             return false;
         }
+
+        public int GetPriceExtendBag(int limit, int curSize)
+        {
+            int delta = limit - curSize;
+            if (delta > 2) return 5;
+            else if (delta > 1) return 15;
+            else return 30;
+        }
+
+        public int GetPriceExtendInven(int limit, int curSize)
+        {
+            int delta = limit - curSize;
+            if (delta > 4) return 10;
+            else if (delta > 2) return 20;
+            else return 30;
+        }
+
+        public bool ExtendBagSize(int limit)
+        {
+            if (info.bagSize < limit)
+            {
+                
+                info.bagSize++;
+                return true;
+            }
+
+            return false;
+        }
+
         public bool AddBag(int itemId)
         {
             if (info.bag.Count == info.bagSize) return false;

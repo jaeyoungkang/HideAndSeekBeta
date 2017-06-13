@@ -259,7 +259,8 @@ namespace HideAndSeek
             {
                 BoardSetup(lv);
                 InitialiseList(lv);
-                SetupLevelRandom(lv);
+                if(lv.name=="단계1") SetupTutorialLevel(lv);
+                else SetupLevelRandom(lv);
 
                 GameObject instance = Instantiate(exit, new Vector3(columns - 1, rows - 1, 0f), Quaternion.identity);
                 GameManager.instance.AddTile(instance, lv.id);                
@@ -287,6 +288,51 @@ namespace HideAndSeek
             LayoutEnemiesAtRandom(levelInfo.id, enemyTiles, enemyCount, enemyCount);
             LayoutEnemiesAtRandom(levelInfo.id, strongEnemyTiles, strongEnemyCount, strongEnemyCount);
             LayoutEnemiesAtRandom(levelInfo.id, thiefTiles, thiefCount, thiefCount);
+        }
+
+        public void SetupTutorialLevel(Level levelInfo)
+        {
+            int gemRate = levelInfo.gem;
+            int enemyCount = levelInfo.enemy;
+            int strongEnemyCount = levelInfo.strongEnemy;
+            int thiefCount = levelInfo.thief;
+            int trapCount = levelInfo.trap;
+            int[] itemTileNumber = levelInfo.itemTileNumbers;
+
+            Vector3 pos = new Vector3(2f, 7f, 0f);
+            GameObject instance = Instantiate(itemTiles[1], pos, Quaternion.identity);
+            GameManager.instance.AddObj(instance, levelInfo.id);
+
+            pos = new Vector3(7f, 3f, 0f);
+            instance = Instantiate(itemTiles[0], pos, Quaternion.identity);
+            GameManager.instance.AddObj(instance, levelInfo.id);
+
+            pos = new Vector3(1f, 3f, 0f);
+            instance = Instantiate(gemTiles[0], pos, Quaternion.identity);
+            GameManager.instance.AddObj(instance, levelInfo.id);
+
+            pos = new Vector3(4f, 3f, 0f);
+            instance = Instantiate(gemTiles[0], pos, Quaternion.identity);
+            GameManager.instance.AddObj(instance, levelInfo.id);
+
+            Vector3[] tutorialTrapPositions = 
+                {
+                    new Vector3(0, 2, 0), new Vector3(0, 3, 0), new Vector3(0, 4, 0),
+                    new Vector3(1, 6, 0),
+                    new Vector3(2, 0, 0), new Vector3(2, 1, 0),new Vector3(2, 3, 0), new Vector3(2, 6, 0),
+                    new Vector3(3, 0, 0), new Vector3(3, 1, 0),new Vector3(3, 2, 0), new Vector3(3, 3, 0),new Vector3(3, 4, 0),new Vector3(3, 5, 0),
+                    new Vector3(4, 0, 0), new Vector3(4, 1, 0),new Vector3(4, 2, 0),
+                    new Vector3(5, 4, 0), new Vector3(5, 6, 0),new Vector3(5, 7, 0),
+                    new Vector3(6, 1, 0), new Vector3(6, 2, 0),new Vector3(6, 3, 0),new Vector3(6, 4, 0),new Vector3(6, 5, 0),new Vector3(6, 6, 0),new Vector3(6, 7, 0)
+            };
+
+            for (int i = 0; i < tutorialTrapPositions.Length; i++)
+            {
+                pos = tutorialTrapPositions[i];
+                GameObject tileChoice = trapTiles[Random.Range(0, trapTiles.Length)];
+                instance = Instantiate(tileChoice, pos, Quaternion.identity);
+                GameManager.instance.AddTrap(instance, levelInfo.id);
+            }            
         }
     }
 }

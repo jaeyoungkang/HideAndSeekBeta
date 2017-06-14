@@ -87,10 +87,8 @@ namespace HideAndSeek
             }
             info += "\t";
 
-            DateTime dt = DateTime.Now;
-            String strDate = dt.ToString("MMdd_HHmmss");
-            string fileName = "log/" + strDate + "_playData.txt";
-            if (data.levelName != "") SaveLoad.WriteFile(fileName, info);
+
+            if (data.levelName != "") SaveLoad.WriteFile(GameManager.instance.logfileName, info);
 
             GameManager.instance.playData.InitLevelPlayData();
         }

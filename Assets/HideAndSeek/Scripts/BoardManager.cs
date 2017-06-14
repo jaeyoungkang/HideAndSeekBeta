@@ -147,22 +147,26 @@ namespace HideAndSeek
                     instance.transform.SetParent(boardHolder);
 
                     GameManager.instance.AddTile(instance, lv.id);
-                                        
-                    foreach (ShowTile tile in lv.showTiles)
-                    {
-                        if (x == tile.pos.x && y == tile.pos.y)
-                        {
-                            switch(tile.type)
-                            {
-                                case SHOW_TYPE.NEAR: SetTileColor(instance, Color.blue); break;
-                                case SHOW_TYPE.MONSTER: SetTileColor(instance, Color.red); break;
-                                case SHOW_TYPE.TRAP: SetTileColor(instance, Color.yellow); break;
-                                case SHOW_TYPE.GEM_ITEM: SetTileColor(instance, Color.green); break;
-                                case SHOW_TYPE.ALL: SetTileColor(instance, Color.white); break;
-                            }                            
-                        }
-                    }                    
+                    SetShowTile(instance, lv.showTiles, x, y);
                 }                
+            }
+        }
+
+        void SetShowTile(GameObject instance, ShowTile[] showTiles, float x, float y)
+        {
+            foreach (ShowTile tile in showTiles)
+            {
+                if (x == tile.pos.x && y == tile.pos.y)
+                {
+                    switch (tile.type)
+                    {
+                        case SHOW_TYPE.NEAR: SetTileColor(instance, Color.blue); break;
+                        case SHOW_TYPE.MONSTER: SetTileColor(instance, Color.red); break;
+                        case SHOW_TYPE.TRAP: SetTileColor(instance, Color.yellow); break;
+                        case SHOW_TYPE.GEM_ITEM: SetTileColor(instance, Color.green); break;
+                        case SHOW_TYPE.ALL: SetTileColor(instance, Color.white); break;
+                    }
+                }
             }
         }
 

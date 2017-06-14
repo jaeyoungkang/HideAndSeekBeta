@@ -1,0 +1,2 @@
+dungeonName 	 levelName 	 gemCount 	 deathCount 	 attackedCount 	 damagedByTimeCount 	 (getItem, useItem, hps)
+옛 유적지	시작 방	2	1	1	0		사방공격, 	20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 	

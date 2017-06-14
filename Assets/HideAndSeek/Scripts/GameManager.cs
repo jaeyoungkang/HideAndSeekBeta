@@ -15,6 +15,7 @@ namespace HideAndSeek
 
     public class GameManager : MonoBehaviour
     {
+        public string logfileName;
         public static GameManager instance = null;
         [HideInInspector]
         public bool playersTurn = true;
@@ -24,7 +25,7 @@ namespace HideAndSeek
         private BoardManager boardScript;
 
         private bool enemiesMoving;
-                
+
         private GAME_STATE gameState;
         private GAME_STATE preGameState;
 
@@ -32,7 +33,7 @@ namespace HideAndSeek
         public List<GameObject> curObjsOnStage = new List<GameObject>();
         public List<GameObject> curTilesOnStage = new List<GameObject>();
         public List<GameObject> curEnemiesOnStage = new List<GameObject>();
-        
+
         public Dictionary<int, List<GameObject>> enemiesOnStages = new Dictionary<int, List<GameObject>>();
 
         public Dictionary<int, List<GameObject>> trapsOnStages = new Dictionary<int, List<GameObject>>();
@@ -45,6 +46,34 @@ namespace HideAndSeek
         public int dungeonGem = 0;
         public float timeLimit;
         public LevelPlayData playData = new LevelPlayData();
+
+        public float TIME_INTERVAL_GEN = 300f;
+
+        public void UpdateCoin()
+        {
+            DateTime now = DateTime.Now.ToLocalTime();
+            TimeSpan gen = now - info.preGenTime;
+
+            if (gen.TotalSeconds > TIME_INTERVAL_GEN)
+            {
+                print(now + " " + info.preGenTime + " " + gen.TotalSeconds);
+                int numOfCoin = (int)(gen.TotalSeconds / TIME_INTERVAL_GEN);
+                AddCoinByTime(numOfCoin);
+            }
+        }
+
+        public int MAX_COIN = 5;
+        public void AddCoinByTime(int numOfCoin)
+        {
+            print("numOfCoin: " + numOfCoin + "my coin: " + info.coin);
+            info.preGenTime = DateTime.Now.ToLocalTime();
+            AddCoin(numOfCoin);
+        }
+        public void AddCoin(int numOfCoin)
+        {
+            info.coin += numOfCoin;
+            if (info.coin > MAX_COIN) info.coin = MAX_COIN;
+        }
 
         public void RemoveObj(GameObject obj)
         {
@@ -112,7 +141,7 @@ namespace HideAndSeek
         {
             if (info.bagSize < limit)
             {
-                
+
                 info.bagSize++;
                 return true;
             }
@@ -123,7 +152,7 @@ namespace HideAndSeek
         public bool AddBag(int itemId)
         {
             if (info.bag.Count == info.bagSize) return false;
-            info.bag.Add(itemId);            
+            info.bag.Add(itemId);
             return true;
         }
 
@@ -138,8 +167,8 @@ namespace HideAndSeek
 
                 DateTime dt = DateTime.Now;
                 String strDate = dt.ToString("MMdd_HHmmss");
-                string fileName = "log/" + strDate + "_playData.txt";
-                SaveLoad.WriteFile(fileName, culomnName);
+                logfileName = "log/" + strDate + "_playData.txt";
+                SaveLoad.WriteFile(logfileName, culomnName);
             }
             else if (instance != this)
                 Destroy(gameObject);
@@ -152,6 +181,8 @@ namespace HideAndSeek
 
             PageManager.instance.InitUI();
             ChangeState(GAME_STATE.START);
+
+            InvokeRepeating("UpdateCoin", 0, 1.0f);
         }
 
         //this is called only once, and the paramter tell it to be called only after the scene was loaded
@@ -179,6 +210,7 @@ namespace HideAndSeek
         {
             info.invenGem += curDungeon.GetReward();
             info.invenGem += dungeonGem;
+            AddCoin(1);
         }
 
         public void OpenNextDungeon()
@@ -192,14 +224,14 @@ namespace HideAndSeek
             info.dungeonIdsOpened.Clear();
             foreach (Dungeon dungeon in dungeons)
             {
-                if(dungeon.open) info.dungeonIdsOpened.Add(dungeon.id);
+                if (dungeon.open) info.dungeonIdsOpened.Add(dungeon.id);
             }
         }
 
         public void ShowResult()
         {
             curDungeon.clearCurLevel();
-            if(curDungeon.IsEnd())
+            if (curDungeon.IsEnd())
             {
                 OpenNextDungeon();
                 GetResult();
@@ -225,9 +257,9 @@ namespace HideAndSeek
 
         void setupLevel()
         {
-            int levelId =  curDungeon.GetCurLevel().id;
-            
-            if(!trapsOnStages.ContainsKey(levelId) ||
+            int levelId = curDungeon.GetCurLevel().id;
+
+            if (!trapsOnStages.ContainsKey(levelId) ||
                 !objsOnStages.ContainsKey(levelId) ||
                 !tilesOnStages.ContainsKey(levelId) ||
                 !enemiesOnStages.ContainsKey(levelId))
@@ -241,7 +273,7 @@ namespace HideAndSeek
             SetActiveMap(trapsOnStages, false);
             SetActiveMap(objsOnStages, false);
             SetActiveMap(tilesOnStages, false);
-            SetActiveMap(enemiesOnStages, false);            
+            SetActiveMap(enemiesOnStages, false);
 
             curTrapsOnStage = trapsOnStages[levelId];
             curObjsOnStage = objsOnStages[levelId];
@@ -252,13 +284,48 @@ namespace HideAndSeek
             SetActiveObjs(curObjsOnStage, true);
             SetActiveObjs(curTilesOnStage, true);
             SetActiveObjs(curEnemiesOnStage, true);
-           
+
             ChangeState(GAME_STATE.PLAY);
             ShowMap(false);
 
             Player player = FindObjectOfType(typeof(Player)) as Player;
             player.Init();
+
+            foreach(ShowTile st in curDungeon.GetCurLevel().showTiles)
+            {
+                foreach(GameObject obj in curTilesOnStage)
+                {
+                    if (st.pos.x == obj.transform.position.x && st.pos.y == obj.transform.position.y)
+                    {        
+                        StartCoroutine(BlinkEffect(obj));
+                    }
+                }                    
+            }
         }
+        
+        IEnumerator BlinkEffect(GameObject obj)
+        {
+            Color backUpColor = obj.GetComponent<Renderer>().material.color;            
+            obj.GetComponent<Renderer>().material.color = Color.Lerp(backUpColor, Color.white, 0.5f);
+            yield return new WaitForSeconds(1.0f);
+            obj.GetComponent<Renderer>().material.color = backUpColor;
+            yield return new WaitForSeconds(1.0f);
+            obj.GetComponent<Renderer>().material.color = Color.Lerp(backUpColor, Color.white, 0.5f);
+            yield return new WaitForSeconds(1.0f);
+            obj.GetComponent<Renderer>().material.color = backUpColor;
+            yield return new WaitForSeconds(1.0f);
+            obj.GetComponent<Renderer>().material.color = Color.Lerp(backUpColor, Color.white, 0.5f);
+            yield return new WaitForSeconds(1.0f);
+            obj.GetComponent<Renderer>().material.color = backUpColor;
+            yield return new WaitForSeconds(1.0f);
+            obj.GetComponent<Renderer>().material.color = Color.Lerp(backUpColor, Color.white, 0.5f);
+            yield return new WaitForSeconds(1.0f);
+            obj.GetComponent<Renderer>().material.color = backUpColor;
+            yield return new WaitForSeconds(1.0f);
+            obj.GetComponent<Renderer>().material.color = Color.Lerp(backUpColor, Color.white, 0.5f);
+            yield return new WaitForSeconds(1.0f);
+            obj.GetComponent<Renderer>().material.color = backUpColor;
+        } 
 
         public void BacktoPreState()
         {
@@ -284,7 +351,7 @@ namespace HideAndSeek
 
         public void EnterDungeon()
         {
-            if(curDungeon.cost > info.invenGem)
+            if(curDungeon.cost > info.coin)
             {
                 print("Popup: You need more gem to enter the Dungeon");
                 return;
@@ -293,6 +360,7 @@ namespace HideAndSeek
             timeLimit = curDungeon.TimeLimit();
             dungeonGem = 0;
             playerHp = 20;
+            info.coin -= curDungeon.cost;
 
             SetupPlayerData();
 

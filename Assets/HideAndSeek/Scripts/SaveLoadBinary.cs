@@ -11,8 +11,10 @@ namespace HideAndSeek
     {
         public bool isClearTutorial = false;
         public int bagSize = 3;
-        public int invenSize = 4;        
+        public int invenSize = 4;
         public int invenGem = 0;
+        public int coin = 0;
+        public DateTime preGenTime = new DateTime(2000, 1, 1, 0, 0, 0, 0).ToLocalTime();
 
         public List<int> inven = new List<int>();
         public List<int> bag = new List<int>();
@@ -21,7 +23,7 @@ namespace HideAndSeek
 
     public static class SaveLoad
     {
-        public static string fileName = "/games11.gd";
+        public static string fileName = "/games12sp.gd";
         public static List<GameInfo> savedGames = new List<GameInfo>();
 
         public static void Save()

@@ -42,7 +42,7 @@ namespace HideAndSeek
 
         public GameInfo info = new GameInfo();
 
-        public int playerHp = 20;
+        public int playerHp = 2;
         public int dungeonGem = 0;
         public float timeLimit;
         public LevelPlayData playData = new LevelPlayData();
@@ -289,44 +289,35 @@ namespace HideAndSeek
             ShowMap(false);
 
             Player player = FindObjectOfType(typeof(Player)) as Player;
-            player.Init();
+            player.Init();            
+        }
 
-            foreach(ShowTile st in curDungeon.GetCurLevel().showTiles)
+        GameObject highlightedTileobj = null;
+        Color backUpColor = Color.white;
+        public void HighlightTile(Vector2 pos)
+        {
+            if(highlightedTileobj)
             {
-                foreach(GameObject obj in curTilesOnStage)
-                {
-                    if (st.pos.x == obj.transform.position.x && st.pos.y == obj.transform.position.y)
-                    {        
-                        StartCoroutine(BlinkEffect(obj));
-                    }
-                }                    
+                highlightedTileobj.GetComponent<Renderer>().material.color = backUpColor;
+                highlightedTileobj = null;
             }
+
+            foreach (GameObject tile in curTilesOnStage)
+            {
+                if (tile.transform.position.x == pos.x && tile.transform.position.y == pos.y)
+                {
+                    highlightedTileobj = tile;
+                    break;
+                }
+            }
+            if (highlightedTileobj)
+            {
+                backUpColor = highlightedTileobj.GetComponent<Renderer>().material.color;
+                highlightedTileobj.GetComponent<Renderer>().material.color = Color.yellow;
+            }
+
         }
         
-        IEnumerator BlinkEffect(GameObject obj)
-        {
-            Color backUpColor = obj.GetComponent<Renderer>().material.color;            
-            obj.GetComponent<Renderer>().material.color = Color.Lerp(backUpColor, Color.white, 0.5f);
-            yield return new WaitForSeconds(1.0f);
-            obj.GetComponent<Renderer>().material.color = backUpColor;
-            yield return new WaitForSeconds(1.0f);
-            obj.GetComponent<Renderer>().material.color = Color.Lerp(backUpColor, Color.white, 0.5f);
-            yield return new WaitForSeconds(1.0f);
-            obj.GetComponent<Renderer>().material.color = backUpColor;
-            yield return new WaitForSeconds(1.0f);
-            obj.GetComponent<Renderer>().material.color = Color.Lerp(backUpColor, Color.white, 0.5f);
-            yield return new WaitForSeconds(1.0f);
-            obj.GetComponent<Renderer>().material.color = backUpColor;
-            yield return new WaitForSeconds(1.0f);
-            obj.GetComponent<Renderer>().material.color = Color.Lerp(backUpColor, Color.white, 0.5f);
-            yield return new WaitForSeconds(1.0f);
-            obj.GetComponent<Renderer>().material.color = backUpColor;
-            yield return new WaitForSeconds(1.0f);
-            obj.GetComponent<Renderer>().material.color = Color.Lerp(backUpColor, Color.white, 0.5f);
-            yield return new WaitForSeconds(1.0f);
-            obj.GetComponent<Renderer>().material.color = backUpColor;
-        } 
-
         public void BacktoPreState()
         {
             ChangeState(preGameState);
@@ -359,7 +350,7 @@ namespace HideAndSeek
             curDungeon.init();
             timeLimit = curDungeon.TimeLimit();
             dungeonGem = 0;
-            playerHp = 20;
+            playerHp = info.maxHp;
             info.coin -= curDungeon.cost;
 
             SetupPlayerData();
@@ -510,11 +501,12 @@ namespace HideAndSeek
 
 
             ShowObjects(true, range);
-        }        
+        }
 
         public void ShowMap(Vector3 targetPos, SHOW_TYPE type)
         {
             if (type == SHOW_TYPE.NONE) return;
+            
             switch (type)
             {
                 default:

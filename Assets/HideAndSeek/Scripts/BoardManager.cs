@@ -160,9 +160,9 @@ namespace HideAndSeek
                 {
                     switch (tile.type)
                     {
-                        case SHOW_TYPE.NEAR: SetTileColor(instance, Color.blue); break;
+                        case SHOW_TYPE.NEAR: SetTileColor(instance, Color.magenta); break;
                         case SHOW_TYPE.MONSTER: SetTileColor(instance, Color.red); break;
-                        case SHOW_TYPE.TRAP: SetTileColor(instance, Color.yellow); break;
+                        case SHOW_TYPE.TRAP: SetTileColor(instance, Color.blue); break;
                         case SHOW_TYPE.GEM_ITEM: SetTileColor(instance, Color.green); break;
                         case SHOW_TYPE.ALL: SetTileColor(instance, Color.white); break;
                     }
@@ -173,7 +173,7 @@ namespace HideAndSeek
         void SetTileColor(GameObject tile, Color color)
         {
             Color lerpedColor = tile.GetComponent<Renderer>().material.color;
-            lerpedColor = Color.Lerp(lerpedColor, color, 0.2f);
+            lerpedColor = Color.Lerp(lerpedColor, color, 0.3f);
             tile.GetComponent<Renderer>().material.color = lerpedColor;
         }
 

@@ -10,6 +10,7 @@ namespace HideAndSeek
     public class GameInfo
     {
         public bool isClearTutorial = false;
+        public int maxHp = 2;
         public int bagSize = 3;
         public int invenSize = 4;
         public int invenGem = 0;

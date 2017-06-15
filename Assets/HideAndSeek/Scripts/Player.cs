@@ -65,7 +65,7 @@ namespace HideAndSeek
             if (GameManager.instance.timeLimit <= 0)
             {
                 GameManager.instance.timeLimit = 10;
-                LoseHP(10);
+                LoseHP(1);
                 GameManager.instance.playData.damagedByTimeCount++;
             }
 
@@ -93,7 +93,14 @@ namespace HideAndSeek
             float nextPosY = transform.position.y + yDir;
             Vector2 pos = new Vector2(nextPosX, nextPosY);
 
-            return  GameManager.instance.CheckShowTile(pos);
+            SHOW_TYPE showType = GameManager.instance.CheckShowTile(pos);
+
+            if(showType != SHOW_TYPE.NONE)
+            {
+                GameManager.instance.HighlightTile(pos);
+                SoundManager.instance.PlaySingle(showSound);
+            }
+            return showType;
         }
 
         protected override void AttemptMove <T> (int xDir, int yDir)
@@ -129,7 +136,7 @@ namespace HideAndSeek
             {
                 Renderer renderer = trap.GetComponent<SpriteRenderer>();
                 if (renderer) renderer.enabled = true;
-                LoseHP(10);
+                LoseHP(1);
                 SoundManager.instance.RandomizeSfx(attackedSound1, attackedSound2);
 
                 GameManager.instance.playData.trappedCount++;
@@ -284,9 +291,9 @@ namespace HideAndSeek
             switch (name)
             {
                 case "은신": Hide(); break;
-                case "회복10": RecoverHP(10); break;
-                case "회복20": RecoverHP(20); break;
-                case "회복30": RecoverHP(30); break;
+                case "회복10": RecoverHP(1); break;
+                case "회복20": RecoverHP(2); break;
+                case "회복30": RecoverHP(3); break;
                 case "근처보기":
                     GameManager.instance.ShowMap(transform.position, SHOW_TYPE.NEAR);
                     break;

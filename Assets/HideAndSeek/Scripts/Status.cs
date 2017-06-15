@@ -7,23 +7,73 @@ namespace HideAndSeek
 {
     public class Status : MonoBehaviour
     {
-        public Text gemText;
-        public Text hpText;
+        public Image bgImage;
+        public Text gemText;        
         public Text timeText;
+        public Image[] HPImages;
 
+        private float warnningEffectValue = 0f;
         void Start()
         {
 
+        }
+
+        void SetHPImages()
+        {
+            foreach(Image img in HPImages)
+            {
+                img.enabled = false;
+            }
+
+            for (int i = 0; i < GameManager.instance.info.maxHp; i++)
+            {
+                if(HPImages.Length <= i)
+                {
+                    print("Error: Invalid HPImage index : " + i + ", " + HPImages.Length);
+                    break;
+                }
+
+                HPImages[i].enabled = true;
+                Color color = HPImages[i].color;
+                color.a = 0.4f;
+                HPImages[i].color = color;
+            }
+
+            for (int i=0; i<GameManager.instance.playerHp; i++)
+            {
+                if (HPImages.Length <= i)
+                {
+                    print("Error: Invalid HPImage index : " + i + ", " + HPImages.Length);
+                    break;
+                }
+
+                Color color = HPImages[i].color;
+                color.a = 1.0f;
+
+                HPImages[i].color = color;
+            }
         }
  
         void Update()
         {
             gemText.text = GameManager.instance.dungeonGem.ToString();
 
-            hpText.text = "HP :" + GameManager.instance.playerHp.ToString();
-            if(GameManager.instance.playerHp < 20) hpText.color = Color.red;
-            else hpText.color = Color.white;
+            SetHPImages();
+            if(GameManager.instance.playerHp < 2 )
+            {
+                warnningEffectValue += (Time.deltaTime*0.5f);
+                if (warnningEffectValue > 0.4f) warnningEffectValue = 0;
+            }
+            else
+            {
+                warnningEffectValue = 0;
+            }
 
+            Color color = bgImage.color;
+            color.r = warnningEffectValue;
+            bgImage.color = color;
+            
+                
             timeText.text = Mathf.Floor(GameManager.instance.timeLimit).ToString();
             if (GameManager.instance.timeLimit <= 10) timeText.color = Color.red;
             else timeText.color = Color.white;            

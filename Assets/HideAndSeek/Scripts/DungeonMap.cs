@@ -49,7 +49,10 @@ namespace HideAndSeek
                 foreach(Level lv in levels)
                 {
                     if (lv.id - 1 == i)
+                    {
                         levelBtns[i].gameObject.SetActive(true);
+                    }
+                        
                 }                
             }
             
@@ -57,8 +60,12 @@ namespace HideAndSeek
             {
                 int btnIndex = levels[i].id-1;
                 if (btnIndex >= levelBtns.Length) continue;
-                levelBtns[btnIndex].GetComponentInChildren<Text>().text = levels[i].name;
+                levelBtns[btnIndex].GetComponentInChildren<Text>().text = levels[i].name;                
                 levelBtns[btnIndex].enabled = !levels[i].close;
+                if (!levels[i].close)
+                {
+                    levelBtns[btnIndex].GetComponent<Image>().color = Color.green;                    
+                }
             }           
         }
 
@@ -76,10 +83,27 @@ namespace HideAndSeek
                     string lineName = "line" + lv.id.ToString() + id.ToString();
                     foreach (Image img in lineImages)
                     {
-                        if (img.gameObject.name == lineName) img.gameObject.SetActive(true);
+                        if (img.gameObject.name == lineName)
+                        {
+                            img.gameObject.SetActive(true);
+                            if(lv.clear && IsEnableLevel(levels, id))
+                            {
+                                img.color = Color.white;
+                            }
+                        }
                     }
                 }
             }
+        }
+
+        bool IsEnableLevel(Level[] levels, int levelId)
+        {
+            foreach (Level lv in levels)
+            {
+                if (lv.id == levelId && lv.close == false) return true;
+            }
+
+            return false;
         }
     }
 }

@@ -42,7 +42,7 @@ namespace HideAndSeek
 
         public GameInfo info = new GameInfo();
 
-        public int playerHp = 2;
+        public int playerHp;
         public int dungeonGem = 0;
         public float timeLimit;
         public LevelPlayData playData = new LevelPlayData();
@@ -350,7 +350,7 @@ namespace HideAndSeek
             curDungeon.init();
             timeLimit = curDungeon.TimeLimit();
             dungeonGem = 0;
-            playerHp = info.maxHp;
+            SetPlayerHp(info.maxHp);
             info.coin -= curDungeon.cost;
 
             SetupPlayerData();
@@ -499,8 +499,37 @@ namespace HideAndSeek
                 }
             }
 
-
             ShowObjects(true, range);
+        }
+
+        public void ExtendMaxHp(int delta)
+        {
+            info.maxHp += delta;
+        }
+
+        public void SetPlayerHp(int value)
+        {
+            if(value > info.maxHp)
+            {
+                print("Warnning: Value is over maxHp" + value);
+                value = info.maxHp;
+            }
+
+            playerHp = value;
+        }
+
+        public void RecoverHP(int delta)
+        {
+            playerHp += delta;
+            if (playerHp > info.maxHp)
+            {
+                playerHp = info.maxHp;
+            }
+        }
+
+        public void LoseHp(int delta)
+        {
+            playerHp -= delta;
         }
 
         public void ShowMap(Vector3 targetPos, SHOW_TYPE type)

@@ -52,13 +52,17 @@ namespace HideAndSeek
             for (int i = 0; i < slotBtns.Length; i++)
             {
                 slotBtns[i].GetComponentInChildren<Text>().text = "";
+                slotBtns[i].GetComponent<Image>().color = Color.Lerp(Color.black, Color.gray, 0.5f);
+                slotBtns[i].enabled = false;
             }
 
-            for (int i = 0; i < slotBtns.Length; i++)
+            for (int i = 0; i < GameManager.instance.info.bag.Count; i++)
             {
-                if (GameManager.instance.info.bag.Count <= i) break;
+                if (slotBtns.Length <= i) break;
                 Item item = ItemManager.instance.GetItemByItemId(GameManager.instance.info.bag[i]);
                 slotBtns[i].GetComponentInChildren<Text>().text = item.name;
+                slotBtns[i].enabled = true;
+                slotBtns[i].GetComponent<Image>().color = Color.gray;
 
                 Color itemGradeColor = ItemManager.instance.GetColorByItemGrade(item.grade);
                 ItemManager.instance.SetItemUIColor(slotBtns[i], itemGradeColor);

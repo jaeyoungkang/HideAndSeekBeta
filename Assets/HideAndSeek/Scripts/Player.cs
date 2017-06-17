@@ -191,6 +191,7 @@ namespace HideAndSeek
                 StartCoroutine(HideAni(other.gameObject));
 
                 GameManager.instance.playData.gemCount++;
+                SetHideMode(false);
             }
             else if (other.tag == "Item")
             {
@@ -204,6 +205,7 @@ namespace HideAndSeek
 
                     string itemName = ItemManager.instance.GetNameByItemId(item.itemId);
                     GameManager.instance.playData.getItems.Add(itemName);
+                    SetHideMode(false);
                 }
             }
         }
@@ -319,6 +321,10 @@ namespace HideAndSeek
 
                 case "시간멈춤":
                     GameManager.instance.StopTime(true);
+                    break;
+
+                case "최대체력":
+                    GameManager.instance.ExtendMaxHp(1);
                     break;
             }
             GameManager.instance.info.bag.RemoveAt(index);

@@ -33,7 +33,7 @@ namespace HideAndSeek
             gemText.text = "보유 보석: " + GameManager.instance.info.invenGem;
             contentText.text = "제한시간: " + curDungeon.TimeLimit() + "\n"
                 + "레벨 수: " + curDungeon.levels.Length + "\n"
-                + "보상 보석: " + curDungeon.gem + "\n"
+//                + "보상 보석: " + curDungeon.gem + "\n"
                 + "보상 주화: 1\n"
                 + "진입 비용: " + curDungeon.cost + "\n";
         }

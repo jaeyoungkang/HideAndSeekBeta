@@ -10,12 +10,14 @@ namespace HideAndSeek
 		public int playerDamage;
 		public AudioClip attackSound1;
 		public AudioClip attackSound2;
+        public AudioClip noticeSound;
 
         private Animator animator;
         protected Transform target;
         private bool skipMove = false;
 
         private bool bSearch = true;
+        private bool bSpottedPlayer = false;
 
         public void SetSearch ( bool value ) { bSearch = value; }
 
@@ -36,31 +38,44 @@ namespace HideAndSeek
                 return;
             }
 
-            if (bSearch == false) return;
+            if (bSearch == false)
+            {
+                bSpottedPlayer = false;
+                return;
+            }
 
             int xDir = 0;
             int yDir = 0;
 
-            float distanceX = Mathf.Abs(target.position.x - transform.position.x);
-            float distanceY = Mathf.Abs(target.position.y - transform.position.y);
-
+            int distanceX = (int)Mathf.Abs(target.position.x - transform.position.x);
+            int distanceY = (int)Mathf.Abs(target.position.y - transform.position.y);
             if (distanceX + distanceY <= rangeOfSense)
             {
                 float value = Random.Range(0f, 1f);
                 if (value < 0.5f)
                 {
-                    if (distanceX < float.Epsilon)
+                    if (distanceX == 0)
                         yDir = target.position.y > transform.position.y ? 1 : -1;
                     else
                         xDir = target.position.x > transform.position.x ? 1 : -1;
                 }
                 else
                 {
-                    if (distanceY < float.Epsilon)
+                    if (distanceY == 0)
                         xDir = target.position.x > transform.position.x ? 1 : -1;
                     else
                         yDir = target.position.y > transform.position.y ? 1 : -1;
                 }
+
+                if(bSpottedPlayer == false)
+                {
+                    SoundManager.instance.PlaySingle(noticeSound);
+                    bSpottedPlayer = true;
+                }
+            }
+            else
+            {
+                bSpottedPlayer = false;
             }
 
             AttemptMove <Player> (xDir, yDir);

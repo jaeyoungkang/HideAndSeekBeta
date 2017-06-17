@@ -772,6 +772,7 @@ namespace HideAndSeek
             foreach (GameObject en in curEnemiesOnStage)
             {
                 Enemy script = en.GetComponent<Enemy>();
+                script.SetSearch(value);
             }
         }
 

@@ -27,14 +27,11 @@ namespace HideAndSeek
             if (curDungeon == null) return;
             Level curLevel = curDungeon.GetCurLevel();
 
-            titleText.text = curLevel.name;
-            string existEnemy = curLevel.enemy > 0 ? "있음" : "없음";            
-            string existItem = curLevel.itemTileNumbers.Length > 0 ? "있음" : "없음";
+            titleText.text = curLevel.name;           
 
-            contentText.text = "해골: " + existEnemy + "\n"
+            contentText.text = "해골: " + curLevel.enemy + "\n"
                 + "함정 수: " + curLevel.trap + "\n"
-                + "보석 수: " + curLevel.gem + "\n"
-                + "아이템: " +existItem+ "\n";
+                + "보석 수: " + curLevel.gem + "\n";
         }
     }
 }

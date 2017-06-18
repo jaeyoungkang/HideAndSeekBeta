@@ -40,8 +40,7 @@ namespace HideAndSeek
                     titleText.text = "던전 클리어!";
                 }
                 
-                string content = "Gem Clear Reward : " + curDungeon.GetReward() + "\n";
-                content += "Gem discoverd : " + GameManager.instance.dungeonGem;
+                string content = "Gem discoverd : " + GameManager.instance.dungeonGem;
                 contentsText.text = content;
 
                 retunrBtn.GetComponentInChildren<Text>().text = "GO TO LOBBY";
@@ -50,7 +49,7 @@ namespace HideAndSeek
             else if(GameManager.instance.IsGameOver())
             {
                 titleText.text = "실패!";
-                contentsText.text = "던전에서 획득한 보석을 모두 잃어버렸습니다.";
+                contentsText.text = "보석과 아이템을 모두 잃어버렸습니다.";
                 retunrBtn.GetComponentInChildren<Text>().text = "GO TO LOBBY";
                 retunrBtn.onClick.AddListener(GameManager.instance.GoToLobby);
             }

@@ -32,7 +32,6 @@ namespace HideAndSeek
         public GameObject[] outerWallTiles;
 
         public GameObject[] itemTiles;
-
         public GameObject[] trapTiles;
 
         private Transform boardHolder;                                  //A variable to store a reference to the transform of our Board object.
@@ -271,6 +270,24 @@ namespace HideAndSeek
             }           
         }
 
+        public void SetupItemDrops(ItemDropInfo[] itemDropInfos, int levelId)
+        {
+            foreach (ItemDropInfo dropInfo in itemDropInfos)
+            {
+                foreach (GameObject itemTile in itemTiles)
+                {
+                    ItemObject itemObj = itemTile.GetComponent<ItemObject>();
+                    if (itemObj.itemId == dropInfo.id)
+                    {
+                        if (Random.Range(0f, 1f) <= dropInfo.dropRate)
+                        {
+                            LayoutAnObjectAtRandom(levelId, itemTile);
+                        }
+                    }
+                }
+            }
+        }
+
         public void SetupLevelRandom(Level levelInfo)
         {
             int gemRate = levelInfo.gem;
@@ -278,13 +295,10 @@ namespace HideAndSeek
             int strongEnemyCount = levelInfo.strongEnemy;
             int thiefCount = levelInfo.thief;
             int trapCount = levelInfo.trap;
-            int[] itemTileNumber = levelInfo.itemTileNumbers;
+            ItemDropInfo[] itemDropInfos = levelInfo.itemDropInfos;
 
-            foreach(int num in itemTileNumber)
-            {
-                LayoutAnObjectAtRandom(levelInfo.id, itemTiles[num]);
-            }
-            
+            SetupItemDrops(itemDropInfos, levelInfo.id);
+
             LayoutObjectAtRandom(levelInfo.id, gemTiles, gemRate, gemRate);            
 
             LayoutTrapAtRandom(levelInfo.id, trapTiles, trapCount, trapCount);
@@ -301,7 +315,19 @@ namespace HideAndSeek
             int strongEnemyCount = levelInfo.strongEnemy;
             int thiefCount = levelInfo.thief;
             int trapCount = levelInfo.trap;
-            int[] itemTileNumber = levelInfo.itemTileNumbers;
+
+            GameObject showItemTile = null;
+            GameObject healItemTile = null;
+            GameObject destroyItemTile = null;
+
+            foreach (GameObject itemTile in itemTiles)
+            {
+                ItemObject itemObj = itemTile.GetComponent<ItemObject>();
+                if (itemObj.itemId == 104) showItemTile = itemTile;
+                if (itemObj.itemId == 101) healItemTile = itemTile;
+                if (itemObj.itemId == 109) destroyItemTile = itemTile;
+            }
+
 
             Vector3 pos = new Vector3(2f, 7f, 0f);
             GameObject instance = Instantiate(itemTiles[1], pos, Quaternion.identity);

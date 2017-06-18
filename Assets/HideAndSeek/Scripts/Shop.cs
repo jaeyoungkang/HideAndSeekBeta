@@ -41,6 +41,8 @@ namespace HideAndSeek
 
         void Start()
         {
+            if (GameManager.instance == null) return;
+            if (!GameManager.instance.CheckState(GAME_STATE.SHOP)) return;
             SetupDisplay();
             SetupBag();
             EnableBagSlot();
@@ -116,6 +118,7 @@ namespace HideAndSeek
             int price = ItemManager.instance.GetPriceByItemId(GameManager.instance.info.bag[index]);
             GameManager.instance.info.invenGem += price;
             GameManager.instance.info.bag.RemoveAt(index);
+            SetupBag();
         }
 
         private void SetupBag()

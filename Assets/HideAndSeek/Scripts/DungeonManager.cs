@@ -22,6 +22,13 @@ namespace HideAndSeek
     }
 
     [System.Serializable]
+    public class ItemDropInfo
+    {
+        public int id;
+        public float dropRate;
+    }
+
+    [System.Serializable]
     public class Level
     {
         public string name;
@@ -31,7 +38,7 @@ namespace HideAndSeek
         public int strongEnemy;
         public int thief;
         public int gem;
-        public int[] itemTileNumbers;
+        public ItemDropInfo[] itemDropInfos;
         public int[] nextIds;
         public bool clear;
         public bool close;

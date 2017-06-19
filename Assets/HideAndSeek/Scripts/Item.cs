@@ -13,6 +13,6 @@ namespace HideAndSeek
         public int grade;
         public bool enableSell;
 
-        public GameObject tile;
+        public Sprite tile;
     }
 }

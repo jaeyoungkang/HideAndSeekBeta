@@ -57,88 +57,88 @@ MonoBehaviour:
     price: 1
     grade: 1
     enableSell: 1
-    tile: {fileID: 1567582466876120, guid: 62fb8c15b4908b94b8a48e71807a6974, type: 2}
+    tile: {fileID: 21300000, guid: 9e6af59c1bf8c77439b3af2fcfc1f8b6, type: 3}
   - name: "\uD68C\uBCF520"
     id: 102
     price: 3
     grade: 2
     enableSell: 1
-    tile: {fileID: 1567582466876120, guid: 62fb8c15b4908b94b8a48e71807a6974, type: 2}
+    tile: {fileID: 21300000, guid: b5e1e75f3c04f47418da5e54bacccb62, type: 3}
   - name: "\uD68C\uBCF530"
     id: 103
     price: 5
     grade: 3
     enableSell: 1
-    tile: {fileID: 1567582466876120, guid: 62fb8c15b4908b94b8a48e71807a6974, type: 2}
+    tile: {fileID: 21300000, guid: b1ff77829d8059540bf28085ca138bce, type: 3}
   - name: "\uADFC\uCC98\uBCF4\uAE30"
     id: 104
     price: 2
     grade: 1
     enableSell: 1
-    tile: {fileID: 1952888059500872, guid: 4c594d0bc965d2547b40cc27b6d2299a, type: 2}
+    tile: {fileID: 21300000, guid: 7573bb18870728746a6fc81646193b09, type: 3}
   - name: "\uAD34\uBB3C\uBCF4\uAE30"
     id: 105
     price: 2
     grade: 1
     enableSell: 1
-    tile: {fileID: 1952888059500872, guid: 4c594d0bc965d2547b40cc27b6d2299a, type: 2}
+    tile: {fileID: 21300000, guid: 7c7b423647be77440a96eeac9c325ca1, type: 3}
   - name: "\uD568\uC815\uBCF4\uAE30"
     id: 106
     price: 2
     grade: 1
     enableSell: 1
-    tile: {fileID: 1952888059500872, guid: 4c594d0bc965d2547b40cc27b6d2299a, type: 2}
+    tile: {fileID: 21300000, guid: 459b0839e6c1ec14ea3e198fbe3b7d50, type: 3}
   - name: "\uC804\uCCB4\uBCF4\uAE30"
     id: 107
     price: 5
     grade: 3
     enableSell: 1
-    tile: {fileID: 1952888059500872, guid: 4c594d0bc965d2547b40cc27b6d2299a, type: 2}
+    tile: {fileID: 21300000, guid: 371face9cc4c7f6419af7ed6ae7dea2e, type: 3}
   - name: "\uC0AC\uBC29\uACF5\uACA9"
     id: 109
     price: 3
     grade: 2
     enableSell: 1
-    tile: {fileID: 1867197664766822, guid: 224cd084f1be31b48965519bd347951b, type: 2}
+    tile: {fileID: 21300000, guid: a5e309c0ef675e742b1ffa0ecb9c6ebd, type: 3}
   - name: "\uC88C\uC6B0\uACF5\uACA9"
     id: 110
     price: 3
     grade: 2
     enableSell: 1
-    tile: {fileID: 1867197664766822, guid: 224cd084f1be31b48965519bd347951b, type: 2}
+    tile: {fileID: 21300000, guid: 39ba5d532ffc2dd47ab5d5325ac878fd, type: 3}
   - name: "\uC0C1\uD558\uACF5\uACA9"
     id: 111
     price: 3
     grade: 2
     enableSell: 1
-    tile: {fileID: 1867197664766822, guid: 224cd084f1be31b48965519bd347951b, type: 2}
+    tile: {fileID: 21300000, guid: cbc6dd06c30ecda4b816407531537dff, type: 3}
   - name: "30\uCD08\uCD94\uAC00"
     id: 112
     price: 3
     grade: 2
     enableSell: 1
-    tile: {fileID: 0}
+    tile: {fileID: 21300000, guid: ad58446297c30ec41ac6c4cd193b8ff8, type: 3}
   - name: "\uC2DC\uAC04\uBA48\uCDA4"
     id: 113
     price: 5
     grade: 3
     enableSell: 1
-    tile: {fileID: 0}
+    tile: {fileID: 21300000, guid: c0dcbaac02d31e24d83d0e0ddb13522e, type: 3}
   - name: "\uC740\uC2E0"
     id: 114
     price: 2
     grade: 2
     enableSell: 1
-    tile: {fileID: 0}
+    tile: {fileID: 21300000, guid: a150bd892ded64247891a81417e9ae8c, type: 3}
   - name: "\uBCF4\uBB3C\uBCF4\uAE30"
     id: 108
     price: 2
     grade: 1
     enableSell: 1
-    tile: {fileID: 1952888059500872, guid: 4c594d0bc965d2547b40cc27b6d2299a, type: 2}
+    tile: {fileID: 21300000, guid: 0c848f93884c55546a8b57b2f9533a3e, type: 3}
   - name: "\uCD5C\uB300\uCCB4\uB825"
     id: 115
     price: 20
     grade: 4
     enableSell: 1
-    tile: {fileID: 1952888059500872, guid: 4c594d0bc965d2547b40cc27b6d2299a, type: 2}
+    tile: {fileID: 21300000, guid: 31e3b9c4b44a84e4aa369fd24e98953d, type: 3}

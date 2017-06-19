@@ -204,7 +204,7 @@ MonoBehaviour:
       thief: 0
       gem: 2
       itemDropInfos:
-      - id: 101
+      - id: 104
         dropRate: 5
       nextIds: 0200000004000000
       clear: 0
@@ -232,7 +232,7 @@ MonoBehaviour:
       thief: 0
       gem: 2
       itemDropInfos:
-      - id: 104
+      - id: 111
         dropRate: 1
       nextIds: 05000000
       clear: 0
@@ -260,7 +260,7 @@ MonoBehaviour:
       thief: 0
       gem: 3
       itemDropInfos:
-      - id: 109
+      - id: 110
         dropRate: 1
       nextIds: 05000000
       clear: 0

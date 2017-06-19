@@ -66,7 +66,7 @@ BoxCollider2D:
   m_AutoTiling: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
-  m_EdgeRadius: 0
+  m_EdgeRadius: 115
 --- !u!114 &114254787282249232
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -75,10 +75,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1038704056798836}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab38fccb5a8b518468f37d76f3f6147e, type: 3}
+  m_Script: {fileID: 11500000, guid: 2a2331a9b2a2c1e4eb6acb2f7c5a903c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemId: 115
+  itemId: 0
 --- !u!212 &212702882386761204
 SpriteRenderer:
   m_ObjectHideFlags: 1

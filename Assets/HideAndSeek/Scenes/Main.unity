@@ -2514,7 +2514,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 322053372}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae0c47766f1e99d4fb6d94584ffa6b94, type: 3}
+  m_Script: {fileID: 11500000, guid: 080f446b4d2166d43b55804dde7ec573, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   DisplayBtns:
@@ -4539,7 +4539,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 534383936}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b88fd6fbe4cdddc4896311b7a4e67afa, type: 3}
+  m_Script: {fileID: 11500000, guid: dd0d06387a28c7945b54084309f87572, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   titleText: {fileID: 1716045831}
@@ -8670,7 +8670,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 947323102}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b5fdbcf67b16abf409407356737c5498, type: 3}
+  m_Script: {fileID: 11500000, guid: 46c749206c594764a8d3f9d4bff973ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   lineImages:
@@ -8783,7 +8783,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 957353874}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1f13f0b2ca212ba49af904f4c4af2074, type: 3}
+  m_Script: {fileID: 11500000, guid: 6d90dcf2a7937154fb87c04d317fb3e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ExtendBagBtn: {fileID: 1592601053}
@@ -8902,7 +8902,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 968699511}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08de378a4b1cdf34db48f5601236074d, type: 3}
+  m_Script: {fileID: 11500000, guid: d94d5435fbea7884fb5e0215e3ca5ac4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   bgImage: {fileID: 968699514}
@@ -9273,7 +9273,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1032669084}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1355c22dc6d5f3142b8d53b891fd246b, type: 3}
+  m_Script: {fileID: 11500000, guid: 662c68901c5a6054091acbf43c8f71ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   titleText: {fileID: 1561178141}
@@ -9605,9 +9605,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameManager: {fileID: 133658, guid: d4cb622eafc54bb4d98ace091e6487be, type: 2}
   soundManager: {fileID: 109316, guid: 7c2f943e4be36aa468b5dd6649a00315, type: 2}
-  pageManager: {fileID: 1219988893557464, guid: 932a7e685b49b694796883e6abf3688e,
+  pageManager: {fileID: 1219988893557464, guid: 67e127be4a6ed6143a7b63646687ea79,
     type: 2}
-  itemManager: {fileID: 1960335277367508, guid: 3200ab84369022741967bb0bdc8ebcce,
+  itemManager: {fileID: 1960335277367508, guid: c4b1953ceb660314091d83a9f465b382,
     type: 2}
 --- !u!1 &1099362916
 GameObject:
@@ -11348,7 +11348,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1271933579}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3fe55ee07005024429f1862e4d164f8e, type: 3}
+  m_Script: {fileID: 11500000, guid: e30fd039b6d0515449f377f6ca117edb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   titleText: {fileID: 760234428}
@@ -13928,7 +13928,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1531196238}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d73611a6f773ba42ab6dc292968cc18, type: 3}
+  m_Script: {fileID: 11500000, guid: 3c072f1dc0a198641b4baa41e741d048, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   dirBtns:
@@ -16324,7 +16324,7 @@ GameObject:
   - component: {fileID: 1771642962}
   - component: {fileID: 1771642961}
   m_Layer: 5
-  m_Name: GoldText
+  m_Name: GemText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -19360,7 +19360,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1986619458}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 720c67ccb648f8c478788dbbc9937f81, type: 3}
+  m_Script: {fileID: 11500000, guid: b3371ddf049ff3a40af2d0788b0144d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   gemText: {fileID: 369314985}
@@ -20087,7 +20087,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2079941674}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2074dcbc8e88279428c88891ecf4c6c6, type: 3}
+  m_Script: {fileID: 11500000, guid: 53268132496d1ed4f80af1de5fded96b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   titleText: {fileID: 1723765414}

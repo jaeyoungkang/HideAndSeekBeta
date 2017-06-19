@@ -310,31 +310,22 @@ namespace HideAndSeek
 
         public void SetupTutorialLevel(Level levelInfo)
         {
-            int gemRate = levelInfo.gem;
-            int enemyCount = levelInfo.enemy;
-            int strongEnemyCount = levelInfo.strongEnemy;
-            int thiefCount = levelInfo.thief;
-            int trapCount = levelInfo.trap;
-
             GameObject showItemTile = null;
             GameObject healItemTile = null;
-            GameObject destroyItemTile = null;
 
             foreach (GameObject itemTile in itemTiles)
             {
                 ItemObject itemObj = itemTile.GetComponent<ItemObject>();
                 if (itemObj.itemId == 104) showItemTile = itemTile;
                 if (itemObj.itemId == 101) healItemTile = itemTile;
-                if (itemObj.itemId == 109) destroyItemTile = itemTile;
             }
 
-
             Vector3 pos = new Vector3(2f, 7f, 0f);
-            GameObject instance = Instantiate(itemTiles[1], pos, Quaternion.identity);
+            GameObject instance = Instantiate(showItemTile, pos, Quaternion.identity);
             GameManager.instance.AddObj(instance, levelInfo.id);
 
             pos = new Vector3(7f, 3f, 0f);
-            instance = Instantiate(itemTiles[0], pos, Quaternion.identity);
+            instance = Instantiate(healItemTile, pos, Quaternion.identity);
             GameManager.instance.AddObj(instance, levelInfo.id);
 
             pos = new Vector3(1f, 3f, 0f);

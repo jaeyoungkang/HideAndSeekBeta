@@ -29,7 +29,7 @@ namespace HideAndSeek
 
             titleText.text = curLevel.name;           
 
-            contentText.text = "해골: " + curLevel.enemy + "\n"
+            contentText.text = "해골: " + curLevel.enemy + curLevel.strongEnemy + "\n"
                 + "함정 수: " + curLevel.trap + "\n"
                 + "보석 수: " + curLevel.gem + "\n";
         }

@@ -15,7 +15,7 @@ namespace HideAndSeek
         private float warnningEffectValue = 0f;
         void Start()
         {
-
+            bShow = true;
         }
 
         void SetHPImages()
@@ -75,8 +75,21 @@ namespace HideAndSeek
             
                 
             timeText.text = Mathf.Floor(GameManager.instance.timeLimit).ToString();
-            if (GameManager.instance.timeLimit <= 10) timeText.color = Color.red;
+            if (GameManager.instance.timeLimit <= 10)
+            {
+                timeText.color = Color.red;
+                ShowWarning();
+            }
             else timeText.color = Color.white;            
+        }
+
+        bool bShow = false;
+        void ShowWarning()
+        {
+            if(bShow == false)
+            {
+                PageManager.instance.Popup("시간이 부족하다...", 1f, Color.red);
+            }            
         }
     }
 }

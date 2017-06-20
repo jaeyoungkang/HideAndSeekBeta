@@ -21,11 +21,19 @@ namespace HideAndSeek
 
         public GameObject statusPanel;
 
+        public Notice notice;
+
         public Text dungeonTitleText;
         public Text levelTitleText;
 
         public Button startButton;
-        
+
+
+        public void Popup(string content, float _time, Color textColor)
+        {
+            notice.Show(content, _time, textColor);
+        }
+
         void Awake()
         {
             if (instance == null)
@@ -60,6 +68,8 @@ namespace HideAndSeek
             levelTitleText = GameObject.Find("LevelTitleText").GetComponent<Text>();
 
             startButton.onClick.AddListener(GameManager.instance.GoToLobby);
+
+            notice = GameObject.Find("Notice").GetComponent<Notice>();
         }
 
 

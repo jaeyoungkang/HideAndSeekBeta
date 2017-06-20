@@ -85,7 +85,7 @@ namespace HideAndSeek
             int extendPrice = GameManager.instance.GetPriceExtendBag(BagBtns.Length, GameManager.instance.info.bagSize);            
             if (GameManager.instance.info.invenGem < extendPrice)
             {
-                print("Popup: Not enough gem.");
+                PageManager.instance.Popup("보석이 부족하다.", 2f, Color.white);
                 return;
             }
 
@@ -102,7 +102,7 @@ namespace HideAndSeek
             int extendPrice = GameManager.instance.GetPriceExtendInven(InvenBtns.Length, GameManager.instance.info.invenSize);
             if (GameManager.instance.info.invenGem < extendPrice)
             {
-                print("Popup: Not enough gem.");
+                PageManager.instance.Popup("보석이 부족하다.", 2f, Color.white);
                 return;
             }
 

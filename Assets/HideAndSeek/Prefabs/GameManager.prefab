@@ -134,6 +134,7 @@ MonoBehaviour:
         type: 3
       - pos: {x: 0, y: 7}
         type: 4
+      itemsDropped: 
     - name: "\uB2E8\uACC42"
       id: 2
       trap: 9
@@ -141,7 +142,9 @@ MonoBehaviour:
       strongEnemy: 0
       thief: 0
       gem: 2
-      itemDropInfos: []
+      itemDropInfos:
+      - ids: 6d0000006e0000006f00000072000000
+        dropRate: 1
       nextIds: 03000000
       clear: 0
       close: 1
@@ -160,13 +163,14 @@ MonoBehaviour:
         type: 2
       - pos: {x: 0, y: 7}
         type: 3
+      itemsDropped: 
     - name: "\uB2E8\uACC43"
       id: 3
       trap: 9
       enemy: 2
       strongEnemy: 0
       thief: 0
-      gem: 2
+      gem: 3
       itemDropInfos: []
       nextIds: 
       clear: 0
@@ -186,6 +190,7 @@ MonoBehaviour:
         type: 2
       - pos: {x: 0, y: 7}
         type: 4
+      itemsDropped: 
     cost: 0
     gem: 3
     timeLimit: 300
@@ -204,8 +209,8 @@ MonoBehaviour:
       thief: 0
       gem: 2
       itemDropInfos:
-      - id: 104
-        dropRate: 5
+      - ids: 68000000690000006a000000
+        dropRate: 1
       nextIds: 0200000004000000
       clear: 0
       close: 0
@@ -224,6 +229,7 @@ MonoBehaviour:
         type: 2
       - pos: {x: 0, y: 7}
         type: 3
+      itemsDropped: 
     - name: "\uBC291"
       id: 2
       trap: 10
@@ -232,7 +238,7 @@ MonoBehaviour:
       thief: 0
       gem: 2
       itemDropInfos:
-      - id: 111
+      - ids: 6d0000006e0000006f00000072000000
         dropRate: 1
       nextIds: 05000000
       clear: 0
@@ -252,6 +258,7 @@ MonoBehaviour:
         type: 2
       - pos: {x: 0, y: 7}
         type: 3
+      itemsDropped: 
     - name: "\uBC292"
       id: 4
       trap: 10
@@ -260,7 +267,9 @@ MonoBehaviour:
       thief: 0
       gem: 3
       itemDropInfos:
-      - id: 110
+      - ids: 6d0000006e0000006f000000
+        dropRate: 1
+      - ids: 65000000
         dropRate: 1
       nextIds: 05000000
       clear: 0
@@ -280,18 +289,19 @@ MonoBehaviour:
         type: 2
       - pos: {x: 0, y: 7}
         type: 3
+      itemsDropped: 
     - name: "\uCD5C\uC885\uBC29"
       id: 5
-      trap: 10
-      enemy: 3
+      trap: 12
+      enemy: 2
       strongEnemy: 0
       thief: 0
-      gem: 4
+      gem: 3
       itemDropInfos:
-      - id: 114
+      - ids: 65000000
+        dropRate: 1
+      - ids: 660000006b000000
         dropRate: 0.3
-      - id: 101
-        dropRate: 0.7
       nextIds: 
       clear: 0
       close: 1
@@ -310,8 +320,9 @@ MonoBehaviour:
         type: 2
       - pos: {x: 0, y: 7}
         type: 3
+      itemsDropped: 
     cost: 1
-    gem: 0
+    gem: 5
     timeLimit: 60
     curLevelId: 0
     open: 1
@@ -321,8 +332,8 @@ MonoBehaviour:
     levels:
     - name: "\uC2DC\uC791\uBC29"
       id: 1
-      trap: 10
-      enemy: 2
+      trap: 12
+      enemy: 1
       strongEnemy: 0
       thief: 0
       gem: 3
@@ -345,15 +356,16 @@ MonoBehaviour:
         type: 2
       - pos: {x: 0, y: 7}
         type: 3
+      itemsDropped: 
     - name: "\uBC291"
       id: 2
-      trap: 10
+      trap: 12
       enemy: 0
       strongEnemy: 1
       thief: 0
       gem: 2
       itemDropInfos:
-      - id: 101
+      - ids: 65000000
         dropRate: 1
       nextIds: 05000000
       clear: 0
@@ -373,15 +385,16 @@ MonoBehaviour:
         type: 2
       - pos: {x: 0, y: 7}
         type: 3
+      itemsDropped: 
     - name: "\uBC292"
       id: 4
-      trap: 10
+      trap: 12
       enemy: 0
       strongEnemy: 1
       thief: 0
       gem: 2
       itemDropInfos:
-      - id: 105
+      - ids: 68000000690000006a000000
         dropRate: 1
       nextIds: 05000000
       clear: 0
@@ -401,15 +414,16 @@ MonoBehaviour:
         type: 2
       - pos: {x: 0, y: 7}
         type: 3
+      itemsDropped: 
     - name: "\uC911\uAC04\uBC29"
       id: 5
-      trap: 10
-      enemy: 2
+      trap: 12
+      enemy: 1
       strongEnemy: 1
       thief: 0
       gem: 3
       itemDropInfos:
-      - id: 101
+      - ids: 6f0000006e0000006d000000
         dropRate: 0.5
       nextIds: 0600000008000000
       clear: 0
@@ -427,17 +441,18 @@ MonoBehaviour:
         type: 1
       - pos: {x: 7, y: 0}
         type: 2
+      itemsDropped: 
     - name: "\uBC293"
       id: 6
-      trap: 10
+      trap: 12
       enemy: 1
       strongEnemy: 1
       thief: 0
       gem: 3
       itemDropInfos:
-      - id: 102
-        dropRate: 0.4
-      - id: 114
+      - ids: 65000000
+        dropRate: 1
+      - ids: 72000000
         dropRate: 0.7
       nextIds: 09000000
       clear: 0
@@ -455,17 +470,20 @@ MonoBehaviour:
         type: 3
       - pos: {x: 7, y: 0}
         type: 2
+      itemsDropped: 
     - name: "\uBC294"
       id: 8
-      trap: 10
+      trap: 12
       enemy: 2
       strongEnemy: 1
       thief: 0
       gem: 3
       itemDropInfos:
-      - id: 109
+      - ids: 6d000000770000006f000000
         dropRate: 0.7
-      - id: 101
+      - ids: 65000000
+        dropRate: 1
+      - ids: 68000000690000006a000000
         dropRate: 1
       nextIds: 09000000
       clear: 0
@@ -483,18 +501,17 @@ MonoBehaviour:
         type: 1
       - pos: {x: 7, y: 0}
         type: 2
+      itemsDropped: 
     - name: "\uCD5C\uC885\uBC29"
       id: 9
-      trap: 10
+      trap: 12
       enemy: 1
       strongEnemy: 2
       thief: 0
       gem: 4
       itemDropInfos:
-      - id: 101
-        dropRate: 1
-      - id: 106
-        dropRate: 1
+      - ids: 700000007100000066000000
+        dropRate: 0.3
       nextIds: 
       clear: 0
       close: 1
@@ -509,8 +526,9 @@ MonoBehaviour:
         type: 3
       - pos: {x: 5, y: 5}
         type: 1
+      itemsDropped: 
     cost: 1
-    gem: 0
+    gem: 20
     timeLimit: 90
     curLevelId: 0
     open: 0
@@ -521,17 +539,19 @@ MonoBehaviour:
     - name: "\uC2DC\uC791\uBC29"
       id: 1
       trap: 12
-      enemy: 2
+      enemy: 1
       strongEnemy: 1
       thief: 0
       gem: 3
-      itemDropInfos: []
+      itemDropInfos:
+      - ids: 6500000068000000690000006a000000
+        dropRate: 1
       nextIds: 0200000004000000
       clear: 0
       close: 0
       showTiles:
       - pos: {x: 0, y: 0}
-        type: 1
+        type: 2
       - pos: {x: 2, y: 2}
         type: 1
       - pos: {x: 5, y: 2}
@@ -540,13 +560,12 @@ MonoBehaviour:
         type: 1
       - pos: {x: 5, y: 5}
         type: 1
-      - pos: {x: 7, y: 0}
-        type: 2
       - pos: {x: 0, y: 7}
         type: 3
+      itemsDropped: 
     - name: "\uBC291"
       id: 2
-      trap: 12
+      trap: 14
       enemy: 0
       strongEnemy: 1
       thief: 0
@@ -557,27 +576,26 @@ MonoBehaviour:
       close: 1
       showTiles:
       - pos: {x: 0, y: 0}
-        type: 1
-      - pos: {x: 2, y: 2}
+        type: 3
+      - pos: {x: 7, y: 0}
         type: 1
       - pos: {x: 5, y: 2}
         type: 1
       - pos: {x: 2, y: 5}
         type: 1
-      - pos: {x: 5, y: 5}
-        type: 1
-      - pos: {x: 7, y: 0}
-        type: 2
       - pos: {x: 0, y: 7}
-        type: 3
+        type: 1
+      itemsDropped: 
     - name: "\uBC292"
       id: 4
-      trap: 12
+      trap: 14
       enemy: 1
       strongEnemy: 1
       thief: 0
       gem: 3
-      itemDropInfos: []
+      itemDropInfos:
+      - ids: 65000000
+        dropRate: 1
       nextIds: 0500000007000000
       clear: 0
       close: 1
@@ -592,18 +610,19 @@ MonoBehaviour:
         type: 1
       - pos: {x: 5, y: 5}
         type: 1
-      - pos: {x: 7, y: 0}
-        type: 2
-      - pos: {x: 0, y: 7}
-        type: 3
+      itemsDropped: 
     - name: "\uBC293"
       id: 3
-      trap: 12
+      trap: 14
       enemy: 2
       strongEnemy: 1
       thief: 0
       gem: 0
-      itemDropInfos: []
+      itemDropInfos:
+      - ids: 67000000
+        dropRate: 0.1
+      - ids: 650000006a0000006d0000006e0000006f000000
+        dropRate: 1
       nextIds: 06000000
       clear: 0
       close: 1
@@ -612,24 +631,25 @@ MonoBehaviour:
         type: 1
       - pos: {x: 2, y: 2}
         type: 1
-      - pos: {x: 5, y: 2}
+      - pos: {x: 7, y: 0}
         type: 1
       - pos: {x: 2, y: 5}
-        type: 1
+        type: 3
       - pos: {x: 5, y: 5}
         type: 1
-      - pos: {x: 7, y: 0}
-        type: 2
-      - pos: {x: 0, y: 7}
-        type: 3
+      itemsDropped: 
     - name: "\uBC294"
       id: 5
-      trap: 12
+      trap: 14
       enemy: 2
       strongEnemy: 2
       thief: 0
       gem: 4
-      itemDropInfos: []
+      itemDropInfos:
+      - ids: 6b000000
+        dropRate: 0.1
+      - ids: 650000006800000069000000720000006f000000
+        dropRate: 1
       nextIds: 0600000008000000
       clear: 0
       close: 1
@@ -637,43 +657,41 @@ MonoBehaviour:
       - pos: {x: 0, y: 0}
         type: 1
       - pos: {x: 2, y: 2}
+        type: 2
+      - pos: {x: 6, y: 1}
         type: 1
-      - pos: {x: 5, y: 2}
-        type: 1
-      - pos: {x: 2, y: 5}
+      - pos: {x: 2, y: 4}
         type: 1
       - pos: {x: 5, y: 5}
         type: 1
-      - pos: {x: 7, y: 0}
-        type: 2
-      - pos: {x: 0, y: 7}
-        type: 3
+      itemsDropped: 
     - name: "\uBC295"
       id: 7
-      trap: 12
+      trap: 14
       enemy: 1
       strongEnemy: 1
       thief: 0
       gem: 3
-      itemDropInfos: []
+      itemDropInfos:
+      - ids: 73000000
+        dropRate: 0.02
+      - ids: 6500000068000000690000006f0000006d000000
+        dropRate: 1
       nextIds: 08000000
       clear: 0
       close: 1
       showTiles:
       - pos: {x: 0, y: 0}
-        type: 1
+        type: 2
       - pos: {x: 2, y: 2}
-        type: 1
+        type: 3
       - pos: {x: 5, y: 2}
-        type: 1
+        type: 2
       - pos: {x: 2, y: 5}
-        type: 1
+        type: 3
       - pos: {x: 5, y: 5}
         type: 1
-      - pos: {x: 7, y: 0}
-        type: 2
-      - pos: {x: 0, y: 7}
-        type: 3
+      itemsDropped: 
     - name: "\uBC296"
       id: 6
       trap: 14
@@ -681,25 +699,24 @@ MonoBehaviour:
       strongEnemy: 1
       thief: 0
       gem: 3
-      itemDropInfos: []
+      itemDropInfos:
+      - ids: 6500000066000000
+        dropRate: 1
+      - ids: 6e0000006f000000
+        dropRate: 0.5
       nextIds: 09000000
       clear: 0
       close: 1
       showTiles:
       - pos: {x: 0, y: 0}
-        type: 1
-      - pos: {x: 2, y: 2}
-        type: 1
-      - pos: {x: 5, y: 2}
-        type: 1
-      - pos: {x: 2, y: 5}
-        type: 1
-      - pos: {x: 5, y: 5}
-        type: 1
-      - pos: {x: 7, y: 0}
-        type: 2
-      - pos: {x: 0, y: 7}
+        type: 4
+      - pos: {x: 3, y: 3}
         type: 3
+      - pos: {x: 6, y: 2}
+        type: 2
+      - pos: {x: 2, y: 6}
+        type: 5
+      itemsDropped: 
     - name: "\uBC297"
       id: 8
       trap: 14
@@ -707,25 +724,24 @@ MonoBehaviour:
       strongEnemy: 1
       thief: 0
       gem: 3
-      itemDropInfos: []
+      itemDropInfos:
+      - ids: 6500000066000000
+        dropRate: 1
+      - ids: 7000000071000000
+        dropRate: 0.5
       nextIds: 09000000
       clear: 0
       close: 1
       showTiles:
       - pos: {x: 0, y: 0}
-        type: 1
-      - pos: {x: 2, y: 2}
-        type: 1
-      - pos: {x: 5, y: 2}
-        type: 1
-      - pos: {x: 2, y: 5}
-        type: 1
-      - pos: {x: 5, y: 5}
-        type: 1
-      - pos: {x: 7, y: 0}
-        type: 2
-      - pos: {x: 0, y: 7}
+        type: 5
+      - pos: {x: 4, y: 4}
         type: 3
+      - pos: {x: 7, y: 2}
+        type: 2
+      - pos: {x: 2, y: 7}
+        type: 4
+      itemsDropped: 
     - name: "\uCD5C\uC885\uBC29"
       id: 9
       trap: 14
@@ -733,27 +749,28 @@ MonoBehaviour:
       strongEnemy: 2
       thief: 0
       gem: 5
-      itemDropInfos: []
+      itemDropInfos:
+      - ids: 6500000066000000
+        dropRate: 0.8
+      - ids: 720000006d000000
+        dropRate: 0.6
+      - ids: 68000000690000006a0000006b000000
+        dropRate: 0.8
       nextIds: 
       clear: 0
       close: 1
       showTiles:
       - pos: {x: 0, y: 0}
         type: 1
-      - pos: {x: 2, y: 2}
-        type: 1
-      - pos: {x: 5, y: 2}
-        type: 1
-      - pos: {x: 2, y: 5}
-        type: 1
-      - pos: {x: 5, y: 5}
-        type: 1
-      - pos: {x: 7, y: 0}
+      - pos: {x: 4, y: 4}
         type: 2
-      - pos: {x: 0, y: 7}
+      - pos: {x: 3, y: 3}
         type: 3
+      - pos: {x: 0, y: 7}
+        type: 5
+      itemsDropped: 
     cost: 1
-    gem: 20
+    gem: 50
     timeLimit: 120
     curLevelId: 0
     open: 0
@@ -787,6 +804,7 @@ MonoBehaviour:
         type: 2
       - pos: {x: 0, y: 7}
         type: 3
+      itemsDropped: 
     - name: 
       id: 0
       trap: 0
@@ -813,6 +831,7 @@ MonoBehaviour:
         type: 2
       - pos: {x: 0, y: 7}
         type: 3
+      itemsDropped: 
     - name: 
       id: 0
       trap: 0
@@ -839,6 +858,7 @@ MonoBehaviour:
         type: 2
       - pos: {x: 0, y: 7}
         type: 3
+      itemsDropped: 
     - name: 
       id: 0
       trap: 0
@@ -865,6 +885,7 @@ MonoBehaviour:
         type: 2
       - pos: {x: 0, y: 7}
         type: 3
+      itemsDropped: 
     - name: 
       id: 0
       trap: 0
@@ -891,6 +912,7 @@ MonoBehaviour:
         type: 2
       - pos: {x: 0, y: 7}
         type: 3
+      itemsDropped: 
     - name: 
       id: 0
       trap: 0
@@ -917,6 +939,7 @@ MonoBehaviour:
         type: 2
       - pos: {x: 0, y: 7}
         type: 3
+      itemsDropped: 
     - name: 
       id: 0
       trap: 0
@@ -943,6 +966,7 @@ MonoBehaviour:
         type: 2
       - pos: {x: 0, y: 7}
         type: 3
+      itemsDropped: 
     - name: 
       id: 0
       trap: 0
@@ -969,6 +993,7 @@ MonoBehaviour:
         type: 2
       - pos: {x: 0, y: 7}
         type: 3
+      itemsDropped: 
     - name: 
       id: 0
       trap: 0
@@ -995,6 +1020,7 @@ MonoBehaviour:
         type: 2
       - pos: {x: 0, y: 7}
         type: 3
+      itemsDropped: 
     cost: 0
     gem: 0
     timeLimit: 120

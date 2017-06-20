@@ -27,9 +27,10 @@ namespace HideAndSeek
             if (curDungeon == null) return;
             Level curLevel = curDungeon.GetCurLevel();
 
-            titleText.text = curLevel.name;           
+            titleText.text = curLevel.name;
+            int numOfEnemy = curLevel.enemy + curLevel.strongEnemy;
 
-            contentText.text = "해골: " + curLevel.enemy + curLevel.strongEnemy + "\n"
+            contentText.text = "해골: " + numOfEnemy + "\n"
                 + "함정 수: " + curLevel.trap + "\n"
                 + "보석 수: " + curLevel.gem + "\n";
         }

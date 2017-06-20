@@ -83,8 +83,21 @@ namespace HideAndSeek
         public void RemoveEnemy(GameObject obj)
         {
             int randomValue = Random.Range(0, 9);
-            if (randomValue < 5) DropGem(obj.transform.position);
-            else if (randomValue == 9) DropItem(obj.transform.position);
+            if (randomValue < 4) DropGem(obj.transform.position);
+            else if (randomValue > 7)
+            {
+                Enemy en = obj.GetComponent<Enemy>();
+                if (en.playerDamage == 1)
+                {
+                    int[] dropItemList = { 101, 104, 114 };
+                    DropItem(obj.transform.position, dropItemList);
+                }
+                else if (en.playerDamage == 2)
+                {
+                    int[] dropItemList = { 109, 110, 111};
+                    DropItem(obj.transform.position, dropItemList);
+                }
+            }
 
             obj.SetActive(false);
             curEnemiesOnStage.Remove(obj);
@@ -344,7 +357,7 @@ namespace HideAndSeek
         {
             if(curDungeon.cost > info.coin)
             {
-                print("Popup: You need more gem to enter the Dungeon");
+                PageManager.instance.Popup("입장에 필요한 주화가 없다.", 2f, Color.white);
                 return;
             }
             curDungeon.init();
@@ -845,13 +858,26 @@ namespace HideAndSeek
             curTrapsOnStage.Remove(aTrap);
         }
 
-        public void DropItem(Vector3 dropPos)
-        {
-            int randomIndex = Random.Range(0, 2);
-            GameObject instance = Instantiate(boardScript.itemTiles[randomIndex], dropPos, Quaternion.identity);
-            GameManager.instance.AddObj(instance, curDungeon.GetCurLevel().id);
+        public void DropItem(Vector3 dropPos, int[] dropItemList)
+        {            
+            int randomIndex = Random.Range(0, dropItemList.Length);
 
-            StartCoroutine(DropObjectEffect(instance));
+            GameObject instance = null;
+            foreach (GameObject obj in boardScript.itemTiles)
+            {
+                ItemObject itemObj = obj.GetComponent<ItemObject>();
+                if(itemObj.itemId == dropItemList[randomIndex])
+                {
+                    instance = Instantiate(obj, dropPos, Quaternion.identity);
+                    break;
+                }
+            }
+
+            if(instance)
+            {
+                GameManager.instance.AddObj(instance, curDungeon.GetCurLevel().id);
+                StartCoroutine(DropObjectEffect(instance));
+            }            
         }
 
         public void DropGem(Vector3 dropPos)

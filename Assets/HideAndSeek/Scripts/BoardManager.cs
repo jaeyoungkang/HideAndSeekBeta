@@ -163,7 +163,7 @@ namespace HideAndSeek
                         case SHOW_TYPE.MONSTER: SetTileColor(instance, Color.red); break;
                         case SHOW_TYPE.TRAP: SetTileColor(instance, Color.blue); break;
                         case SHOW_TYPE.GEM_ITEM: SetTileColor(instance, Color.green); break;
-                        case SHOW_TYPE.ALL: SetTileColor(instance, Color.white); break;
+                        case SHOW_TYPE.ALL: SetTileColor(instance, Color.black); break;
                     }
                 }
             }
@@ -270,19 +270,28 @@ namespace HideAndSeek
             }           
         }
 
-        public void SetupItemDrops(ItemDropInfo[] itemDropInfos, int levelId)
+        public void SetupItemDrops(ItemDropInfo[] itemDropInfos, Level lv)
         {
+            List<int> dropItems = new List<int>();
             foreach (ItemDropInfo dropInfo in itemDropInfos)
+            {
+                if(Random.Range(0f, 1f) <= dropInfo.dropRate)
+                {
+                    int randomIndex = Random.Range(0, dropInfo.ids.Length - 1);
+                    dropItems.Add(dropInfo.ids[randomIndex]);
+                }                                
+            }
+
+            lv.itemsDropped = dropItems.ToArray();
+
+            foreach (int id in lv.itemsDropped)
             {
                 foreach (GameObject itemTile in itemTiles)
                 {
                     ItemObject itemObj = itemTile.GetComponent<ItemObject>();
-                    if (itemObj.itemId == dropInfo.id)
+                    if (itemObj.itemId == id)
                     {
-                        if (Random.Range(0f, 1f) <= dropInfo.dropRate)
-                        {
-                            LayoutAnObjectAtRandom(levelId, itemTile);
-                        }
+                        LayoutAnObjectAtRandom(lv.id, itemTile);                        
                     }
                 }
             }
@@ -297,7 +306,7 @@ namespace HideAndSeek
             int trapCount = levelInfo.trap;
             ItemDropInfo[] itemDropInfos = levelInfo.itemDropInfos;
 
-            SetupItemDrops(itemDropInfos, levelInfo.id);
+            SetupItemDrops(itemDropInfos, levelInfo);
 
             LayoutObjectAtRandom(levelInfo.id, gemTiles, gemRate, gemRate);            
 

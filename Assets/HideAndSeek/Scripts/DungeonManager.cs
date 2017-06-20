@@ -24,7 +24,7 @@ namespace HideAndSeek
     [System.Serializable]
     public class ItemDropInfo
     {
-        public int id;
+        public int[] ids;
         public float dropRate;
     }
 
@@ -38,7 +38,7 @@ namespace HideAndSeek
         public int strongEnemy;
         public int thief;
         public int gem;
-        public ItemDropInfo[] itemDropInfos;
+        public ItemDropInfo[] itemDropInfos;        
         public int[] nextIds;
         public bool clear;
         public bool close;
@@ -52,6 +52,9 @@ namespace HideAndSeek
                         new ShowTile(new Vector3(7, 0, 0 ), SHOW_TYPE.MONSTER),
                         new ShowTile(new Vector3(0, 7, 0 ), SHOW_TYPE.TRAP)
                     };
+
+        [HideInInspector]
+        public int[] itemsDropped;
     }
 
     [System.Serializable]

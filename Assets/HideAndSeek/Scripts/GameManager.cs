@@ -47,7 +47,7 @@ namespace HideAndSeek
         public float timeLimit;
         public LevelPlayData playData = new LevelPlayData();
 
-        public float TIME_INTERVAL_GEN = 300f;
+        public float TIME_INTERVAL_GEN = 60f;
 
         public void UpdateCoin()
         {
@@ -65,7 +65,7 @@ namespace HideAndSeek
         public int MAX_COIN = 5;
         public void AddCoinByTime(int numOfCoin)
         {
-            print("numOfCoin: " + numOfCoin + "my coin: " + info.coin);
+			PageManager.instance.Popup("고대주화가 하나 생겼다.", 2f, Color.green);
             info.preGenTime = DateTime.Now.ToLocalTime();
             AddCoin(numOfCoin);
         }

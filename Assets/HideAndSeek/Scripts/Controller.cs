@@ -76,7 +76,7 @@ namespace HideAndSeek
 
         void UseItem(int slotNum)
         {
-            player.UseSkill(slotNum);
+            player.UseItem(slotNum);
             SetupSlots();
         }        
     }

@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
+using UnityEngine.Analytics;
+
 namespace HideAndSeek
 {
     public class Shop : MonoBehaviour
@@ -111,7 +113,12 @@ namespace HideAndSeek
             GameManager.instance.info.bag.Add(display[index]);
             GameManager.instance.info.invenGem -= price;
             SetupBag();
-            
+
+            Analytics.CustomEvent("Buy Item", new Dictionary<string, object>
+            {
+                { "Item id", display[index]},
+            });
+
         }
 
         void SellItem(int index)
@@ -121,6 +128,11 @@ namespace HideAndSeek
             GameManager.instance.info.invenGem += price;
             GameManager.instance.info.bag.RemoveAt(index);
             SetupBag();
+
+            Analytics.CustomEvent("Sell Item", new Dictionary<string, object>
+            {
+                { "Item id", display[index]},
+            });
         }
 
         private void SetupBag()

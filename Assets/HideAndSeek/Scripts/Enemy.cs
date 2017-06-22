@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Random = UnityEngine.Random;
+using System.Collections.Generic;
+using UnityEngine.Analytics;
 
 namespace HideAndSeek
 {
@@ -109,6 +111,13 @@ namespace HideAndSeek
             skipMove = true;
 
             GameManager.instance.playData.attackedCount++;
-        }        
+
+            Analytics.CustomEvent("Damaged by Enemy", new Dictionary<string, object>
+            {
+                { "Dungeon id", GameManager.instance.GetDungeonInfo().id},
+                { "Level id", GameManager.instance.GetDungeonInfo().GetCurLevel().id},
+                { "Damage point",  playerDamage},
+            });
+        }
     }
 }

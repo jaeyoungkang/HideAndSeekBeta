@@ -68,6 +68,13 @@ namespace HideAndSeek
                 GameManager.instance.timeLimit = 10;
                 LoseHP(1);
                 GameManager.instance.playData.damagedByTimeCount++;
+
+                Analytics.CustomEvent("Damaged by Time", new Dictionary<string, object>
+                {
+                    { "Dungeon id", GameManager.instance.GetDungeonInfo().id},
+                    { "Level id", GameManager.instance.GetDungeonInfo().GetCurLevel().id},
+                    { "Damage point",  1},
+                });
             }
 
             if (!GameManager.instance.playersTurn) return;            
@@ -141,6 +148,13 @@ namespace HideAndSeek
                 SoundManager.instance.RandomizeSfx(attackedSound1, attackedSound2);
 
                 GameManager.instance.playData.trappedCount++;
+
+                Analytics.CustomEvent("Damaged by Trap", new Dictionary<string, object>
+                {
+                    { "Dungeon id", GameManager.instance.GetDungeonInfo().id},
+                    { "Level id", GameManager.instance.GetDungeonInfo().GetCurLevel().id},
+                    { "Damage point",  1},
+                });
             }
         }
 
@@ -193,6 +207,12 @@ namespace HideAndSeek
 
                 GameManager.instance.playData.gemCount++;
                 SetHideMode(false);
+
+                Analytics.CustomEvent("Discover Gem", new Dictionary<string, object>
+                {
+                    { "Dungeon id", GameManager.instance.GetDungeonInfo().id},
+                    { "Level id", GameManager.instance.GetDungeonInfo().GetCurLevel().id},
+                });
             }
             else if (other.tag == "Item")
             {
@@ -207,6 +227,13 @@ namespace HideAndSeek
                     string itemName = ItemManager.instance.GetNameByItemId(item.itemId);
                     GameManager.instance.playData.getItems.Add(itemName);
                     SetHideMode(false);
+
+                    Analytics.CustomEvent("Discover Item", new Dictionary<string, object>
+                    {
+                        { "Item id", item.itemId},
+                        { "Dungeon id", GameManager.instance.GetDungeonInfo().id},
+                        { "Level id", GameManager.instance.GetDungeonInfo().GetCurLevel().id},
+                    });
                 }
                 else
                 {
@@ -282,7 +309,7 @@ namespace HideAndSeek
             SetHideMode(true);
         }
 
-        public void UseSkill(int index)
+        public void UseItem(int index)
         {
             if (index >= GameManager.instance.info.bag.Count) return;
             
@@ -332,7 +359,15 @@ namespace HideAndSeek
                     GameManager.instance.ExtendMaxHp(1);
                     break;
             }
-            GameManager.instance.info.bag.RemoveAt(index);
+
+            Analytics.CustomEvent("Use Item", new Dictionary<string, object>
+            {
+                { "Item id", GameManager.instance.info.bag[index]},
+                { "Dungeon id", GameManager.instance.GetDungeonInfo().id},
+                { "Level id", GameManager.instance.GetDungeonInfo().GetCurLevel().id},
+            });
+
+            GameManager.instance.info.bag.RemoveAt(index);            
         }
         
         void GameOver()

@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
+using UnityEngine.Analytics;
+
 namespace HideAndSeek
 {
     public class ResultPage : MonoBehaviour
@@ -60,7 +62,11 @@ namespace HideAndSeek
                 retunrBtn.onClick.AddListener(GameManager.instance.GotoDungeonMap);
             }
 
+
+#if UNITY_EDITOR
             WritelevelData();
+#endif
+            GameManager.instance.playData.InitLevelPlayData();
         }
 
         public void WritelevelData()
@@ -87,9 +93,7 @@ namespace HideAndSeek
             info += "\t";
 
 
-            if (data.levelName != "") SaveLoad.WriteFile(GameManager.instance.logfileName, info);
-
-            GameManager.instance.playData.InitLevelPlayData();
+            if (data.levelName != "") SaveLoad.WriteFile(GameManager.instance.logfileName, info);            
         }
 
     }

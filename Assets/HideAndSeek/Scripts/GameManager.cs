@@ -16,13 +16,6 @@ namespace HideAndSeek
 {    
     public enum GAME_STATE { START, TUTORIAL, LOBBY, SHOP, INVENTORY, DUNGEON_INFO, LEVEL, LEVEL_INFO, MAP, PLAY, RESULT, OVER }
 
-    [System.Serializable]
-    public class Alanytic
-    {
-        int d1try;
-        int d2suc;        
-    }
-
     public class GameManager : MonoBehaviour
     {
 
@@ -264,11 +257,23 @@ namespace HideAndSeek
         public void ShowResult()
         {
             curDungeon.clearCurLevel();
+            Analytics.CustomEvent("Level Clear", new Dictionary<string, object>
+            {
+                { "Dungeon id", curDungeon.id},
+                { "Level id", curDungeon.GetCurLevel().id},
+            });
+
             if (curDungeon.IsEnd())
             {
                 OpenNextDungeon();
                 GetResult();
+
+                Analytics.CustomEvent("Dungeon Clear", new Dictionary<string, object>
+                {
+                    { "id", curDungeon.id},
+                });
             }
+
             GameManager.instance.ChangeState(GAME_STATE.RESULT);
         }
 
@@ -385,6 +390,7 @@ namespace HideAndSeek
                 Notice.instance.Show("입장에 필요한 주화가 없다.", 2f, Color.white);
                 return;
             }
+
             curDungeon.init();
             timeLimit = curDungeon.TimeLimit();
             dungeonGem = 0;
@@ -409,18 +415,29 @@ namespace HideAndSeek
             boardScript.SetupScene(curDungeon.levels);
 
             ChangeState(GAME_STATE.MAP);
+
+        
+            Analytics.CustomEvent("Dungeon Try", new Dictionary<string, object>
+            {
+                { "id", curDungeon.id},
+            });
+
         }
 
         public void EnterInven()
         {
             SoundManager.instance.PlaySingle(btnClick);
             ChangeState(GAME_STATE.INVENTORY);
+
+            Analytics.CustomEvent("Enter Inven", new Dictionary<string, object>{});
         }
 
         public void EnterShop()
         {
             SoundManager.instance.PlaySingle(btnClick);
             ChangeState(GAME_STATE.SHOP);
+
+            Analytics.CustomEvent("Enter Shop", new Dictionary<string, object>{});
         }
 
         public void GotoDungeonMap()
@@ -440,7 +457,13 @@ namespace HideAndSeek
             SoundManager.instance.PlaySingle(btnClick);
             GameManager.instance.ChangeState(GAME_STATE.LEVEL);
             PageManager.instance.SetLevelEnterPageText(curDungeon.name, curDungeon.GetCurLevel().name);
-            Invoke("setupLevel", 2f);            
+            Invoke("setupLevel", 2f);
+
+            Analytics.CustomEvent("Level Enter", new Dictionary<string, object>
+            {
+                { "Dungeon id", curDungeon.id},
+                { "Level id", curDungeon.GetCurLevel().id},
+            });
         }
 
         
@@ -523,7 +546,13 @@ namespace HideAndSeek
         {
             playData.deathCount++;
             info.bag.Clear();
-            ChangeState(GAME_STATE.OVER);            
+            ChangeState(GAME_STATE.OVER);
+
+            Analytics.CustomEvent("Dead", new Dictionary<string, object>
+            {
+                { "Dungeon id", curDungeon.id},
+                { "Level id", curDungeon.GetCurLevel().id},
+            });
         }
 
         public void ShowMap(bool bShow)

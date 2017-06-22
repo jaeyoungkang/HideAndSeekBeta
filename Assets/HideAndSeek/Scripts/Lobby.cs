@@ -40,8 +40,6 @@ namespace HideAndSeek
         {
             dungeons = GameManager.instance.dungeons;
 
-			gemText.text = "보유 보석: " + GameManager.instance.info.invenGem + ", 고대주화: " + GameManager.instance.info.coin;
-
             SetupDungeonBtns();
             dungeonBtns[0].onClick.AddListener(() => { GameManager.instance.ShowDungeonInfo(0); });
             dungeonBtns[1].onClick.AddListener(() => { GameManager.instance.ShowDungeonInfo(1); });
@@ -50,6 +48,11 @@ namespace HideAndSeek
 
             shopBtn.onClick.AddListener(GameManager.instance.EnterShop);
             invenBtn.onClick.AddListener(GameManager.instance.EnterInven);
+        }
+
+        void Update()
+        {
+            gemText.text = "보유 보석: " + GameManager.instance.info.invenGem + ", 고대주화: " + GameManager.instance.info.coin;
         }
  
     }

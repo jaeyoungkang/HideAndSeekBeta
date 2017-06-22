@@ -64,7 +64,7 @@ namespace HideAndSeek
 
             if (GameManager.instance.timeLimit <= 0)
             {
-                PageManager.instance.Popup("시간이 다되어서 피해를 입었다...", 1f, Color.red);
+                Notice.instance.Show("시간이 다되어서 피해를 입었다...", 1f, Color.red);
                 GameManager.instance.timeLimit = 10;
                 LoseHP(1);
                 GameManager.instance.playData.damagedByTimeCount++;
@@ -210,7 +210,7 @@ namespace HideAndSeek
                 }
                 else
                 {
-                    PageManager.instance.Popup("가방에 공간이 부족하다.", 2f, Color.white);
+                    Notice.instance.Show("가방에 공간이 부족하다.", 2f, Color.white);
                 }
             }
         }

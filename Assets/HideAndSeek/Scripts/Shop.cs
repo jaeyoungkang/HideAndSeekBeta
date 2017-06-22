@@ -84,7 +84,7 @@ namespace HideAndSeek
             int extendPrice = GameManager.instance.GetPriceExtendBag(BagBtns.Length, GameManager.instance.info.bagSize);
             if (GameManager.instance.info.invenGem < extendPrice)
             {
-                PageManager.instance.Popup("보석이 부족합니다.", 2f, Color.white);
+                Notice.instance.Show("보석이 부족합니다.", 2f, Color.white);
                 return;
             }
 
@@ -103,12 +103,10 @@ namespace HideAndSeek
 
             if (GameManager.instance.info.invenGem < price)
             {
-                PageManager.instance.Popup("보석이 부족합니다.", 2f, Color.white);
+                Notice.instance.Show("보석이 부족합니다.", 2f, Color.white);
                 return;
             }
 
-            string name = ItemManager.instance.GetNameByItemId(display[index]);
-            
             if (GameManager.instance.info.bagSize == GameManager.instance.info.bag.Count) return;
             GameManager.instance.info.bag.Add(display[index]);
             GameManager.instance.info.invenGem -= price;

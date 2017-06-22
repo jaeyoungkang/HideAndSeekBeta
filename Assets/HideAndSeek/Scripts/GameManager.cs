@@ -9,16 +9,28 @@ using System.Collections.Generic;       //Allows us to use Lists.
 using System.IO;
 using System;
 
+using UnityEngine.Analytics;
+
+
 namespace HideAndSeek
 {    
     public enum GAME_STATE { START, TUTORIAL, LOBBY, SHOP, INVENTORY, DUNGEON_INFO, LEVEL, LEVEL_INFO, MAP, PLAY, RESULT, OVER }
 
+    [System.Serializable]
+    public class Alanytic
+    {
+        int d1try;
+        int d2suc;        
+    }
+
     public class GameManager : MonoBehaviour
     {
+
         public string logfileName;
         public static GameManager instance = null;
         [HideInInspector]
         public bool playersTurn = true;
+        bool isUpdating = false;
 
         public Dungeon tutorial;
         public Dungeon[] dungeons;
@@ -56,8 +68,9 @@ namespace HideAndSeek
 
             if (gen.TotalSeconds > TIME_INTERVAL_GEN)
             {
-                print(now + " " + info.preGenTime + " " + gen.TotalSeconds);
-                int numOfCoin = (int)(gen.TotalSeconds / TIME_INTERVAL_GEN);
+                info.preGenTime = DateTime.Now.ToLocalTime();
+
+                int numOfCoin = (int)(gen.TotalSeconds / TIME_INTERVAL_GEN);                
                 AddCoinByTime(numOfCoin);
             }
         }
@@ -65,14 +78,20 @@ namespace HideAndSeek
         public int MAX_COIN = 5;
         public void AddCoinByTime(int numOfCoin)
         {
-			PageManager.instance.Popup("고대주화가 하나 생겼다.", 2f, Color.green);
-            info.preGenTime = DateTime.Now.ToLocalTime();
-            AddCoin(numOfCoin);
+            if (info.coin >= MAX_COIN) return;
+            
+            if (info.coin + numOfCoin > MAX_COIN)
+            {
+                numOfCoin = MAX_COIN - info.coin;
+            }
+
+            Notice.instance.Show("고대주화가 생겼다.", 3f, Color.green);            
+            AddCoin(numOfCoin);            
         }
+
         public void AddCoin(int numOfCoin)
         {
-            info.coin += numOfCoin;
-            if (info.coin > MAX_COIN) info.coin = MAX_COIN;
+            info.coin += numOfCoin;            
         }
 
         public void RemoveObj(GameObject obj)
@@ -192,10 +211,10 @@ namespace HideAndSeek
 
             SaveLoad.Load();
 
+            Notice.instance.InitUI();
             PageManager.instance.InitUI();
-            ChangeState(GAME_STATE.START);
 
-            InvokeRepeating("UpdateCoin", 0, 1.0f);
+            ChangeState(GAME_STATE.START);            
         }
 
         //this is called only once, and the paramter tell it to be called only after the scene was loaded
@@ -211,6 +230,7 @@ namespace HideAndSeek
         {
             if (instance != null)
             {
+                Notice.instance.InitUI();
                 PageManager.instance.InitUI();
                 instance.ChangeState(instance.gameState);
             }
@@ -357,7 +377,7 @@ namespace HideAndSeek
         {
             if(curDungeon.cost > info.coin)
             {
-                PageManager.instance.Popup("입장에 필요한 주화가 없다.", 2f, Color.white);
+                Notice.instance.Show("입장에 필요한 주화가 없다.", 2f, Color.white);
                 return;
             }
             curDungeon.init();
@@ -414,6 +434,7 @@ namespace HideAndSeek
             Invoke("setupLevel", 2f);            
         }
 
+        
         public void GoToLobby()
         {
             foreach (int openedId in GameManager.instance.info.dungeonIdsOpened)
@@ -426,6 +447,12 @@ namespace HideAndSeek
 
             SaveLoad.Save();
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
+
+            if (isUpdating == false)
+            {
+                InvokeRepeating("UpdateCoin", 0, 1.0f);
+                isUpdating = true;
+            }
 
             if (info.isClearTutorial) ChangeState(GAME_STATE.LOBBY);
             else

@@ -71,7 +71,7 @@ namespace HideAndSeek
                 {
                     SoundManager.instance.PlaySingle(noticeSound);
                     bSpottedPlayer = true;
-                    PageManager.instance.Popup("무언가 썩고있는 냄새가 난다...", 2f, Color.red);
+                    Notice.instance.Show("무언가 썩고있는 냄새가 난다...", 2f, Color.red);
                 }
             }
             else

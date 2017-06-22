@@ -88,7 +88,7 @@ namespace HideAndSeek
         {
             if(bShow == false)
             {
-                PageManager.instance.Popup("시간이 부족하다...", 1f, Color.red);
+                Notice.instance.Show("시간이 부족하다...", 1f, Color.red);
             }            
         }
     }

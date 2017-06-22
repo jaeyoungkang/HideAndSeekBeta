@@ -353,17 +353,21 @@ namespace HideAndSeek
         
         public void BacktoPreState()
         {
+            SoundManager.instance.PlaySingle(btnClick);
             ChangeState(preGameState);
         }
 
+        public AudioClip btnClick;
         public void ShowDungeonInfo(int index)
         {
+            SoundManager.instance.PlaySingle(btnClick);
             SelectDungeon(dungeons[index]);
             ChangeState(GAME_STATE.DUNGEON_INFO);
         }
 
         public void SelectDungeon(Dungeon dungeonSelected)
         {
+            SoundManager.instance.PlaySingle(btnClick);
             curDungeon = dungeonSelected;            
         }
 
@@ -375,7 +379,8 @@ namespace HideAndSeek
 
         public void EnterDungeon()
         {
-            if(curDungeon.cost > info.coin)
+            SoundManager.instance.PlaySingle(btnClick);
+            if (curDungeon.cost > info.coin)
             {
                 Notice.instance.Show("입장에 필요한 주화가 없다.", 2f, Color.white);
                 return;
@@ -408,11 +413,13 @@ namespace HideAndSeek
 
         public void EnterInven()
         {
+            SoundManager.instance.PlaySingle(btnClick);
             ChangeState(GAME_STATE.INVENTORY);
         }
 
         public void EnterShop()
         {
+            SoundManager.instance.PlaySingle(btnClick);
             ChangeState(GAME_STATE.SHOP);
         }
 
@@ -423,12 +430,14 @@ namespace HideAndSeek
 
         public void SelectLevel(int level)
         {
+            SoundManager.instance.PlaySingle(btnClick);
             curDungeon.SetLevel(level);
             GameManager.instance.ChangeState(GAME_STATE.LEVEL_INFO);
         }
 
         public void EnterLevel()
-        {            
+        {
+            SoundManager.instance.PlaySingle(btnClick);
             GameManager.instance.ChangeState(GAME_STATE.LEVEL);
             PageManager.instance.SetLevelEnterPageText(curDungeon.name, curDungeon.GetCurLevel().name);
             Invoke("setupLevel", 2f);            
@@ -437,6 +446,7 @@ namespace HideAndSeek
         
         public void GoToLobby()
         {
+            SoundManager.instance.PlaySingle(btnClick);
             foreach (int openedId in GameManager.instance.info.dungeonIdsOpened)
             {
                 foreach (Dungeon dungeon in dungeons)

@@ -9,9 +9,6 @@ using System.Collections.Generic;       //Allows us to use Lists.
 using System.IO;
 using System;
 
-using UnityEngine.Analytics;
-
-
 namespace HideAndSeek
 {    
     public enum GAME_STATE { START, TUTORIAL, LOBBY, SHOP, INVENTORY, DUNGEON_INFO, LEVEL, LEVEL_INFO, MAP, PLAY, RESULT, OVER }
@@ -78,7 +75,9 @@ namespace HideAndSeek
                 numOfCoin = MAX_COIN - info.coin;
             }
 
-            Notice.instance.Show("고대주화가 생겼다.", 3f, Color.green);            
+            if(gameState == GAME_STATE.LOBBY)
+                Notice.instance.Show("고대주화가 생겼다.", 3f, Color.green);
+
             AddCoin(numOfCoin);            
         }
 
@@ -236,7 +235,7 @@ namespace HideAndSeek
         {
             info.invenGem += curDungeon.GetReward();
             info.invenGem += dungeonGem;
-            AddCoin(1);
+            if (info.coin < MAX_COIN) AddCoin(1);
         }
 
         public void OpenNextDungeon()

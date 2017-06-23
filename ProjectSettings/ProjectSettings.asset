@@ -144,7 +144,7 @@ PlayerSettings:
     tvOS: com.JY.HideAndSeekBeta
   buildNumber:
     iOS: 0
-  AndroidBundleVersionCode: 11
+  AndroidBundleVersionCode: 12
   AndroidMinSdkVersion: 16
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 1

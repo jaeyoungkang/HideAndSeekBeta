@@ -695,10 +695,10 @@ MonoBehaviour:
     - name: "\uBC296"
       id: 6
       trap: 14
-      enemy: 1
+      enemy: 2
       strongEnemy: 1
       thief: 0
-      gem: 3
+      gem: 4
       itemDropInfos:
       - ids: 6500000066000000
         dropRate: 1
@@ -720,8 +720,8 @@ MonoBehaviour:
     - name: "\uBC297"
       id: 8
       trap: 14
-      enemy: 1
-      strongEnemy: 1
+      enemy: 2
+      strongEnemy: 2
       thief: 0
       gem: 3
       itemDropInfos:

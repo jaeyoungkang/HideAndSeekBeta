@@ -48,6 +48,7 @@ namespace HideAndSeek
 
         void SetImage()
         {
+            if (contentText == null) return;
             contentText.text = text;
             contentText.color = color;
         }

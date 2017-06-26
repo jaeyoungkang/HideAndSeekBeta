@@ -185,14 +185,15 @@ namespace HideAndSeek
             if (instance == null)
             {
                 instance = this;
+#if UNITY_EDITOR
+                //string culomnName = "";
+                //culomnName += "dungeonName \t levelName \t gemCount \t deathCount \t attackedCount \t damagedByTimeCount \t (getItem, useItem, hps)";
 
-                string culomnName = "";
-                culomnName += "dungeonName \t levelName \t gemCount \t deathCount \t attackedCount \t damagedByTimeCount \t (getItem, useItem, hps)";
-
-                DateTime dt = DateTime.Now;
-                String strDate = dt.ToString("MMdd_HHmmss");
-                logfileName = "log/" + strDate + "_playData.txt";
-                SaveLoad.WriteFile(logfileName, culomnName);
+                //DateTime dt = DateTime.Now;
+                //String strDate = dt.ToString("MMdd_HHmmss");
+                //logfileName = "log/" + strDate + "_playData.txt";
+                //SaveLoad.WriteFile(logfileName, culomnName);
+#endif
             }
             else if (instance != this)
                 Destroy(gameObject);

@@ -64,7 +64,7 @@ namespace HideAndSeek
 
 
 #if UNITY_EDITOR
-            WritelevelData();
+//            WritelevelData();
 #endif
             GameManager.instance.playData.InitLevelPlayData();
         }

@@ -252,12 +252,10 @@ MonoBehaviour:
         type: 1
       - pos: {x: 2, y: 5}
         type: 1
-      - pos: {x: 5, y: 5}
-        type: 1
-      - pos: {x: 7, y: 0}
-        type: 2
       - pos: {x: 0, y: 7}
         type: 3
+      - pos: {x: 7, y: 0}
+        type: 2
       itemsDropped: 
     - name: "\uBC292"
       id: 4
@@ -278,7 +276,7 @@ MonoBehaviour:
       - pos: {x: 0, y: 0}
         type: 1
       - pos: {x: 2, y: 2}
-        type: 1
+        type: 4
       - pos: {x: 5, y: 2}
         type: 1
       - pos: {x: 2, y: 5}
@@ -311,14 +309,12 @@ MonoBehaviour:
       - pos: {x: 2, y: 2}
         type: 1
       - pos: {x: 5, y: 2}
-        type: 1
+        type: 4
       - pos: {x: 2, y: 5}
-        type: 1
+        type: 2
       - pos: {x: 5, y: 5}
         type: 1
       - pos: {x: 7, y: 0}
-        type: 2
-      - pos: {x: 0, y: 7}
         type: 3
       itemsDropped: 
     cost: 1
@@ -359,7 +355,7 @@ MonoBehaviour:
       itemsDropped: 
     - name: "\uBC291"
       id: 2
-      trap: 12
+      trap: 14
       enemy: 0
       strongEnemy: 1
       thief: 0
@@ -375,20 +371,18 @@ MonoBehaviour:
         type: 1
       - pos: {x: 2, y: 2}
         type: 1
-      - pos: {x: 5, y: 2}
+      - pos: {x: 5, y: 5}
         type: 1
       - pos: {x: 2, y: 5}
         type: 1
-      - pos: {x: 5, y: 5}
-        type: 1
-      - pos: {x: 7, y: 0}
-        type: 2
       - pos: {x: 0, y: 7}
         type: 3
+      - pos: {x: 7, y: 0}
+        type: 2
       itemsDropped: 
     - name: "\uBC292"
       id: 4
-      trap: 12
+      trap: 14
       enemy: 0
       strongEnemy: 1
       thief: 0
@@ -406,18 +400,16 @@ MonoBehaviour:
         type: 1
       - pos: {x: 5, y: 2}
         type: 1
-      - pos: {x: 2, y: 5}
-        type: 1
+      - pos: {x: 0, y: 7}
+        type: 3
       - pos: {x: 5, y: 5}
         type: 1
       - pos: {x: 7, y: 0}
         type: 2
-      - pos: {x: 0, y: 7}
-        type: 3
       itemsDropped: 
     - name: "\uC911\uAC04\uBC29"
       id: 5
-      trap: 12
+      trap: 14
       enemy: 1
       strongEnemy: 1
       thief: 0
@@ -444,7 +436,7 @@ MonoBehaviour:
       itemsDropped: 
     - name: "\uBC293"
       id: 6
-      trap: 12
+      trap: 14
       enemy: 1
       strongEnemy: 1
       thief: 0
@@ -468,12 +460,10 @@ MonoBehaviour:
         type: 1
       - pos: {x: 0, y: 7}
         type: 3
-      - pos: {x: 7, y: 0}
-        type: 2
       itemsDropped: 
     - name: "\uBC294"
       id: 8
-      trap: 12
+      trap: 14
       enemy: 2
       strongEnemy: 1
       thief: 0
@@ -504,7 +494,7 @@ MonoBehaviour:
       itemsDropped: 
     - name: "\uCD5C\uC885\uBC29"
       id: 9
-      trap: 12
+      trap: 15
       enemy: 1
       strongEnemy: 2
       thief: 0
@@ -528,7 +518,7 @@ MonoBehaviour:
         type: 1
       itemsDropped: 
     cost: 1
-    gem: 20
+    gem: 15
     timeLimit: 90
     curLevelId: 0
     open: 0
@@ -538,7 +528,7 @@ MonoBehaviour:
     levels:
     - name: "\uC2DC\uC791\uBC29"
       id: 1
-      trap: 12
+      trap: 15
       enemy: 1
       strongEnemy: 1
       thief: 0
@@ -565,7 +555,7 @@ MonoBehaviour:
       itemsDropped: 
     - name: "\uBC291"
       id: 2
-      trap: 14
+      trap: 16
       enemy: 0
       strongEnemy: 1
       thief: 0
@@ -588,7 +578,7 @@ MonoBehaviour:
       itemsDropped: 
     - name: "\uBC292"
       id: 4
-      trap: 14
+      trap: 15
       enemy: 1
       strongEnemy: 1
       thief: 0
@@ -613,7 +603,7 @@ MonoBehaviour:
       itemsDropped: 
     - name: "\uBC293"
       id: 3
-      trap: 14
+      trap: 15
       enemy: 2
       strongEnemy: 1
       thief: 0
@@ -640,7 +630,7 @@ MonoBehaviour:
       itemsDropped: 
     - name: "\uBC294"
       id: 5
-      trap: 14
+      trap: 15
       enemy: 2
       strongEnemy: 2
       thief: 0
@@ -667,7 +657,7 @@ MonoBehaviour:
       itemsDropped: 
     - name: "\uBC295"
       id: 7
-      trap: 14
+      trap: 16
       enemy: 1
       strongEnemy: 1
       thief: 0
@@ -694,7 +684,7 @@ MonoBehaviour:
       itemsDropped: 
     - name: "\uBC296"
       id: 6
-      trap: 14
+      trap: 15
       enemy: 2
       strongEnemy: 1
       thief: 0
@@ -719,7 +709,7 @@ MonoBehaviour:
       itemsDropped: 
     - name: "\uBC297"
       id: 8
-      trap: 14
+      trap: 15
       enemy: 2
       strongEnemy: 2
       thief: 0
@@ -744,7 +734,7 @@ MonoBehaviour:
       itemsDropped: 
     - name: "\uCD5C\uC885\uBC29"
       id: 9
-      trap: 14
+      trap: 16
       enemy: 3
       strongEnemy: 2
       thief: 0
@@ -770,7 +760,7 @@ MonoBehaviour:
         type: 5
       itemsDropped: 
     cost: 1
-    gem: 50
+    gem: 30
     timeLimit: 120
     curLevelId: 0
     open: 0
@@ -1044,6 +1034,6 @@ MonoBehaviour:
   dungeonGem: 0
   timeLimit: 0
   TIME_INTERVAL_GEN: 300
-  MAX_COIN: 5
+  MAX_COIN: 3
   btnClick: {fileID: 8300000, guid: cf6c0e7fbef9449c98a0cdb5ea0c4d9f, type: 3}
   timeStop: 0

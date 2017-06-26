@@ -169,7 +169,9 @@ namespace HideAndSeek
                 Color color = sprite.material.color;
                 color.a = 1.0f;
                 sprite.material.color = color;
-                SetHideMode(false);
+
+                if (bHideMode) Notice.instance.Show("무언가에 부딪쳐서 은신이 풀렸다...", 2f, Color.white);
+                SetHideMode(false);                
             }
 
             if (hitEnemy.tag == "Thief")
@@ -206,7 +208,8 @@ namespace HideAndSeek
                 StartCoroutine(HideAni(other.gameObject));
 
                 GameManager.instance.playData.gemCount++;
-                SetHideMode(false);
+                if (bHideMode) Notice.instance.Show("보석을 줍는 소리에 은신이 풀렸다...", 2f, Color.white);
+                SetHideMode(false);                
 
                 Analytics.CustomEvent("Discover Gem", new Dictionary<string, object>
                 {
@@ -226,7 +229,8 @@ namespace HideAndSeek
 
                     string itemName = ItemManager.instance.GetNameByItemId(item.itemId);
                     GameManager.instance.playData.getItems.Add(itemName);
-                    SetHideMode(false);
+                    if (bHideMode) Notice.instance.Show("아이템을 줍는 소리에 은신이 풀렸다...", 2f, Color.white);
+                    SetHideMode(false);                    
 
                     Analytics.CustomEvent("Discover Item", new Dictionary<string, object>
                     {
@@ -257,10 +261,11 @@ namespace HideAndSeek
 
 		public void LoseHP (int loss)
 		{
+            if (bHideMode) Notice.instance.Show("피해를 입어서 은신이 풀렸다...", 2f, Color.white);
             SetHideMode(false);
             animator.SetTrigger ("playerHit");
             GameManager.instance.LoseHp(loss);
-
+            
             CheckIfGameOver ();
 		}
 		

@@ -11,7 +11,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: JaeyoungCompany
-  productName: HideAndSeekBeta
+  productName: DungeonMaster
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13333334, g: 0.17254902, b: 0.21176471, a: 1}
@@ -119,7 +119,7 @@ PlayerSettings:
     16:10: 1
     16:9: 1
     Others: 1
-  bundleVersion: 3
+  bundleVersion: 1
   preloadedAssets: []
   metroInputSource: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -137,17 +137,17 @@ PlayerSettings:
   protectGraphicsMemory: 0
   useHDRDisplay: 0
   applicationIdentifier:
-    Android: com.JY.HideAndSeekBeta
+    Android: com.JY.dungeonMaster
     Standalone: unity.JaeyoungCompany.HideAndSeekBeta
     Tizen: com.JY.HideAndSeekBeta
     iOS: com.JY.HideAndSeekBeta
     tvOS: com.JY.HideAndSeekBeta
   buildNumber:
     iOS: 0
-  AndroidBundleVersionCode: 13
+  AndroidBundleVersionCode: 1
   AndroidMinSdkVersion: 16
   AndroidTargetSdkVersion: 0
-  AndroidPreferredInstallLocation: 1
+  AndroidPreferredInstallLocation: 0
   aotOptions: 
   stripEngineCode: 1
   iPhoneStrippingLevel: 0
@@ -218,11 +218,11 @@ PlayerSettings:
   AndroidTargetDevice: 0
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: 
-  AndroidKeyaliasName: 
-  AndroidTVCompatibility: 1
+  AndroidKeystoreName: E:/HideAndSeekBeta/user.keystore
+  AndroidKeyaliasName: dm
+  AndroidTVCompatibility: 0
   AndroidIsGame: 1
-  androidEnableBanner: 1
+  androidEnableBanner: 0
   m_AndroidBanners:
   - width: 320
     height: 180
@@ -233,7 +233,7 @@ PlayerSettings:
   - m_BuildTarget: 
     m_Icons:
     - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: f399938a54ddec742a58ac0d57936ce9, type: 3}
+      m_Icon: {fileID: 2800000, guid: f289f6e544852eb4d97a89bd44c1019b, type: 3}
       m_Width: 128
       m_Height: 128
   m_BuildTargetBatching: []

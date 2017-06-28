@@ -105,7 +105,7 @@ namespace HideAndSeek
 
             if(showType != SHOW_TYPE.NONE)
             {
-                GameManager.instance.HighlightTile(pos);
+//                GameManager.instance.HighlightTile(pos);
                 SoundManager.instance.PlaySingle(showSound);
             }
             return showType;

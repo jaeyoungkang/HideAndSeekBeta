@@ -64,7 +64,8 @@ namespace HideAndSeek
                 levelBtns[btnIndex].enabled = !levels[i].close;
                 if (!levels[i].close)
                 {
-                    levelBtns[btnIndex].GetComponent<Image>().color = Color.green;                    
+                    if(levels[i].clear) levelBtns[btnIndex].GetComponent<Image>().color = Color.yellow;
+                    else levelBtns[btnIndex].GetComponent<Image>().color = Color.green;
                 }
             }           
         }

@@ -276,7 +276,7 @@ namespace HideAndSeek
             SetActiveObjs(curEnemiesOnStage, true);
 
             ChangeState(GAME_STATE.PLAY);
-            ShowMap(false);
+            ShowAllMap(false);
 
             Player player = FindObjectOfType(typeof(Player)) as Player;
             player.Init();            
@@ -316,9 +316,12 @@ namespace HideAndSeek
 
         public AudioClip btnClick;
         public void ShowDungeonInfo(int index)
-        {
+        {            
             SoundManager.instance.PlaySingle(btnClick);
-            SelectDungeon(dungeons[index]);
+
+            if (index == 100) SelectDungeon(tutorial);
+            else SelectDungeon(dungeons[index]);
+            
             ChangeState(GAME_STATE.DUNGEON_INFO);
         }
 
@@ -336,6 +339,19 @@ namespace HideAndSeek
 
         public void EnterDungeon()
         {
+            if (curDungeon.locked)
+            {
+                Notice.instance.Show("유료 던전 이다... 유료 결재를 해야한다!", 2f, Color.yellow);
+                return;
+            }
+
+            if (info.enableCount <= 0)
+            {
+                Notice.instance.Show("고대주화가 없어서 입장 할 수 없다...", 2f, Color.yellow);
+                return;
+            }
+
+            info.enableCount--;
             SoundManager.instance.PlaySingle(btnClick);
 
             curDungeon.init();
@@ -356,8 +372,9 @@ namespace HideAndSeek
                 GameManager.instance.trapsOnStages[lv.id] = new List<GameObject>();
                 GameManager.instance.enemiesOnStages[lv.id] = new List<GameObject>();
             }
-            
-            boardScript.SetupScene(curDungeon.levels);
+
+            bool bTutorial = curDungeon.id == 0;
+            boardScript.SetupScene(curDungeon.levels, bTutorial);
 
             ChangeState(GAME_STATE.MAP);
 
@@ -407,12 +424,18 @@ namespace HideAndSeek
         public void GoToLobby()
         {
             SoundManager.instance.PlaySingle(btnClick);
-            foreach (int openedId in GameManager.instance.info.dungeonIdsOpened)
+            foreach (int openedId in info.dungeonIdsOpened)
             {
                 foreach (Dungeon dungeon in dungeons)
                 {
                     if (dungeon.id == openedId) dungeon.open = true;
                 }
+            }
+
+            foreach (Dungeon dungeon in dungeons)
+            {
+                if (dungeon.locked && info.purchaseUser)
+                    dungeon.locked = false;
             }
 
             SaveLoad.Save();
@@ -481,7 +504,7 @@ namespace HideAndSeek
             });
         }
 
-        public void ShowMap(bool bShow)
+        public void ShowAllMap(bool bShow)
         {
             ShowAllUnits(bShow);
             ShowObjects(bShow);
@@ -560,7 +583,7 @@ namespace HideAndSeek
                     break;
 
                 case SHOW_TYPE.ALL:
-                    ShowMap(true);
+                    ShowAllMap(true);
                     break;
             }            
         }

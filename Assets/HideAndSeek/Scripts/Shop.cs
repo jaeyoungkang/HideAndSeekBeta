@@ -72,7 +72,7 @@ namespace HideAndSeek
             DisplayBtns[13].onClick.AddListener(() => { BuyItem(13); });
             DisplayBtns[14].onClick.AddListener(() => { BuyItem(14); });
 
-            ReturnBtn.onClick.AddListener(GameManager.instance.GoToLobby);
+            ReturnBtn.onClick.AddListener(GameManager.instance.BacktoPreState);
             ExtendBtn.onClick.AddListener(ExtendBagSize);
         }
 

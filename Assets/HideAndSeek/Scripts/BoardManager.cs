@@ -159,10 +159,10 @@ namespace HideAndSeek
                 {
                     switch (tile.type)
                     {
-                        case SHOW_TYPE.NEAR: SetTileColor(instance, Color.magenta); break;
+                        case SHOW_TYPE.NEAR: SetTileColor(instance, Color.green); break;
                         case SHOW_TYPE.MONSTER: SetTileColor(instance, Color.red); break;
                         case SHOW_TYPE.TRAP: SetTileColor(instance, Color.blue); break;
-                        case SHOW_TYPE.GEM_ITEM: SetTileColor(instance, Color.green); break;
+                        case SHOW_TYPE.GEM_ITEM: SetTileColor(instance, Color.yellow); break;
                         case SHOW_TYPE.ALL: SetTileColor(instance, Color.black); break;
                     }
                 }
@@ -256,13 +256,13 @@ namespace HideAndSeek
             }
         }
 
-        public void SetupScene(Level[] levelInfos)
+        public void SetupScene(Level[] levelInfos, bool tutorial = false)
         {
             foreach(Level lv in levelInfos)
             {
                 BoardSetup(lv);
                 InitialiseList(lv);
-                if(lv.name=="단계1") SetupTutorialLevel(lv);
+                if(tutorial && lv.id == 1) SetupTutorialLevel(lv);
                 else SetupLevelRandom(lv);
 
                 GameObject instance = Instantiate(exit, new Vector3(columns - 1, rows - 1, 0f), Quaternion.identity);

@@ -8,6 +8,7 @@ namespace HideAndSeek
     public class DungeonMap : MonoBehaviour {
         public Image[] lineImages;
         public Button[] levelBtns;
+        public Button shopBtns;
 
         void OnEnable()
         {
@@ -35,6 +36,8 @@ namespace HideAndSeek
             levelBtns[6].onClick.AddListener(() => { GameManager.instance.SelectLevel(7); });
             levelBtns[7].onClick.AddListener(() => { GameManager.instance.SelectLevel(8); });
             levelBtns[8].onClick.AddListener(() => { GameManager.instance.SelectLevel(9); });
+
+            shopBtns.onClick.AddListener(GameManager.instance.EnterShop);
         }
 
         void SetupBtns(Level[] levels)
@@ -51,8 +54,7 @@ namespace HideAndSeek
                     if (lv.id - 1 == i)
                     {
                         levelBtns[i].gameObject.SetActive(true);
-                    }
-                        
+                    }                        
                 }                
             }
             

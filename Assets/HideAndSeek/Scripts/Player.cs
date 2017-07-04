@@ -105,15 +105,37 @@ namespace HideAndSeek
 
             if(showType != SHOW_TYPE.NONE)
             {
-//                GameManager.instance.HighlightTile(pos);
+                if(GameManager.instance.GetDungeonInfo().id == 0) ShowExplainTextTile(showType);
                 SoundManager.instance.PlaySingle(showSound);
+
+                if (bHideMode) BreakedHiding("특수 바닥을 밟아서 은신이 풀렸다...");
             }
             return showType;
         }
 
+        private void ShowExplainTextTile(SHOW_TYPE showType)
+        {
+            Color textColor = Color.white;
+            string msg = "";
+            switch (showType)
+            {
+                case SHOW_TYPE.ALL: msg = "검은색 바닥을 밟으니 방 전체가 보인다."; textColor = Color.gray; break;
+                case SHOW_TYPE.GEM_ITEM: msg = "노란색  닥을 밟으니 아이템들이 보인다."; textColor = Color.yellow; break;
+                case SHOW_TYPE.NEAR: msg = "초록색 바닥을 밟으니 주변이 보인다."; textColor = Color.green; break;
+                case SHOW_TYPE.MONSTER: msg = "빨간색 바닥을 밟으니 괴물들이 보인다."; textColor = Color.red; break;
+                case SHOW_TYPE.TRAP: msg = "파란색 바닥을 밟으니 함정들이 보인다."; textColor = Color.blue; break;
+            }
+
+            Notice.instance.Show(msg, 1f, textColor);
+        }
+
         protected override void AttemptMove <T> (int xDir, int yDir)
 		{
-            GameManager.instance.ShowMap(false);
+            SHOW_TYPE st = checkPos(xDir, yDir);
+            if(st == SHOW_TYPE.NONE) GameManager.instance.ShowAllMap(false);
+            else 
+                GameManager.instance.ShowMap(new Vector3(transform.position.x + xDir, transform.position.y + yDir, 0), st);
+            
             GameManager.instance.StopTime(false);
 
             base.AttemptMove <T> (xDir, yDir);
@@ -121,8 +143,7 @@ namespace HideAndSeek
 			if (Move (xDir, yDir, out hit)) 
 			{
                 if(bHideMode == false) SoundManager.instance.RandomizeSfx (moveSound1, moveSound2);
-
-                GameManager.instance.ShowMap(new Vector3(transform.position.x + xDir, transform.position.y + yDir, 0), checkPos(xDir, yDir));
+                
                 CheckTrap(xDir, yDir);
 
                 GameManager.instance.playData.hps.Add(GameManager.instance.playerHp);
@@ -170,8 +191,7 @@ namespace HideAndSeek
                 color.a = 1.0f;
                 sprite.material.color = color;
 
-                if (bHideMode) Notice.instance.Show("무언가에 부딪쳐서 은신이 풀렸다...", 2f, Color.white);
-                SetHideMode(false);                
+                if (bHideMode) BreakedHiding("무언가에 부딪쳐서 은신이 풀렸다...");
             }
 
             if (hitEnemy.tag == "Thief")
@@ -194,7 +214,7 @@ namespace HideAndSeek
         {
             if (other.tag == "Exit")
             {
-                GameManager.instance.ShowMap(true);
+                GameManager.instance.ShowAllMap(true);
                 SoundManager.instance.RandomizeSfx(levelClearSound, levelClearSound);
 				GameManager.instance.ShowResult();
 				enabled = false;
@@ -208,8 +228,7 @@ namespace HideAndSeek
                 StartCoroutine(HideAni(other.gameObject));
 
                 GameManager.instance.playData.gemCount++;
-                if (bHideMode) Notice.instance.Show("보석을 줍는 소리에 은신이 풀렸다...", 2f, Color.white);
-                SetHideMode(false);                
+                if (bHideMode) BreakedHiding("보석을 줍는 소리에 은신이 풀렸다...");
 
                 Analytics.CustomEvent("Discover Gem", new Dictionary<string, object>
                 {
@@ -229,8 +248,7 @@ namespace HideAndSeek
 
                     string itemName = ItemManager.instance.GetNameByItemId(item.itemId);
                     GameManager.instance.playData.getItems.Add(itemName);
-                    if (bHideMode) Notice.instance.Show("아이템을 줍는 소리에 은신이 풀렸다...", 2f, Color.white);
-                    SetHideMode(false);                    
+                    if (bHideMode) BreakedHiding("아이템을 줍는 소리에 은신이 풀렸다...");
 
                     Analytics.CustomEvent("Discover Item", new Dictionary<string, object>
                     {
@@ -238,12 +256,19 @@ namespace HideAndSeek
                         { "Dungeon id", GameManager.instance.GetDungeonInfo().id},
                         { "Level id", GameManager.instance.GetDungeonInfo().GetCurLevel().id},
                     });
+                    if (GameManager.instance.GetDungeonInfo().id == 0) ShowExplainTextItem(item.itemId);
                 }
                 else
                 {
                     Notice.instance.Show("가방에 공간이 부족하다.", 2f, Color.white);
                 }
             }
+        }
+
+        void ShowExplainTextItem(int itemId)
+        {
+            string itemName = ItemManager.instance.GetNameByItemId(itemId);
+            Notice.instance.Show(itemName + "을 발견했다.", 2f, Color.white);
         }
 
         void GetGem(int count)
@@ -259,10 +284,15 @@ namespace HideAndSeek
             GameManager.instance.RemoveObj(obj);
         }
 
+        void BreakedHiding(string reason)
+        {            
+            Notice.instance.Show(reason, 2f, Color.white);
+            SetHideMode(false);
+        }
+
 		public void LoseHP (int loss)
 		{
-            if (bHideMode) Notice.instance.Show("피해를 입어서 은신이 풀렸다...", 2f, Color.white);
-            SetHideMode(false);
+            if (bHideMode) BreakedHiding("피해를 입어서 은신이 풀렸다...");
             animator.SetTrigger ("playerHit");
             GameManager.instance.LoseHp(loss);
             
@@ -317,7 +347,7 @@ namespace HideAndSeek
         public void UseItem(int index)
         {
             if (index >= GameManager.instance.bag.Count) return;
-            
+            if (bHideMode) BreakedHiding("아이템 사용하는 소리에 은신이 풀렸다...");
             SoundManager.instance.PlaySingle(skillSound);
             string name = ItemManager.instance.GetNameByItemId(GameManager.instance.bag[index]);
 
@@ -378,7 +408,7 @@ namespace HideAndSeek
         void GameOver()
         {
             SoundManager.instance.PlaySingle(gameOverSound);
-            GameManager.instance.ShowMap(true);            
+            GameManager.instance.ShowAllMap(true);            
             GameManager.instance.GameOver();
         }
     }

@@ -8,8 +8,11 @@ namespace HideAndSeek
 {
     public class Lobby : MonoBehaviour
     {
+        public Text coinText;
+        public Button tutorialBtn;
         public Button[] dungeonBtns;
         private Dungeon[] dungeons;
+        private Dungeon tutorial;
 
         void SetupDungeonBtns()
         {
@@ -29,22 +32,27 @@ namespace HideAndSeek
                 if (dungeonBtns.Length <= i) break;
                 dungeonBtns[i].enabled = dungeons[i].open;
             }
+
+            tutorialBtn.GetComponentInChildren<Text>().text = tutorial.name;
+            tutorialBtn.enabled = tutorial.open;            
         }
 
         void Start()
         {
             dungeons = GameManager.instance.dungeons;
+            tutorial = GameManager.instance.tutorial;
 
             SetupDungeonBtns();
             dungeonBtns[0].onClick.AddListener(() => { GameManager.instance.ShowDungeonInfo(0); });
             dungeonBtns[1].onClick.AddListener(() => { GameManager.instance.ShowDungeonInfo(1); });
             dungeonBtns[2].onClick.AddListener(() => { GameManager.instance.ShowDungeonInfo(2); });
             dungeonBtns[3].onClick.AddListener(() => { GameManager.instance.ShowDungeonInfo(3); });
-            dungeonBtns[4].onClick.AddListener(() => { GameManager.instance.ShowDungeonInfo(4); });
+            tutorialBtn.onClick.AddListener(() => { GameManager.instance.ShowDungeonInfo(100); });
         }
 
         void Update()
         {
+            coinText.text = "고대주화 : " + GameManager.instance.info.enableCount;
             //DateTime now = DateTime.Now.ToLocalTime();
             //TimeSpan gen = now - GameManager.instance.info.preGenTime;
 

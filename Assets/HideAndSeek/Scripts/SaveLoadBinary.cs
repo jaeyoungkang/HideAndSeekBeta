@@ -10,6 +10,8 @@ namespace HideAndSeek
     public class GameInfo
     {
         public List<int> dungeonIdsOpened = new List<int>();
+        public bool purchaseUser = false;
+        public int enableCount = 10;
     }
 
     public static class SaveLoad

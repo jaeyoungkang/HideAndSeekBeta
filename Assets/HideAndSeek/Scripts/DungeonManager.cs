@@ -64,7 +64,6 @@ namespace HideAndSeek
         public int id;
         public int nextId;        
         public Level[] levels;        
-        public int cost;
         public int gem;
         public float timeLimit;
         public int curLevelId;
@@ -74,7 +73,6 @@ namespace HideAndSeek
         {
             levels = _levels;
             name = _name;
-            cost = _cost;
             gem = _gem;
             timeLimit = _timeLimit;
         }
@@ -90,8 +88,6 @@ namespace HideAndSeek
         }
 
         public override string ToString() { return GetCurLevel().name; }
-
-        public int Cost() { return cost; }
         public float TimeLimit() { return timeLimit; }
 
         public Level GetCurLevel()

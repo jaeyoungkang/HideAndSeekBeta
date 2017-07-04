@@ -26,12 +26,12 @@ namespace HideAndSeek
                 bagBtn.gameObject.SetActive(false);
             }
 
-            for (int i = 0; i < GameManager.instance.info.bagSize; i++)
+            for (int i = 0; i < GameManager.instance.bagSize; i++)
             {
                 BagBtns[i].gameObject.SetActive(true);
             }
 
-            ExtendBtn.GetComponentInChildren<Text>().text = "가방확장(" + GameManager.instance.GetPriceExtendBag(BagBtns.Length, GameManager.instance.info.bagSize) + ")";
+            ExtendBtn.GetComponentInChildren<Text>().text = "가방확장(" + GameManager.instance.GetPriceExtendBag(BagBtns.Length, GameManager.instance.bagSize) + ")";
         }
 
         void onEnable()
@@ -78,13 +78,13 @@ namespace HideAndSeek
 
         void Update()
         {
-            GemText.text = "Gem: " + GameManager.instance.info.invenGem.ToString();
+            GemText.text = "Gem: " + GameManager.instance.dungeonGem.ToString();
         }
 
         void ExtendBagSize()
         {
-            int extendPrice = GameManager.instance.GetPriceExtendBag(BagBtns.Length, GameManager.instance.info.bagSize);
-            if (GameManager.instance.info.invenGem < extendPrice)
+            int extendPrice = GameManager.instance.GetPriceExtendBag(BagBtns.Length, GameManager.instance.bagSize);
+            if (GameManager.instance.dungeonGem < extendPrice)
             {
                 Notice.instance.Show("보석이 부족합니다.", 2f, Color.white);
                 return;
@@ -92,7 +92,7 @@ namespace HideAndSeek
 
             if (GameManager.instance.ExtendBagSize(BagBtns.Length))
             {
-                GameManager.instance.info.invenGem -= extendPrice;
+                GameManager.instance.dungeonGem -= extendPrice;
                 EnableBagSlot();
             }
         } 
@@ -103,15 +103,15 @@ namespace HideAndSeek
 
             int price = ItemManager.instance.GetPriceByItemId(display[index]);
 
-            if (GameManager.instance.info.invenGem < price)
+            if (GameManager.instance.dungeonGem < price)
             {
                 Notice.instance.Show("보석이 부족합니다.", 2f, Color.white);
                 return;
             }
 
-            if (GameManager.instance.info.bagSize == GameManager.instance.info.bag.Count) return;
-            GameManager.instance.info.bag.Add(display[index]);
-            GameManager.instance.info.invenGem -= price;
+            if (GameManager.instance.bagSize == GameManager.instance.bag.Count) return;
+            GameManager.instance.bag.Add(display[index]);
+            GameManager.instance.dungeonGem -= price;
             SetupBag();
 
             Analytics.CustomEvent("Buy Item", new Dictionary<string, object>
@@ -123,10 +123,10 @@ namespace HideAndSeek
 
         void SellItem(int index)
         {
-            if (index >= GameManager.instance.info.bag.Count) return;
-            int price = ItemManager.instance.GetPriceByItemId(GameManager.instance.info.bag[index]);
-            GameManager.instance.info.invenGem += price;
-            GameManager.instance.info.bag.RemoveAt(index);
+            if (index >= GameManager.instance.bag.Count) return;
+            int price = ItemManager.instance.GetPriceByItemId(GameManager.instance.bag[index]);
+            GameManager.instance.dungeonGem += price;
+            GameManager.instance.bag.RemoveAt(index);
             SetupBag();
 
             Analytics.CustomEvent("Sell Item", new Dictionary<string, object>
@@ -144,8 +144,8 @@ namespace HideAndSeek
 
             for (int i = 0; i < BagBtns.Length; i++)
             {
-                if (GameManager.instance.info.bag.Count <= i) break;
-                Item item = ItemManager.instance.GetItemByItemId(GameManager.instance.info.bag[i]);
+                if (GameManager.instance.bag.Count <= i) break;
+                Item item = ItemManager.instance.GetItemByItemId(GameManager.instance.bag[i]);
                 BagBtns[i].GetComponentInChildren<Text>().text = item.name;
 
                 Color itemGradeColor = ItemManager.instance.GetColorByItemGrade(item.grade);

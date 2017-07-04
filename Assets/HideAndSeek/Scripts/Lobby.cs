@@ -8,13 +8,7 @@ namespace HideAndSeek
 {
     public class Lobby : MonoBehaviour
     {
-        public Text gemText;
-
-        public Button shopBtn;
-        public Button invenBtn;
-
         public Button[] dungeonBtns;
-
         private Dungeon[] dungeons;
 
         void SetupDungeonBtns()
@@ -46,27 +40,25 @@ namespace HideAndSeek
             dungeonBtns[1].onClick.AddListener(() => { GameManager.instance.ShowDungeonInfo(1); });
             dungeonBtns[2].onClick.AddListener(() => { GameManager.instance.ShowDungeonInfo(2); });
             dungeonBtns[3].onClick.AddListener(() => { GameManager.instance.ShowDungeonInfo(3); });
-
-            shopBtn.onClick.AddListener(GameManager.instance.EnterShop);
-            invenBtn.onClick.AddListener(GameManager.instance.EnterInven);
+            dungeonBtns[4].onClick.AddListener(() => { GameManager.instance.ShowDungeonInfo(4); });
         }
 
         void Update()
         {
-            DateTime now = DateTime.Now.ToLocalTime();
-            TimeSpan gen = now - GameManager.instance.info.preGenTime;
+            //DateTime now = DateTime.Now.ToLocalTime();
+            //TimeSpan gen = now - GameManager.instance.info.preGenTime;
 
-            string coinText = "";
-            if (gen.TotalSeconds <= GameManager.instance.TIME_INTERVAL_GEN && GameManager.instance.info.coin < GameManager.instance.MAX_COIN)
-            {
-                float remainTime = GameManager.instance.TIME_INTERVAL_GEN - (float)gen.TotalSeconds;
-                int minute = (int)(remainTime / 60);
-                float remain = remainTime % 60;
-                string time = String.Format("{0:0}:{1:00}", minute, Mathf.Floor(remain));
-                coinText = "\n다음 주화 받기까지 남은시간 : " + time;
-            }
+            //string coinText = "";
+            //if (gen.TotalSeconds <= GameManager.instance.TIME_INTERVAL_GEN && GameManager.instance.info.coin < GameManager.instance.MAX_COIN)
+            //{
+            //    float remainTime = GameManager.instance.TIME_INTERVAL_GEN - (float)gen.TotalSeconds;
+            //    int minute = (int)(remainTime / 60);
+            //    float remain = remainTime % 60;
+            //    string time = String.Format("{0:0}:{1:00}", minute, Mathf.Floor(remain));
+            //    coinText = "\n다음 주화 받기까지 남은시간 : " + time;
+            //}
 
-            gemText.text = "보유 보석: " + GameManager.instance.info.invenGem + ", 고대주화: " + GameManager.instance.info.coin + coinText;
+            //gemText.text = "보유 보석: " + GameManager.instance.info.invenGem + ", 고대주화: " + GameManager.instance.info.coin + coinText;
         }
  
     }

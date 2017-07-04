@@ -316,10 +316,10 @@ namespace HideAndSeek
 
         public void UseItem(int index)
         {
-            if (index >= GameManager.instance.info.bag.Count) return;
+            if (index >= GameManager.instance.bag.Count) return;
             
             SoundManager.instance.PlaySingle(skillSound);
-            string name = ItemManager.instance.GetNameByItemId(GameManager.instance.info.bag[index]);
+            string name = ItemManager.instance.GetNameByItemId(GameManager.instance.bag[index]);
 
             GameManager.instance.playData.useItems.Add(name);
             switch (name)
@@ -367,12 +367,12 @@ namespace HideAndSeek
 
             Analytics.CustomEvent("Use Item", new Dictionary<string, object>
             {
-                { "Item id", GameManager.instance.info.bag[index]},
+                { "Item id", GameManager.instance.bag[index]},
                 { "Dungeon id", GameManager.instance.GetDungeonInfo().id},
                 { "Level id", GameManager.instance.GetDungeonInfo().GetCurLevel().id},
             });
 
-            GameManager.instance.info.bag.RemoveAt(index);            
+            GameManager.instance.bag.RemoveAt(index);            
         }
         
         void GameOver()

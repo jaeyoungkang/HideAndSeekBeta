@@ -32,15 +32,7 @@ namespace HideAndSeek
             contentsText.text = "";
             if (curDungeon.IsEnd())
             {
-                if(GameManager.instance.info.isClearTutorial == false)
-                {
-                    GameManager.instance.info.isClearTutorial = true;
-                    titleText.text = "튜토리얼 클리어!";
-                }
-                else
-                {
-                    titleText.text = "던전 클리어!";
-                }
+                titleText.text = curDungeon.name +" 클리어!";                
                 
                 string content = "Gem discoverd : " + GameManager.instance.dungeonGem;
                 contentsText.text = content;

@@ -25,7 +25,7 @@ namespace HideAndSeek
                 img.enabled = false;
             }
 
-            for (int i = 0; i < GameManager.instance.info.maxHp; i++)
+            for (int i = 0; i < GameManager.instance.maxHp; i++)
             {
                 if(HPImages.Length <= i)
                 {

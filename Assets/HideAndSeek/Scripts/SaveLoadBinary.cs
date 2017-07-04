@@ -9,22 +9,12 @@ namespace HideAndSeek
     [System.Serializable]
     public class GameInfo
     {
-        public bool isClearTutorial = false;
-        public int maxHp = 2;
-        public int bagSize = 3;
-        public int invenSize = 4;
-        public int invenGem = 0;
-        public int coin = 0;
-        public DateTime preGenTime = new DateTime(2000, 1, 1, 0, 0, 0, 0).ToLocalTime();
-
-        public List<int> inven = new List<int>();
-        public List<int> bag = new List<int>();
         public List<int> dungeonIdsOpened = new List<int>();
     }
 
     public static class SaveLoad
     {
-        public static string fileName = "/games13sp.gd";
+        public static string fileName = "/games14.gd";
         public static List<GameInfo> savedGames = new List<GameInfo>();
 
         public static void Save()

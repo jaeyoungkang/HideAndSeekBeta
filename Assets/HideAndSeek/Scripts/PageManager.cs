@@ -14,10 +14,8 @@ namespace HideAndSeek
         public GameObject shopImage;
         public GameObject controller;
         public GameObject dungeonMap;
-        public GameObject inventoryPage;
         public GameObject dungeonInfoPage;
         public GameObject levelInfoPage;
-        public GameObject tutorialPage;
 
         public GameObject statusPanel;
 
@@ -47,10 +45,8 @@ namespace HideAndSeek
             resultImage = GameObject.Find("ResultImage");
             controller = GameObject.Find("Controller");
             dungeonMap = GameObject.Find("DungeonMap");
-            inventoryPage = GameObject.Find("InventoryPage");
             dungeonInfoPage = GameObject.Find("DungeonInfo");
             levelInfoPage = GameObject.Find("LevelInfo");
-            tutorialPage = GameObject.Find("TutorialInfo");
 
             statusPanel = GameObject.Find("Status");
 
@@ -73,13 +69,9 @@ namespace HideAndSeek
             bool bResult = false;
             bool bPlay = false;
             bool bMap = false;
-            bool bInventory = false;
-            bool bTutorial = false;
 
             switch (gameState)
             {
-                case GAME_STATE.TUTORIAL: bTutorial = true; break;
-
                 case GAME_STATE.START: bTitle = true; break;
                 case GAME_STATE.SHOP: bShop = true; break;
                 case GAME_STATE.LOBBY: bLobby = true; break;
@@ -90,11 +82,7 @@ namespace HideAndSeek
                 case GAME_STATE.PLAY: bPlay = true; break;
                 case GAME_STATE.RESULT: bResult = true; break;
                 case GAME_STATE.OVER: bResult = true; break;
-                case GAME_STATE.INVENTORY: bInventory = true; break;
-                    
             }
-
-            tutorialPage.SetActive(bTutorial);
 
             shopImage.SetActive(bShop);
             lobbyImage.SetActive(bLobby);
@@ -105,7 +93,7 @@ namespace HideAndSeek
             resultImage.SetActive(bResult);
             controller.SetActive(bPlay);
             dungeonMap.SetActive(bMap);
-            inventoryPage.SetActive(bInventory);            
+
 
             if (bMap || bDungeon || bResult || bPlay)
             {

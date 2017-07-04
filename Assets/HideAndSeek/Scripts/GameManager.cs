@@ -11,7 +11,7 @@ using System;
 
 namespace HideAndSeek
 {    
-    public enum GAME_STATE { START, TUTORIAL, LOBBY, SHOP, INVENTORY, DUNGEON_INFO, LEVEL, LEVEL_INFO, MAP, PLAY, RESULT, OVER }
+    public enum GAME_STATE { START, LOBBY, SHOP, DUNGEON_INFO, LEVEL, LEVEL_INFO, MAP, PLAY, RESULT, OVER }
 
     public class GameManager : MonoBehaviour
     {
@@ -20,7 +20,6 @@ namespace HideAndSeek
         public static GameManager instance = null;
         [HideInInspector]
         public bool playersTurn = true;
-        bool isUpdating = false;
 
         public Dungeon tutorial;
         public Dungeon[] dungeons;
@@ -44,48 +43,14 @@ namespace HideAndSeek
 
         public GameInfo info = new GameInfo();
 
+        public List<int> bag;
+        public int bagSize;
+        public int maxHp;
         public int playerHp;
         public int dungeonGem = 0;
         public float timeLimit;
         public LevelPlayData playData = new LevelPlayData();
-
-        public float TIME_INTERVAL_GEN = 60f;
-
-        public void UpdateCoin()
-        {
-            DateTime now = DateTime.Now.ToLocalTime();
-            TimeSpan gen = now - info.preGenTime;
-
-            if (gen.TotalSeconds > TIME_INTERVAL_GEN)
-            {
-                info.preGenTime = DateTime.Now.ToLocalTime();
-
-                int numOfCoin = (int)(gen.TotalSeconds / TIME_INTERVAL_GEN);                
-                AddCoinByTime(numOfCoin);
-            }
-        }
-
-        public int MAX_COIN = 5;
-        public void AddCoinByTime(int numOfCoin)
-        {
-            if (info.coin >= MAX_COIN) return;
-            
-            if (info.coin + numOfCoin > MAX_COIN)
-            {
-                numOfCoin = MAX_COIN - info.coin;
-            }
-
-            if(gameState == GAME_STATE.LOBBY)
-                Notice.instance.Show("고대주화가 생겼다.", 3f, Color.green);
-
-            AddCoin(numOfCoin);            
-        }
-
-        public void AddCoin(int numOfCoin)
-        {
-            info.coin += numOfCoin;            
-        }
-
+                
         public void RemoveObj(GameObject obj)
         {
             curObjsOnStage.Remove(obj);
@@ -134,17 +99,6 @@ namespace HideAndSeek
             tilesOnStages[id].Add(tile);
         }
 
-        public bool ExtendInvenSize(int limit)
-        {
-            if (info.invenSize < limit)
-            {
-                info.invenSize++;
-                return true;
-            }
-
-            return false;
-        }
-
         public int GetPriceExtendBag(int limit, int curSize)
         {
             int delta = limit - curSize;
@@ -163,10 +117,10 @@ namespace HideAndSeek
 
         public bool ExtendBagSize(int limit)
         {
-            if (info.bagSize < limit)
+            if (bagSize < limit)
             {
 
-                info.bagSize++;
+                bagSize++;
                 return true;
             }
 
@@ -175,8 +129,8 @@ namespace HideAndSeek
 
         public bool AddBag(int itemId)
         {
-            if (info.bag.Count == info.bagSize) return false;
-            info.bag.Add(itemId);
+            if (bag.Count == bagSize) return false;
+            bag.Add(itemId);
             return true;
         }
 
@@ -234,9 +188,7 @@ namespace HideAndSeek
 
         public void GetResult()
         {
-            info.invenGem += curDungeon.GetReward();
-            info.invenGem += dungeonGem;
-            if (info.coin < MAX_COIN) AddCoin(1);
+
         }
 
         public void OpenNextDungeon()
@@ -385,18 +337,11 @@ namespace HideAndSeek
         public void EnterDungeon()
         {
             SoundManager.instance.PlaySingle(btnClick);
-            if (curDungeon.cost > info.coin)
-            {
-                Notice.instance.Show("입장에 필요한 주화가 없다.", 2f, Color.white);
-                return;
-            }
 
             curDungeon.init();
             timeLimit = curDungeon.TimeLimit();
             dungeonGem = 0;
-            SetPlayerHp(info.maxHp);
-            info.coin -= curDungeon.cost;
-
+            SetPlayerHp(maxHp);
             SetupPlayerData();
 
             GameManager.instance.tilesOnStages.Clear();
@@ -422,14 +367,6 @@ namespace HideAndSeek
                 { "id", curDungeon.id},
             });
 
-        }
-
-        public void EnterInven()
-        {
-            SoundManager.instance.PlaySingle(btnClick);
-            ChangeState(GAME_STATE.INVENTORY);
-
-            Analytics.CustomEvent("Enter Inven", new Dictionary<string, object>{});
         }
 
         public void EnterShop()
@@ -481,18 +418,7 @@ namespace HideAndSeek
             SaveLoad.Save();
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
 
-            if (isUpdating == false)
-            {
-                InvokeRepeating("UpdateCoin", 0, 1.0f);
-                isUpdating = true;
-            }
-
-            if (info.isClearTutorial) ChangeState(GAME_STATE.LOBBY);
-            else
-            {
-                SelectDungeon(tutorial);
-                ChangeState(GAME_STATE.TUTORIAL);
-            }
+            ChangeState(GAME_STATE.LOBBY);            
         }
         
         public bool CheckState(GAME_STATE state)
@@ -545,7 +471,7 @@ namespace HideAndSeek
         public void GameOver()
         {
             playData.deathCount++;
-            info.bag.Clear();
+            bag.Clear();
             ChangeState(GAME_STATE.OVER);
 
             Analytics.CustomEvent("Dead", new Dictionary<string, object>
@@ -583,15 +509,15 @@ namespace HideAndSeek
 
         public void ExtendMaxHp(int delta)
         {
-            info.maxHp += delta;
+            maxHp += delta;
         }
 
         public void SetPlayerHp(int value)
         {
-            if(value > info.maxHp)
+            if(value > maxHp)
             {
                 print("Warnning: Value is over maxHp" + value);
-                value = info.maxHp;
+                value = maxHp;
             }
 
             playerHp = value;
@@ -600,9 +526,9 @@ namespace HideAndSeek
         public void RecoverHP(int delta)
         {
             playerHp += delta;
-            if (playerHp > info.maxHp)
+            if (playerHp > maxHp)
             {
-                playerHp = info.maxHp;
+                playerHp = maxHp;
             }
         }
 

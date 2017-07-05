@@ -161,7 +161,8 @@ namespace HideAndSeek
             ChangeState(GAME_STATE.START);
 
             DungeonData dungeonData = new DungeonData();
-            dungeons[0] = dungeonData.SetupDungeonDatas();
+            dungeons[0] = dungeonData.SetupDungeon1Data();
+            dungeons[1] = dungeonData.SetupDungeon2Data();
         }
 
         //this is called only once, and the paramter tell it to be called only after the scene was loaded

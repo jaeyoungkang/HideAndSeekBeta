@@ -17,8 +17,6 @@ namespace HideAndSeek
         public Button ReturnBtn;
         public Button ExtendBtn;
 
-        public Text GemText;        
-
         void EnableBagSlot()
         {
             foreach (Button bagBtn in BagBtns)
@@ -34,11 +32,13 @@ namespace HideAndSeek
             ExtendBtn.GetComponentInChildren<Text>().text = "가방확장(" + GameManager.instance.GetPriceExtendBag(BagBtns.Length, GameManager.instance.bagSize) + ")";
         }
 
-        void onEnable()
+        void OnEnable()
         {
             if (GameManager.instance == null) return;
             if (!GameManager.instance.CheckState(GAME_STATE.SHOP)) return;
-            Start();
+            SetupDisplay();
+            SetupBag();
+            EnableBagSlot();
         }
 
         void Start()
@@ -74,11 +74,6 @@ namespace HideAndSeek
 
             ReturnBtn.onClick.AddListener(GameManager.instance.BacktoPreState);
             ExtendBtn.onClick.AddListener(ExtendBagSize);
-        }
-
-        void Update()
-        {
-            GemText.text = "Gem: " + GameManager.instance.dungeonGem.ToString();
         }
 
         void ExtendBagSize()

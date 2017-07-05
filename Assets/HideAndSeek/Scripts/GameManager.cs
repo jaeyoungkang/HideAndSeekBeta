@@ -1,13 +1,10 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Analytics;
-using UnityEngine.UI;                   //Allows us to use UI.
 using Random = UnityEngine.Random; 		//Tells Random to use the Unity Engine random number generator.
 
 using System.Collections;
 using System.Collections.Generic;       //Allows us to use Lists. 
-using System.IO;
-using System;
 
 namespace HideAndSeek
 {    
@@ -20,7 +17,7 @@ namespace HideAndSeek
         public static GameManager instance = null;
         [HideInInspector]
         public bool playersTurn = true;
-
+                
         public Dungeon tutorial;
         public Dungeon[] dungeons;
         private BoardManager boardScript;
@@ -50,7 +47,7 @@ namespace HideAndSeek
         public int dungeonGem = 0;
         public float timeLimit;
         public LevelPlayData playData = new LevelPlayData();
-                
+        
         public void RemoveObj(GameObject obj)
         {
             curObjsOnStage.Remove(obj);
@@ -161,7 +158,10 @@ namespace HideAndSeek
             Notice.instance.InitUI();
             PageManager.instance.InitUI();
 
-            ChangeState(GAME_STATE.START);            
+            ChangeState(GAME_STATE.START);
+
+            DungeonData dungeonData = new DungeonData();
+            dungeons[0] = dungeonData.SetupDungeonDatas();
         }
 
         //this is called only once, and the paramter tell it to be called only after the scene was loaded
@@ -208,6 +208,12 @@ namespace HideAndSeek
 
         public void ShowResult()
         {
+            if(playerHp <= 0)
+            {
+                GameOver();
+                return;
+            }
+
             curDungeon.clearCurLevel();
             Analytics.CustomEvent("Level Clear", new Dictionary<string, object>
             {
@@ -595,7 +601,7 @@ namespace HideAndSeek
 
             foreach(ShowTile sTile in curLv.showTiles)
             {
-                if (sTile.pos == pos) return sTile.type;
+                if (sTile.x == pos.x && sTile.y == pos.y) return sTile.type;
 
             }
             

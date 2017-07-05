@@ -34,8 +34,7 @@ namespace HideAndSeek
             {
                 titleText.text = curDungeon.name +" 클리어!";                
                 
-                string content = "Gem discoverd : " + GameManager.instance.dungeonGem;
-                contentsText.text = content;
+                contentsText.text = "기록들";
 
                 retunrBtn.GetComponentInChildren<Text>().text = "GO TO LOBBY";
                 retunrBtn.onClick.AddListener(GameManager.instance.GoToLobby);                
@@ -43,7 +42,7 @@ namespace HideAndSeek
             else if(GameManager.instance.IsGameOver())
             {
                 titleText.text = "실패!";
-                contentsText.text = "보석과 아이템을 모두 잃어버렸습니다.";
+                contentsText.text = "기록들";
                 retunrBtn.GetComponentInChildren<Text>().text = "GO TO LOBBY";
                 retunrBtn.onClick.AddListener(GameManager.instance.GoToLobby);
             }

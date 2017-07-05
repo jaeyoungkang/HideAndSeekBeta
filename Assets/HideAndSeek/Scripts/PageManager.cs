@@ -95,7 +95,7 @@ namespace HideAndSeek
             dungeonMap.SetActive(bMap);
 
 
-            if (bMap || bDungeon || bResult || bPlay)
+            if (bMap || bDungeon || bResult || bPlay || bShop || bMap)
             {
                 statusPanel.gameObject.SetActive(true);
             }

@@ -104,7 +104,7 @@ namespace HideAndSeek
 
             foreach(ShowTile sTile in lv.showTiles)
             {
-                Vector3 pos = new Vector3(sTile.pos.x, sTile.pos.y, 0f);
+                Vector3 pos = new Vector3(sTile.x, sTile.y, 0f);
                 gridPositionsExcept.Add(pos);
             }
             //gridPositionsExcept.Add(new Vector3(0f, 0f, 0f));
@@ -155,7 +155,7 @@ namespace HideAndSeek
         {
             foreach (ShowTile tile in showTiles)
             {
-                if (x == tile.pos.x && y == tile.pos.y)
+                if (x == tile.x && y == tile.y)
                 {
                     switch (tile.type)
                     {
@@ -282,9 +282,7 @@ namespace HideAndSeek
                 }                                
             }
 
-            lv.itemsDropped = dropItems.ToArray();
-
-            foreach (int id in lv.itemsDropped)
+            foreach (int id in dropItems)
             {
                 foreach (GameObject itemTile in itemTiles)
                 {

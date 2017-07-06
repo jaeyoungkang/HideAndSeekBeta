@@ -354,13 +354,15 @@ namespace HideAndSeek
                 return;
             }
 
-            if (info.enableCount <= 0)
+            if(curDungeon.id != 0)
             {
-                Notice.instance.Show("고대주화가 없어서 입장 할 수 없다...", 2f, Color.yellow);
-                return;
+                if (info.enableCount <= 0)
+                {
+                    Notice.instance.Show("고대주화가 없어서 입장 할 수 없다...", 2f, Color.yellow);
+                    return;
+                }
+                info.enableCount--;
             }
-
-            info.enableCount--;
             SoundManager.instance.PlaySingle(btnClick);
 
             curDungeon.init();

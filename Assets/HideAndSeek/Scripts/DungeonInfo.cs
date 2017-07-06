@@ -25,12 +25,14 @@ namespace HideAndSeek
             if (GameManager.instance == null) return;
             Dungeon curDungeon =  GameManager.instance.GetDungeonInfo();
             if (curDungeon == null) return;
-
+        
+            string needAcoin = " 입장하는데 1개의 고대 주화가 필요\n";
+            if (curDungeon.id == 0) needAcoin = "무료 입장\n"; 
             titleText.text = curDungeon.name;
             if (curDungeon.locked) titleText.text += " (유료)";
             contentText.text = "제한시간: " + curDungeon.TimeLimit() + "\n"
                 + "레벨 수: " + curDungeon.levels.Length + "\n"
-                + " 입장하는데 1개의 고대 주화가 필요\n"
+                + needAcoin
                 + " 현재 보유한 고대 주화 : " + GameManager.instance.info.enableCount + "\n";
 
             

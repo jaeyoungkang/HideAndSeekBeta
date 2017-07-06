@@ -250,11 +250,9 @@ namespace HideAndSeek
 
             Level[] levels = { level1, level2, level4, level3, level5, level6 };
 
-            Dungeon dungeonInfo = new Dungeon("왕의 무덤", 2, 3, levels, 90, true, false);
+            Dungeon dungeonInfo = new Dungeon("왕의 무덤", 2, 3, levels, 90, false, false);
 
             return dungeonInfo;
-
-
         }
 
         public Dungeon SetupDungeon3Data()
@@ -277,7 +275,7 @@ namespace HideAndSeek
 
             Level[] levels = { level1, level2, level4, level5, level6, level8, level9 };
 
-            Dungeon dungeonInfo = new Dungeon("신비한 숲", 3, 4, levels, 120, true, false);
+            Dungeon dungeonInfo = new Dungeon("신비한 숲", 3, 4, levels, 120, false, false);
 
             return dungeonInfo;
         }        

@@ -16,7 +16,7 @@ namespace HideAndSeek
 
     public static class SaveLoad
     {
-        public static string fileName = "/games14.gd";
+        public static string fileName = "/games15.gd";
         public static List<GameInfo> savedGames = new List<GameInfo>();
 
         public static void Save()

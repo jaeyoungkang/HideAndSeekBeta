@@ -244,12 +244,12 @@ namespace HideAndSeek
                 if(itemName == "최대체력")
                 {
                     GameManager.instance.ExtendHp(1);
-                    Notice.instance.Show("최대 체력이 늘어났다.", 1f, Color.blue);
+                    Notice.instance.Show("최대 체력이 늘어났다.", 1f, Color.yellow);
                 }
                 else if (itemName == "가방확장")
                 {
                     GameManager.instance.ExtendBagSize();
-                    Notice.instance.Show("가방 공간이 늘어났다.", 1f, Color.blue);
+                    Notice.instance.Show("가방 공간이 늘어났다.", 1f, Color.yellow);
                 }
                 else if (GameManager.instance.AddBag(item.itemId))
                 {                    

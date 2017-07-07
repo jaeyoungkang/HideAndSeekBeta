@@ -89,8 +89,9 @@ namespace HideAndSeek
         public int curLevelId;
         public bool open;
         public bool locked;
+        public int gem;
 
-        public Dungeon(string _name, int _id, int _nextId, Level[] _levels, float _timeLimit, bool _open, bool _locked)
+        public Dungeon(string _name, int _id, int _nextId, Level[] _levels, float _timeLimit, bool _open, bool _locked, int _gem)
         {
             name = _name;
             id = _id;
@@ -99,6 +100,7 @@ namespace HideAndSeek
             timeLimit = _timeLimit;
             open = _open;
             locked = _locked;
+            gem = _gem;
         }
 
         public void init()
@@ -195,6 +197,7 @@ namespace HideAndSeek
     public class DungeonData
     {
         ShowTile[] tileN3T1;
+        ShowTile[] tileN3A1;
         ShowTile[] tileN3E1;
         ShowTile[] tileN3T1E1;        
         ShowTile[] tileN4T1E1A;
@@ -208,9 +211,9 @@ namespace HideAndSeek
         ItemDropInfo dropSetShow50 = new ItemDropInfo(new int[] { 104, 105, 106 }, 0.5f);
         ItemDropInfo dropSetDestroy50 = new ItemDropInfo(new int[] { 109, 110, 111, 114 }, 0.5f);
         ItemDropInfo dropSetHeal50 = new ItemDropInfo(new int[] { 101, 101, 101, 101, 102 }, 0.5f);
-        ItemDropInfo dropSetTime;
-        ItemDropInfo dropSetRare;
-        ItemDropInfo dropSetUnigue;
+        ItemDropInfo dropSetTime20 = new ItemDropInfo(new int[] { 113, 112, 112,}, 0.2f);
+        ItemDropInfo dropSetRare10 = new ItemDropInfo(new int[] { 103, 107 }, 0.1f);
+        ItemDropInfo dropSetUnigue05 = new ItemDropInfo(new int[] { 115, 116 }, 0.1f);
 
         public Dungeon SetupDungeon1Data()
         {
@@ -226,7 +229,7 @@ namespace HideAndSeek
 
             Level[] levels = { level1, level2, level4, level5 };
 
-            Dungeon dungeonInfo = new Dungeon("고대 유적지", 1, 2, levels, 60, false, false);
+            Dungeon dungeonInfo = new Dungeon("고대 유적지", 1, 2, levels, 60, false, false, 1);
 
             return dungeonInfo;           
         }
@@ -250,7 +253,7 @@ namespace HideAndSeek
 
             Level[] levels = { level1, level2, level4, level3, level5, level6 };
 
-            Dungeon dungeonInfo = new Dungeon("왕의 무덤", 2, 3, levels, 90, false, false);
+            Dungeon dungeonInfo = new Dungeon("왕의 무덤", 2, 3, levels, 90, false, false, 1);
 
             return dungeonInfo;
         }
@@ -270,12 +273,12 @@ namespace HideAndSeek
             level4.setup("방2", 4, 16, 3, 0, 0, 3, new ItemDropInfo[] { dropSetDestroy50, dropSetShow10 }, new int[] { 5 }, false, true, tileN4T1E1A);
             level5.setup("중간방", 5, 16, 2, 1, 0, 4, new ItemDropInfo[] { dropSetDestroy50, dropSetHeal10 }, new int[] { 6,8 }, false, true, tileN3T1);
             level6.setup("방4", 6, 16, 2, 1, 0, 4, new ItemDropInfo[] { dropSetHeal50 }, new int[] { 9 }, false, true, tileN3T1);
-            level8.setup("방3", 8, 16, 1, 2, 0, 4, new ItemDropInfo[] { dropSetShow50, dropSetHeal10 }, new int[] { 9 }, false, true, tileN3E1);
+            level8.setup("방3", 8, 16, 1, 2, 0, 4, new ItemDropInfo[] { dropSetShow50, dropSetHeal10 }, new int[] { 9 }, false, true, tileN3A1);
             level9.setup("최종방", 9, 18, 2, 2, 0, 0, new ItemDropInfo[] { dropSetShow50, dropSetHeal10 }, new int[] { }, false, true, tileN3E1);
 
             Level[] levels = { level1, level2, level4, level5, level6, level8, level9 };
 
-            Dungeon dungeonInfo = new Dungeon("신비한 숲", 3, 4, levels, 120, false, false);
+            Dungeon dungeonInfo = new Dungeon("신비한 숲", 3, 4, levels, 120, false, false, 2);
 
             return dungeonInfo;
         }        
@@ -287,6 +290,13 @@ namespace HideAndSeek
                     new ShowTile(new Vector3(5, 3, 0), SHOW_TYPE.NEAR),
                     new ShowTile(new Vector3(2, 4, 0), SHOW_TYPE.NEAR),
                     new ShowTile(new Vector3(0, 7, 0), SHOW_TYPE.TRAP)
+            };
+
+            tileN3A1 = new ShowTile[]{
+                    new ShowTile(new Vector3(0, 0, 0), SHOW_TYPE.NEAR),
+                    new ShowTile(new Vector3(5, 3, 0), SHOW_TYPE.NEAR),
+                    new ShowTile(new Vector3(2, 4, 0), SHOW_TYPE.NEAR),
+                    new ShowTile(new Vector3(0, 7, 0), SHOW_TYPE.ALL)
             };
 
             tileN3E1 = new ShowTile[]{

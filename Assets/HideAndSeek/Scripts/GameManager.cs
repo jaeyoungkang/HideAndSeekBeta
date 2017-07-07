@@ -41,6 +41,7 @@ namespace HideAndSeek
         public GameInfo info = new GameInfo();
 
         public List<int> bag;
+        public int maxBagSize;
         public int bagSize;
         public int maxHp;
         public int playerHp;
@@ -96,32 +97,16 @@ namespace HideAndSeek
             tilesOnStages[id].Add(tile);
         }
 
-        public int GetPriceExtendBag(int limit, int curSize)
+        public void ExtendBagSize()
         {
-            int delta = limit - curSize;
-            if (delta > 2) return 5;
-            else if (delta > 1) return 15;
-            else return 30;
-        }
-
-        public int GetPriceExtendInven(int limit, int curSize)
-        {
-            int delta = limit - curSize;
-            if (delta > 4) return 10;
-            else if (delta > 2) return 20;
-            else return 30;
-        }
-
-        public bool ExtendBagSize(int limit)
-        {
-            if (bagSize < limit)
+            if (bagSize < 6)
             {
-
                 bagSize++;
-                return true;
             }
-
-            return false;
+            else
+            {
+                Notice.instance.Show("이미 최대치이다...", 1F, Color.white);
+            }            
         }
 
         public bool AddBag(int itemId)
@@ -367,8 +352,9 @@ namespace HideAndSeek
 
             curDungeon.init();
             timeLimit = curDungeon.TimeLimit();
-            dungeonGem = 0;
-            SetPlayerHp(maxHp);
+            dungeonGem = curDungeon.gem;
+            playerHp = maxHp;
+            bagSize = maxBagSize;
             SetupPlayerData();
 
             GameManager.instance.tilesOnStages.Clear();
@@ -541,20 +527,9 @@ namespace HideAndSeek
             ShowObjects(true, range);
         }
 
-        public void ExtendMaxHp(int delta)
+        public void ExtendHp(int delta)
         {
-            maxHp += delta;
-        }
-
-        public void SetPlayerHp(int value)
-        {
-            if(value > maxHp)
-            {
-                print("Warnning: Value is over maxHp" + value);
-                value = maxHp;
-            }
-
-            playerHp = value;
+            playerHp += delta;
         }
 
         public void RecoverHP(int delta)

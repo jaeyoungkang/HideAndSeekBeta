@@ -239,14 +239,25 @@ namespace HideAndSeek
             else if (other.tag == "Item")
             {
                 ItemObject item = other.gameObject.GetComponent<ItemObject>();
-                if (GameManager.instance.AddBag(item.itemId))
+
+                string itemName = ItemManager.instance.GetNameByItemId(item.itemId);
+                if(itemName == "최대체력")
+                {
+                    GameManager.instance.ExtendHp(1);
+                    Notice.instance.Show("최대 체력이 늘어났다.", 1f, Color.blue);
+                }
+                else if (itemName == "가방확장")
+                {
+                    GameManager.instance.ExtendBagSize();
+                    Notice.instance.Show("가방 공간이 늘어났다.", 1f, Color.blue);
+                }
+                else if (GameManager.instance.AddBag(item.itemId))
                 {                    
                     SoundManager.instance.RandomizeSfx(goldASound, goldASound);
                     StartCoroutine(HideAni(other.gameObject));
                     Controller controller = FindObjectOfType(typeof(Controller)) as Controller;
                     controller.SetupSlots();
 
-                    string itemName = ItemManager.instance.GetNameByItemId(item.itemId);
                     GameManager.instance.playData.getItems.Add(itemName);
                     if (bHideMode) BreakedHiding("아이템을 줍는 소리에 은신이 풀렸다...");
 
@@ -391,8 +402,9 @@ namespace HideAndSeek
                     break;
 
                 case "최대체력":
-                    GameManager.instance.ExtendMaxHp(1);
+                    GameManager.instance.ExtendHp(1);
                     break;
+                
             }
 
             Analytics.CustomEvent("Use Item", new Dictionary<string, object>

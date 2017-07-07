@@ -28,8 +28,6 @@ namespace HideAndSeek
             {
                 BagBtns[i].gameObject.SetActive(true);
             }
-
-            ExtendBtn.GetComponentInChildren<Text>().text = "가방확장(" + GameManager.instance.GetPriceExtendBag(BagBtns.Length, GameManager.instance.bagSize) + ")";
         }
 
         void OnEnable()
@@ -73,24 +71,7 @@ namespace HideAndSeek
             DisplayBtns[14].onClick.AddListener(() => { BuyItem(14); });
 
             ReturnBtn.onClick.AddListener(GameManager.instance.BacktoPreState);
-            ExtendBtn.onClick.AddListener(ExtendBagSize);
         }
-
-        void ExtendBagSize()
-        {
-            int extendPrice = GameManager.instance.GetPriceExtendBag(BagBtns.Length, GameManager.instance.bagSize);
-            if (GameManager.instance.dungeonGem < extendPrice)
-            {
-                Notice.instance.Show("보석이 부족합니다.", 2f, Color.white);
-                return;
-            }
-
-            if (GameManager.instance.ExtendBagSize(BagBtns.Length))
-            {
-                GameManager.instance.dungeonGem -= extendPrice;
-                EnableBagSlot();
-            }
-        } 
 
         void BuyItem(int index)
         {            

@@ -109,7 +109,7 @@ namespace HideAndSeek
             }            
         }
 
-        public bool AddBag(int itemId)
+        public bool AddItemInBag(int itemId)
         {
             if (bag.Count == bagSize) return false;
             bag.Add(itemId);
@@ -355,6 +355,7 @@ namespace HideAndSeek
             dungeonGem = curDungeon.gem;
             playerHp = maxHp;
             bagSize = maxBagSize;
+            bag.Clear();
             SetupPlayerData();
 
             GameManager.instance.tilesOnStages.Clear();

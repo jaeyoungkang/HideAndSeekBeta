@@ -251,7 +251,7 @@ namespace HideAndSeek
                     GameManager.instance.ExtendBagSize();
                     Notice.instance.Show("가방 공간이 늘어났다.", 1f, Color.yellow);
                 }
-                else if (GameManager.instance.AddBag(item.itemId))
+                else if (GameManager.instance.AddItemInBag(item.itemId))
                 {                    
                     SoundManager.instance.RandomizeSfx(goldASound, goldASound);
                     StartCoroutine(HideAni(other.gameObject));

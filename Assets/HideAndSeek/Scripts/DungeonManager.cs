@@ -160,35 +160,33 @@ namespace HideAndSeek
         }
     }
 
-    public class LevelPlayData
+    public class DungeonPlayData
     {
-        public string dungeonName = "";
-        public string levelName = "";
         public int gemCount = 0;
-        public int deathCount = 0;
-        public int trappedCount = 0;
-        public int attackedCount = 0;
+        public int damagedBytrapCount = 0;
+        public int damagedByEnemyCount = 0;
         public int damagedByTimeCount = 0;
-        
-        public List<int> hps = new List<int>();
+
+        public int destroyEnemy = 0;
+        public int destroyTrap = 0;
+        public int butItems = 0;
+        public int sellItems = 0;
+
         public List<string> useItems = new List<string>();
         public List<string> getItems = new List<string>();
 
         public void Init()
         {
-            dungeonName = "";
-            InitLevelPlayData();
-        }
-
-        public void InitLevelPlayData()
-        {
-            levelName = "";
             gemCount = 0;
-            deathCount = 0;
-            trappedCount = 0;
-            attackedCount = 0;
+            damagedBytrapCount = 0;
+            damagedByEnemyCount = 0;
             damagedByTimeCount = 0;
-            hps.Clear();
+
+            destroyEnemy = 0;
+            destroyTrap = 0;
+            butItems = 0;
+            sellItems = 0;
+
             useItems.Clear();
             getItems.Clear();
         }

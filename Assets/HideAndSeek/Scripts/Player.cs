@@ -67,7 +67,7 @@ namespace HideAndSeek
                 Notice.instance.Show("시간이 다되어서 피해를 입었다...", 1f, Color.red);
                 GameManager.instance.timeLimit = 10;
                 LoseHP(1);
-                GameManager.instance.playData.damagedByTimeCount++;
+                GameManager.instance.dungeonPlayData.damagedByTimeCount++;
 
                 Analytics.CustomEvent("Damaged by Time", new Dictionary<string, object>
                 {
@@ -145,8 +145,6 @@ namespace HideAndSeek
                 if(bHideMode == false) SoundManager.instance.RandomizeSfx (moveSound1, moveSound2);
                 
                 CheckTrap(xDir, yDir);
-
-                GameManager.instance.playData.hps.Add(GameManager.instance.playerHp);
             }          
 
 			CheckIfGameOver ();
@@ -168,7 +166,7 @@ namespace HideAndSeek
                 LoseHP(1);
                 SoundManager.instance.RandomizeSfx(attackedSound1, attackedSound2);
 
-                GameManager.instance.playData.trappedCount++;
+                GameManager.instance.dungeonPlayData.damagedBytrapCount++;
 
                 Analytics.CustomEvent("Damaged by Trap", new Dictionary<string, object>
                 {
@@ -227,7 +225,7 @@ namespace HideAndSeek
                 GetGem(1);
                 StartCoroutine(HideAni(other.gameObject));
 
-                GameManager.instance.playData.gemCount++;
+                GameManager.instance.dungeonPlayData.gemCount++;
                 if (bHideMode) BreakedHiding("보석을 줍는 소리에 은신이 풀렸다...");
 
                 Analytics.CustomEvent("Discover Gem", new Dictionary<string, object>
@@ -258,7 +256,7 @@ namespace HideAndSeek
                     Controller controller = FindObjectOfType(typeof(Controller)) as Controller;
                     controller.SetupSlots();
 
-                    GameManager.instance.playData.getItems.Add(itemName);
+                    GameManager.instance.dungeonPlayData.getItems.Add(itemName);
                     if (bHideMode) BreakedHiding("아이템을 줍는 소리에 은신이 풀렸다...");
 
                     Analytics.CustomEvent("Discover Item", new Dictionary<string, object>
@@ -362,7 +360,7 @@ namespace HideAndSeek
             SoundManager.instance.PlaySingle(skillSound);
             string name = ItemManager.instance.GetNameByItemId(GameManager.instance.bag[index]);
 
-            GameManager.instance.playData.useItems.Add(name);
+            GameManager.instance.dungeonPlayData.useItems.Add(name);
             switch (name)
             {
                 case "은신": Hide(); break;

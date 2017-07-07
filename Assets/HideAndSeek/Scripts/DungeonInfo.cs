@@ -23,9 +23,22 @@ namespace HideAndSeek
         void SetupInfo()
         {
             if (GameManager.instance == null) return;
-            Dungeon curDungeon =  GameManager.instance.GetDungeonInfo();
+            Dungeon curDungeon = GameManager.instance.GetDungeonInfo();
             if (curDungeon == null) return;
-        
+
+            int tryCount = 0;
+            int clearCount = 0;
+
+            if (GameManager.instance.info.dungeonTryCount.ContainsKey(curDungeon.id))
+            {
+                tryCount = GameManager.instance.info.dungeonTryCount[curDungeon.id] - 1;
+            }
+
+            if (GameManager.instance.info.dungeonClearCount.ContainsKey(curDungeon.id))
+            {
+                clearCount = GameManager.instance.info.dungeonClearCount[curDungeon.id];
+            }
+
             string needAcoin = " 입장하는데 1개의 고대 주화가 필요\n";
             if (curDungeon.id == 0) needAcoin = "무료 입장\n"; 
             titleText.text = curDungeon.name;
@@ -33,9 +46,11 @@ namespace HideAndSeek
             contentText.text = "제한시간: " + curDungeon.TimeLimit() + "\n"
                 + "레벨 수: " + curDungeon.levels.Length + "\n"
                 + needAcoin
-                + " 현재 보유한 고대 주화 : " + GameManager.instance.info.enableCount + "\n";
+                + " 현재 보유한 고대 주화 : " + GameManager.instance.info.enableCount + "\n"
+                + " 도  전 회수 : " + tryCount + "\n"
+                + " 클리어 회수 : " + clearCount + "\n";
 
-            
+
         }
     }
 }

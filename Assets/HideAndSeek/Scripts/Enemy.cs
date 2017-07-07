@@ -110,7 +110,7 @@ namespace HideAndSeek
 
             skipMove = true;
 
-            GameManager.instance.playData.attackedCount++;
+            GameManager.instance.dungeonPlayData.damagedByEnemyCount += playerDamage;
 
             Analytics.CustomEvent("Damaged by Enemy", new Dictionary<string, object>
             {

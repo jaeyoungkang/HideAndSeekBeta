@@ -12,11 +12,27 @@ namespace HideAndSeek
         public List<int> dungeonIdsOpened = new List<int>();
         public bool purchaseUser = false;
         public int enableCount = 10;
+
+        public Dictionary<int, int> dungeonTryCount = new Dictionary<int, int>();
+        public Dictionary<int, int> dungeonClearCount = new Dictionary<int, int>();
+
+        //public Dictionary<int, int> dungeonGetGemsCount = new Dictionary<int, int>();
+
+        //public Dictionary<int, int> dungeonGetItemsCount = new Dictionary<int, int>();
+        //public Dictionary<int, int> dungeonUseItemsCount = new Dictionary<int, int>();
+        //public Dictionary<int, int> dungeonBuyItemsCount = new Dictionary<int, int>();
+        //public Dictionary<int, int> dungeonSellItemsCount = new Dictionary<int, int>();
+
+        //public Dictionary<int, int> dungeonDestoryTrapCount = new Dictionary<int, int>();
+        //public Dictionary<int, int> dungeonDestoryEnemyCount = new Dictionary<int, int>();
+        //public Dictionary<int, int> dungeonDamagedByEnemyCount = new Dictionary<int, int>();
+        //public Dictionary<int, int> dungeonDamagedByTrapCount = new Dictionary<int, int>();
+        //public Dictionary<int, int> dungeonDamagedByTimeCount = new Dictionary<int, int>();
     }
 
     public static class SaveLoad
     {
-        public static string fileName = "/games15.gd";
+        public static string fileName = "/games16.gd";
         public static List<GameInfo> savedGames = new List<GameInfo>();
 
         public static void Save()

@@ -47,7 +47,7 @@ namespace HideAndSeek
         public int playerHp;
         public int dungeonGem = 0;
         public float timeLimit;
-        public LevelPlayData playData = new LevelPlayData();
+        public DungeonPlayData dungeonPlayData = new DungeonPlayData();
         
         public void RemoveObj(GameObject obj)
         {
@@ -75,6 +75,8 @@ namespace HideAndSeek
 
             obj.SetActive(false);
             curEnemiesOnStage.Remove(obj);
+
+            dungeonPlayData.destroyEnemy++;
         }
 
         public void AddEnemy(GameObject enemy, int id)
@@ -214,6 +216,15 @@ namespace HideAndSeek
                 OpenNextDungeon();
                 GetResult();
 
+                if (info.dungeonClearCount.ContainsKey(curDungeon.id))
+                {
+                    info.dungeonClearCount[curDungeon.id]++;
+                }
+                else
+                {
+                    info.dungeonClearCount.Add(curDungeon.id, 1);
+                }
+
                 Analytics.CustomEvent("Dungeon Clear", new Dictionary<string, object>
                 {
                     { "id", curDungeon.id},
@@ -251,8 +262,6 @@ namespace HideAndSeek
                 print("Error: wrong level id " + levelId);
                 return;
             }
-
-            playData.levelName = curDungeon.GetCurLevel().name;
 
             SetActiveMap(trapsOnStages, false);
             SetActiveMap(objsOnStages, false);
@@ -325,12 +334,6 @@ namespace HideAndSeek
             curDungeon = dungeonSelected;            
         }
 
-        public void SetupPlayerData()
-        {
-            playData.Init();
-            playData.dungeonName = curDungeon.name;
-        }
-
         public void EnterDungeon()
         {
             if (curDungeon.locked)
@@ -356,7 +359,7 @@ namespace HideAndSeek
             playerHp = maxHp;
             bagSize = maxBagSize;
             bag.Clear();
-            SetupPlayerData();
+            dungeonPlayData.Init();
 
             GameManager.instance.tilesOnStages.Clear();
             GameManager.instance.objsOnStages.Clear();
@@ -376,7 +379,15 @@ namespace HideAndSeek
 
             ChangeState(GAME_STATE.MAP);
 
-        
+            if(info.dungeonTryCount.ContainsKey(curDungeon.id))
+            {
+                info.dungeonTryCount[curDungeon.id]++;
+            }
+            else
+            {
+                info.dungeonTryCount.Add(curDungeon.id, 1);
+            }
+
             Analytics.CustomEvent("Dungeon Try", new Dictionary<string, object>
             {
                 { "id", curDungeon.id},
@@ -491,7 +502,6 @@ namespace HideAndSeek
 
         public void GameOver()
         {
-            playData.deathCount++;
             bag.Clear();
             ChangeState(GAME_STATE.OVER);
 
@@ -858,6 +868,7 @@ namespace HideAndSeek
 
             aTrap.SetActive(false);
             curTrapsOnStage.Remove(aTrap);
+            dungeonPlayData.destroyTrap++;
         }
 
         public void DropItem(Vector3 dropPos, int[] dropItemList)

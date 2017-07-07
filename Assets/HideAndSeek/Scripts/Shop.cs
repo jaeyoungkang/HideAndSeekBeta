@@ -90,6 +90,7 @@ namespace HideAndSeek
             GameManager.instance.dungeonGem -= price;
             SetupBag();
 
+            GameManager.instance.dungeonPlayData.butItems++;
             Analytics.CustomEvent("Buy Item", new Dictionary<string, object>
             {
                 { "Item id", display[index]},
@@ -105,6 +106,7 @@ namespace HideAndSeek
             GameManager.instance.bag.RemoveAt(index);
             SetupBag();
 
+            GameManager.instance.dungeonPlayData.sellItems++;
             Analytics.CustomEvent("Sell Item", new Dictionary<string, object>
             {
                 { "Item id", display[index]},

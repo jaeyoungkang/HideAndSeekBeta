@@ -377,9 +377,7 @@ namespace HideAndSeek
             bool bTutorial = curDungeon.id == 0;
             boardScript.SetupScene(curDungeon.levels, bTutorial);
 
-            ChangeState(GAME_STATE.MAP);
-
-            if(info.dungeonTryCount.ContainsKey(curDungeon.id))
+            if (info.dungeonTryCount.ContainsKey(curDungeon.id))
             {
                 info.dungeonTryCount[curDungeon.id]++;
             }
@@ -387,6 +385,10 @@ namespace HideAndSeek
             {
                 info.dungeonTryCount.Add(curDungeon.id, 1);
             }
+
+            ChangeState(GAME_STATE.MAP);
+
+            if(curDungeon.id != 0) Notice.instance.Show(curDungeon.gem + "개의 보석을 가지고 시작한다.", 2f, Color.green);            
 
             Analytics.CustomEvent("Dungeon Try", new Dictionary<string, object>
             {

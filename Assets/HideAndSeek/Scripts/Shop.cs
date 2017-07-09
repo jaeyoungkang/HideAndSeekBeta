@@ -8,6 +8,12 @@ using UnityEngine.Analytics;
 
 namespace HideAndSeek
 {
+    public class DetailButton
+    {
+        public Button btn;
+        public Text text;
+    }
+
     public class Shop : MonoBehaviour
     {
         public Button[] DisplayBtns;
@@ -16,6 +22,14 @@ namespace HideAndSeek
         public Button[] BagBtns;
         public Button ReturnBtn;
         public Button ExtendBtn;
+
+        public Button AllBtn;
+        public Button DetailBtn1;
+        public Button DetailBtn2;
+        public Button DetailBtn3;
+
+        public Image simpleView;
+        public Image detailView1;
 
         void EnableBagSlot()
         {
@@ -37,6 +51,7 @@ namespace HideAndSeek
             SetupDisplay();
             SetupBag();
             EnableBagSlot();
+            SetupView(0);
         }
 
         void Start()
@@ -46,6 +61,7 @@ namespace HideAndSeek
             SetupDisplay();
             SetupBag();
             EnableBagSlot();
+            SetupView(0);
 
             BagBtns[0].onClick.AddListener(() => { SellItem(0); });
             BagBtns[1].onClick.AddListener(() => { SellItem(1); });
@@ -71,6 +87,25 @@ namespace HideAndSeek
             DisplayBtns[14].onClick.AddListener(() => { BuyItem(14); });
 
             ReturnBtn.onClick.AddListener(GameManager.instance.BacktoPreState);
+
+            AllBtn.onClick.AddListener(() => { SetupView(0); });
+            DetailBtn1.onClick.AddListener(() => { SetupView(1); });
+            DetailBtn2.onClick.AddListener(() => { SetupView(2); });
+            DetailBtn3.onClick.AddListener(() => { SetupView(3); });
+        }
+
+        void SetupView(int type)
+        {
+            if(type == 0)
+            {
+                simpleView.gameObject.SetActive(true);
+                detailView1.gameObject.SetActive(false);
+            }
+            else
+            {
+                simpleView.gameObject.SetActive(false);
+                detailView1.gameObject.SetActive(true);
+            }            
         }
 
         void BuyItem(int index)
@@ -140,6 +175,7 @@ namespace HideAndSeek
                 if (display.Length <= i) break;                
                 Item itemInfo = ItemManager.instance.GetItemByItemId(display[i]);
                 if (itemInfo == null) continue;
+
                 DisplayBtns[i].GetComponentInChildren<Text>().text = itemInfo.name + "\n(" + itemInfo.price + ")";
 
                 Color itemGradeColor = ItemManager.instance.GetColorByItemGrade(itemInfo.grade);

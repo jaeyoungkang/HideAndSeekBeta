@@ -92,6 +92,12 @@ namespace HideAndSeek
             DisplayBtns[13].onClick.AddListener(() => { BuyItem(13); });
             DisplayBtns[14].onClick.AddListener(() => { BuyItem(14); });
 
+            DetailDisplayBtns[0].onClick.AddListener(() => { BuyItem(0); });
+            DetailDisplayBtns[1].onClick.AddListener(() => { BuyItem(1); });
+            DetailDisplayBtns[2].onClick.AddListener(() => { BuyItem(2); });
+            DetailDisplayBtns[3].onClick.AddListener(() => { BuyItem(3); });
+            DetailDisplayBtns[4].onClick.AddListener(() => { BuyItem(4); });
+
             ReturnBtn.onClick.AddListener(GameManager.instance.BacktoPreState);
 
             AllBtn.onClick.AddListener(() => { SetupView(0); });
@@ -122,6 +128,7 @@ namespace HideAndSeek
 
             if(type == 1)
             {
+                
 
             }
         }
@@ -135,6 +142,31 @@ namespace HideAndSeek
             if (GameManager.instance.dungeonGem < price)
             {
                 Notice.instance.Show("보석이 부족합니다.", 2f, Color.white);
+                return;
+            }
+
+            string itemName= ItemManager.instance.GetNameByItemId(curDisplay[index]);
+            if (itemName == "최대체력")
+            {
+                if (GameManager.instance.ExtendHp(1))
+                {
+                    Notice.instance.Show("최대 체력이 늘어났다.", 1f, Color.yellow);
+                    GameManager.instance.dungeonGem -= price;
+                }
+                else Notice.instance.Show("이미 최대 체력이다.", 1f, Color.yellow);
+                
+                return;
+            }
+            else if (itemName == "가방확장")
+            {
+                if (GameManager.instance.ExtendBagSize())
+                {
+                    Notice.instance.Show("가방 공간이 늘어났다.", 1f, Color.yellow);
+                    GameManager.instance.dungeonGem -= price;
+                    EnableBagSlot();
+                }
+                else Notice.instance.Show("이미 최대치이다...", 1F, Color.white);
+                
                 return;
             }
 
@@ -191,11 +223,24 @@ namespace HideAndSeek
             if (type == 0) curDisplay.AddRange(display);
             else if (type == 1)
             {
-                curDisplay.Add(display[0]);
-                curDisplay.Add(display[3]);
-                curDisplay.Add(display[6]);
-                curDisplay.Add(display[9]);
-                curDisplay.Add(display[12]);
+                for(int i=0; i<5; i++)
+                {
+                    curDisplay.Add(display[i*3]);
+                }                
+            }
+            else if (type == 2)
+            {
+                for (int i = 0; i < 5; i++)
+                {
+                    curDisplay.Add(display[i * 3 + 1]);
+                }
+            }
+            else if (type == 3)
+            {
+                for (int i = 0; i < 5; i++)
+                {
+                    curDisplay.Add(display[i * 3 + 2]);
+                }
             }
 
             Button[] curButtons;
@@ -213,6 +258,11 @@ namespace HideAndSeek
                 Color itemGradeColor = ItemManager.instance.GetColorByItemGrade(itemInfo.grade);
                 ItemManager.instance.SetItemUIColor(curButtons[i], itemGradeColor);
                 
+
+                if(type != 0)
+                {
+                    curButtons[i].gameObject.transform.Find("discribe").gameObject.GetComponentInChildren<Text>().text = itemInfo.description;
+                }
             }
         }
     }

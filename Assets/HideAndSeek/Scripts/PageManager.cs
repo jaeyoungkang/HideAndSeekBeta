@@ -14,6 +14,7 @@ namespace HideAndSeek
         public GameObject shopImage;
         public GameObject controller;
         public GameObject dungeonMap;
+        public GameObject dungeonMapLarge;
         public GameObject dungeonInfoPage;
         public GameObject levelInfoPage;
 
@@ -45,6 +46,8 @@ namespace HideAndSeek
             resultImage = GameObject.Find("ResultImage");
             controller = GameObject.Find("Controller");
             dungeonMap = GameObject.Find("DungeonMap");
+            dungeonMapLarge = GameObject.Find("DungeonMapLarge");
+            
             dungeonInfoPage = GameObject.Find("DungeonInfo");
             levelInfoPage = GameObject.Find("LevelInfo");
 
@@ -69,6 +72,7 @@ namespace HideAndSeek
             bool bResult = false;
             bool bPlay = false;
             bool bMap = false;
+            bool bMapLarge = false;
 
             switch (gameState)
             {
@@ -79,6 +83,7 @@ namespace HideAndSeek
                 case GAME_STATE.LEVEL_INFO: bLevelInfo = true; break;
                 case GAME_STATE.DUNGEON_INFO: bDungeonInfo = true; break;                    
                 case GAME_STATE.MAP: bMap = true; break;
+                case GAME_STATE.MAP_LARGE: bMapLarge = true; break;                    
                 case GAME_STATE.PLAY: bPlay = true; break;
                 case GAME_STATE.RESULT: bResult = true; break;
                 case GAME_STATE.OVER: bResult = true; break;
@@ -91,11 +96,13 @@ namespace HideAndSeek
             dungeonInfoPage.SetActive(bDungeonInfo);
             levelInfoPage.SetActive(bLevelInfo);
             resultImage.SetActive(bResult);
-            controller.SetActive(bPlay);
+            controller.SetActive(bPlay);            
             dungeonMap.SetActive(bMap);
+            dungeonMapLarge.SetActive(bMapLarge);
 
 
-            if (bMap || bDungeon || bResult || bPlay || bShop || bMap)
+
+            if (bMap || bDungeon || bResult || bPlay || bShop || bMap || bMapLarge)
             {
                 statusPanel.gameObject.SetActive(true);
             }

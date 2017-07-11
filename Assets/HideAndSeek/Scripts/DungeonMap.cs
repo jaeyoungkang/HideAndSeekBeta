@@ -14,7 +14,6 @@ namespace HideAndSeek
         {
             if (GameManager.instance == null) return;
             if (GameManager.instance.GetDungeonInfo() == null) return;
-            if (!GameManager.instance.CheckState(GAME_STATE.MAP)) return;
 
             SetupBtns(GameManager.instance.GetDungeonInfo().levels);
             SetupLineImages(GameManager.instance.GetDungeonInfo().levels);            
@@ -40,7 +39,7 @@ namespace HideAndSeek
             shopBtns.onClick.AddListener(GameManager.instance.EnterShop);
         }
 
-        void SetupBtns(Level[] levels)
+        protected void SetupBtns(Level[] levels)
         {
             for (int i = 0; i < levelBtns.Length; i++)
             {
@@ -72,7 +71,7 @@ namespace HideAndSeek
             }           
         }
 
-        void SetupLineImages(Level[] levels)
+        protected void SetupLineImages(Level[] levels)
         {
             foreach(Image img in lineImages)
             {

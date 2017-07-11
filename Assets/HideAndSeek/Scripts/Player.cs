@@ -241,13 +241,15 @@ namespace HideAndSeek
                 string itemName = ItemManager.instance.GetNameByItemId(item.itemId);
                 if(itemName == "최대체력")
                 {
-                    GameManager.instance.ExtendHp(1);
-                    Notice.instance.Show("최대 체력이 늘어났다.", 1f, Color.yellow);
+                    if(GameManager.instance.ExtendHp(1)) Notice.instance.Show("최대 체력이 늘어났다.", 1f, Color.yellow);
+                    else Notice.instance.Show("이미 최대 체력이다.", 1f, Color.yellow);
+                    StartCoroutine(HideAni(other.gameObject));
                 }
                 else if (itemName == "가방확장")
                 {
-                    GameManager.instance.ExtendBagSize();
-                    Notice.instance.Show("가방 공간이 늘어났다.", 1f, Color.yellow);
+                    if(GameManager.instance.ExtendBagSize()) Notice.instance.Show("가방 공간이 늘어났다.", 1f, Color.yellow);
+                    else Notice.instance.Show("이미 최대치이다...", 1F, Color.white);
+                    StartCoroutine(HideAni(other.gameObject));
                 }
                 else if (GameManager.instance.AddItemInBag(item.itemId))
                 {                    
@@ -397,10 +399,6 @@ namespace HideAndSeek
 
                 case "시간멈춤":
                     GameManager.instance.StopTime(true);
-                    break;
-
-                case "최대체력":
-                    GameManager.instance.ExtendHp(1);
                     break;
                 
             }

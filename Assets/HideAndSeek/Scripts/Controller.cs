@@ -36,7 +36,7 @@ namespace HideAndSeek
             slotBtns[5].onClick.AddListener(() => { UseItem(5); });
         }
 
-        public void SetupSlots()
+        void Update()
         {
             for (int i = 0; i < slotBtns.Length; i++)
             {
@@ -48,7 +48,10 @@ namespace HideAndSeek
                 if (GameManager.instance.bagSize <= i) break;
                 slotBtns[i].gameObject.SetActive(true);
             }
+        }
 
+        public void SetupSlots()
+        {
             for (int i = 0; i < slotBtns.Length; i++)
             {
                 slotBtns[i].GetComponentInChildren<Text>().text = "";

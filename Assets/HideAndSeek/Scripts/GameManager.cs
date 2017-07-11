@@ -8,7 +8,7 @@ using System.Collections.Generic;       //Allows us to use Lists.
 
 namespace HideAndSeek
 {    
-    public enum GAME_STATE { START, LOBBY, SHOP, DUNGEON_INFO, LEVEL, LEVEL_INFO, MAP, PLAY, RESULT, OVER }
+    public enum GAME_STATE { START, LOBBY, SHOP, DUNGEON_INFO, LEVEL, LEVEL_INFO, MAP, MAP_LARGE, PLAY, RESULT, OVER }
 
     public class GameManager : MonoBehaviour
     {
@@ -99,16 +99,15 @@ namespace HideAndSeek
             tilesOnStages[id].Add(tile);
         }
 
-        public void ExtendBagSize()
+        public bool ExtendBagSize()
         {
             if (bagSize < 6)
             {
                 bagSize++;
+                return true;
             }
-            else
-            {
-                Notice.instance.Show("이미 최대치이다...", 1F, Color.white);
-            }            
+
+            return false;
         }
 
         public bool AddItemInBag(int itemId)
@@ -152,6 +151,7 @@ namespace HideAndSeek
             dungeons[0] = dungeonData.SetupDungeon1Data();
             dungeons[1] = dungeonData.SetupDungeon2Data();
             dungeons[2] = dungeonData.SetupDungeon3Data();
+            dungeons[3] = dungeonData.SetupDungeonFinalData();
         }
 
         //this is called only once, and the paramter tell it to be called only after the scene was loaded
@@ -356,7 +356,8 @@ namespace HideAndSeek
             curDungeon.init();
             timeLimit = curDungeon.TimeLimit();
             dungeonGem = curDungeon.gem;
-            playerHp = maxHp;
+            playerHp = 3;
+            maxHp = 3;
             bagSize = maxBagSize;
             bag.Clear();
             dungeonPlayData.Init();
@@ -386,7 +387,8 @@ namespace HideAndSeek
                 info.dungeonTryCount.Add(curDungeon.id, 1);
             }
 
-            ChangeState(GAME_STATE.MAP);
+            if(curDungeon.id == 4) ChangeState(GAME_STATE.MAP_LARGE);
+            else ChangeState(GAME_STATE.MAP);
 
             if(curDungeon.id != 0) Notice.instance.Show(curDungeon.gem + "개의 보석을 가지고 시작한다.", 2f, Color.green);            
 
@@ -407,7 +409,8 @@ namespace HideAndSeek
 
         public void GotoDungeonMap()
         {
-            ChangeState(GAME_STATE.MAP);
+            if (curDungeon.id == 4) ChangeState(GAME_STATE.MAP_LARGE);
+            else ChangeState(GAME_STATE.MAP);
         }
 
         public void SelectLevel(int level)
@@ -540,9 +543,12 @@ namespace HideAndSeek
             ShowObjects(true, range);
         }
 
-        public void ExtendHp(int delta)
+        public bool ExtendHp(int delta)
         {
-            playerHp += delta;
+            if (maxHp == 8) return false;
+
+            maxHp += delta;
+            return true;
         }
 
         public void RecoverHP(int delta)

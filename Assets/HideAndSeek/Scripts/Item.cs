@@ -14,5 +14,7 @@ namespace HideAndSeek
         public bool enableSell;
 
         public Sprite tile;
+
+        public string description;
     }
 }

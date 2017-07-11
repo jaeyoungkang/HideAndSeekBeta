@@ -16,8 +16,10 @@ namespace HideAndSeek
 
     public class Shop : MonoBehaviour
     {
+        public Button[] DetailDisplayBtns;
         public Button[] DisplayBtns;
         public int[] display;
+        public List<int> curDisplay = new List<int>();
 
         public Button[] BagBtns;
         public Button ReturnBtn;
@@ -30,6 +32,8 @@ namespace HideAndSeek
 
         public Image simpleView;
         public Image detailView1;
+
+        private int curTab = 0;
 
         void EnableBagSlot()
         {
@@ -47,8 +51,7 @@ namespace HideAndSeek
         void OnEnable()
         {
             if (GameManager.instance == null) return;
-            if (!GameManager.instance.CheckState(GAME_STATE.SHOP)) return;
-            SetupDisplay();
+            if (!GameManager.instance.CheckState(GAME_STATE.SHOP)) return;            
             SetupBag();
             EnableBagSlot();
             SetupView(0);
@@ -58,7 +61,10 @@ namespace HideAndSeek
         {
             if (GameManager.instance == null) return;
             if (!GameManager.instance.CheckState(GAME_STATE.SHOP)) return;
-            SetupDisplay();
+
+            display = ItemManager.instance.GetEnableToSellItemIds();
+            Array.Sort(display);
+
             SetupBag();
             EnableBagSlot();
             SetupView(0);
@@ -99,20 +105,32 @@ namespace HideAndSeek
             if(type == 0)
             {
                 simpleView.gameObject.SetActive(true);
-                detailView1.gameObject.SetActive(false);
+                detailView1.gameObject.SetActive(false);                
             }
             else
             {
                 simpleView.gameObject.SetActive(false);
                 detailView1.gameObject.SetActive(true);
-            }            
+            }
+
+            SetupDisplay(type);
+        }
+
+        void SetupDetailView(int type)
+        {
+            if (type == 0) return;
+
+            if(type == 1)
+            {
+
+            }
         }
 
         void BuyItem(int index)
         {            
-            if (index >= display.Length) return;
+            if (index >= curDisplay.Count) return;
 
-            int price = ItemManager.instance.GetPriceByItemId(display[index]);
+            int price = ItemManager.instance.GetPriceByItemId(curDisplay[index]);
 
             if (GameManager.instance.dungeonGem < price)
             {
@@ -121,14 +139,14 @@ namespace HideAndSeek
             }
 
             if (GameManager.instance.bagSize == GameManager.instance.bag.Count) return;
-            GameManager.instance.bag.Add(display[index]);
+            GameManager.instance.bag.Add(curDisplay[index]);
             GameManager.instance.dungeonGem -= price;
             SetupBag();
 
             GameManager.instance.dungeonPlayData.butItems++;
             Analytics.CustomEvent("Buy Item", new Dictionary<string, object>
             {
-                { "Item id", display[index]},
+                { "Item id", curDisplay[index]},
             });
 
         }
@@ -136,16 +154,17 @@ namespace HideAndSeek
         void SellItem(int index)
         {
             if (index >= GameManager.instance.bag.Count) return;
+            Analytics.CustomEvent("Sell Item", new Dictionary<string, object>
+            {
+                { "Item id", GameManager.instance.bag[index]},
+            });
+
             int price = ItemManager.instance.GetPriceByItemId(GameManager.instance.bag[index]);
             GameManager.instance.dungeonGem += price;
             GameManager.instance.bag.RemoveAt(index);
             SetupBag();
 
-            GameManager.instance.dungeonPlayData.sellItems++;
-            Analytics.CustomEvent("Sell Item", new Dictionary<string, object>
-            {
-                { "Item id", display[index]},
-            });
+            GameManager.instance.dungeonPlayData.sellItems++;            
         }
 
         private void SetupBag()
@@ -166,20 +185,34 @@ namespace HideAndSeek
             }            
         }
 
-        private void SetupDisplay()
+        private void SetupDisplay(int type)
         {
-            display = ItemManager.instance.GetEnableToSellItemIds();
-            Array.Sort(display);
-            for (int i = 0; i < DisplayBtns.Length; i++)
+            curDisplay.Clear();
+            if (type == 0) curDisplay.AddRange(display);
+            else if (type == 1)
             {
-                if (display.Length <= i) break;                
-                Item itemInfo = ItemManager.instance.GetItemByItemId(display[i]);
+                curDisplay.Add(display[0]);
+                curDisplay.Add(display[3]);
+                curDisplay.Add(display[6]);
+                curDisplay.Add(display[9]);
+                curDisplay.Add(display[12]);
+            }
+
+            Button[] curButtons;
+            if (type == 0) curButtons = DisplayBtns;
+            else curButtons = DetailDisplayBtns;
+
+            for (int i = 0; i < curButtons.Length; i++)
+            {
+                if (curDisplay.Count <= i) break;                
+                Item itemInfo = ItemManager.instance.GetItemByItemId(curDisplay[i]);
                 if (itemInfo == null) continue;
 
-                DisplayBtns[i].GetComponentInChildren<Text>().text = itemInfo.name + "\n(" + itemInfo.price + ")";
+                curButtons[i].GetComponentInChildren<Text>().text = itemInfo.name + "\n(" + itemInfo.price + ")";
 
                 Color itemGradeColor = ItemManager.instance.GetColorByItemGrade(itemInfo.grade);
-                ItemManager.instance.SetItemUIColor(DisplayBtns[i], itemGradeColor);                         
+                ItemManager.instance.SetItemUIColor(curButtons[i], itemGradeColor);
+                
             }
         }
     }

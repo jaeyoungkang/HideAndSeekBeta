@@ -131,11 +131,7 @@ namespace HideAndSeek
 
         protected override void AttemptMove <T> (int xDir, int yDir)
 		{
-            SHOW_TYPE st = checkPos(xDir, yDir);
-            if(st == SHOW_TYPE.NONE) GameManager.instance.ShowAllMap(false);
-            else 
-                GameManager.instance.ShowMap(new Vector3(transform.position.x + xDir, transform.position.y + yDir, 0), st);
-            
+            GameManager.instance.ShowAllMap(false);
             GameManager.instance.StopTime(false);
 
             base.AttemptMove <T> (xDir, yDir);
@@ -143,9 +139,13 @@ namespace HideAndSeek
 			if (Move (xDir, yDir, out hit)) 
 			{
                 if(bHideMode == false) SoundManager.instance.RandomizeSfx (moveSound1, moveSound2);
-                
+                GameManager.instance.ShowMap(new Vector3(transform.position.x + xDir, transform.position.y + yDir, 0), checkPos(xDir, yDir));
                 CheckTrap(xDir, yDir);
-            }          
+            }
+            else
+            {
+                GameManager.instance.ShowMap(new Vector3(transform.position.x, transform.position.y, 0), checkPos(0, 0));
+            }
 
 			CheckIfGameOver ();
 			

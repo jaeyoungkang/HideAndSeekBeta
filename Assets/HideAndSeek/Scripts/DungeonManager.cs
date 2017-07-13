@@ -57,6 +57,7 @@ namespace HideAndSeek
         public string name;
         public int id;
         public int trap;
+        public int trapLv2;
         public int enemy;
         public int strongEnemy;
         public int thief;
@@ -65,23 +66,15 @@ namespace HideAndSeek
         public int[] nextIds;
         public bool clear;
         public bool close;
-        public ShowTile[] showTiles = 
-                    {
-                        new ShowTile(new Vector3(0, 0, 0 ), SHOW_TYPE.NEAR),
-                        new ShowTile(new Vector3(2, 2, 0 ), SHOW_TYPE.NEAR),
-                        new ShowTile(new Vector3(5, 2, 0 ), SHOW_TYPE.NEAR),
-                        new ShowTile(new Vector3(2, 5, 0 ), SHOW_TYPE.NEAR),
-                        new ShowTile(new Vector3(5, 5, 0 ), SHOW_TYPE.NEAR),
-                        new ShowTile(new Vector3(7, 0, 0 ), SHOW_TYPE.MONSTER),
-                        new ShowTile(new Vector3(0, 7, 0 ), SHOW_TYPE.TRAP)
-                    };        
+        public int showTileNum = 7;
 
-        public void setup(string _name, int _id, int _trap, int _enemy, int _strongEnemy, int _thief, int _gem,
-                            ItemDropInfo[] _itemDropInfos, int[] _nextIds, bool _clear, bool _close, ShowTile[] _showTiles)
+        public void setup(string _name, int _id, int _trap, int _trapLv2, int _enemy, int _strongEnemy, int _thief, int _gem,
+                            ItemDropInfo[] _itemDropInfos, int[] _nextIds, bool _clear, bool _close, int _showTile)
         {
             name = _name;
             id = _id;
             trap = _trap;
+            trapLv2 = _trapLv2;
             enemy = _enemy;
             strongEnemy = _strongEnemy;
             thief = _thief ;
@@ -90,7 +83,7 @@ namespace HideAndSeek
             nextIds = _nextIds;
             clear = _clear;
             close = _close;
-            showTiles = _showTiles;
+            showTileNum = _showTile;
         }
     }
 
@@ -210,14 +203,6 @@ namespace HideAndSeek
 
     public class DungeonData
     {
-        ShowTile[] tileN3T1;
-        ShowTile[] tileN3A1;
-        ShowTile[] tileN3E1;
-        ShowTile[] tileN3T1E1;        
-        ShowTile[] tileN4T1E1A;
-        ShowTile[] tileN4T1E1B;
-        ShowTile[] tileN5T1E1;
-
         ItemDropInfo dropSetShow10 = new ItemDropInfo(new int[] { 104, 105, 106, 107 }, 0.1f);
         ItemDropInfo dropSetDestroy10 = new ItemDropInfo(new int[] { 109, 110, 111, 114 }, 0.1f);
         ItemDropInfo dropSetHeal10 = new ItemDropInfo(new int[] { 102, 102, 103 }, 0.1f);
@@ -229,6 +214,24 @@ namespace HideAndSeek
         ItemDropInfo dropSetRare10 = new ItemDropInfo(new int[] { 103, 107 }, 0.1f);
         ItemDropInfo dropSetExtend20 = new ItemDropInfo(new int[] { 115, 116 }, 0.2f);
 
+        public Dungeon SetupTutorialData()
+        {
+            Level level1 = new Level();
+            Level level2 = new Level();
+            Level level3 = new Level();
+
+            //            이름,번호, 함정, 괴물, 괴물, 도둑, 보석, 아이템 드랍, 다음레벨, 클리어, 오픈, 쇼타일
+            level1.setup("시작방", 1, 10, 0, 1, 0, 0, 1, new ItemDropInfo[] { dropSetRare10 }, new int[] { 2 }, false, false, 7); // boardmanager에 하드코딩되어 있음
+            level2.setup("중간방", 2, 9, 0, 1, 0, 0, 2, new ItemDropInfo[] { dropSetDestroy50, dropSetShow50 }, new int[] { 3 }, false, true, 7); 
+            level3.setup("최종방", 3, 9, 0, 2, 0, 0, 0, new ItemDropInfo[] { dropSetHeal50 }, new int[] { }, false, true, 7);
+
+            Level[] levels = { level1, level2, level3};
+
+            Dungeon dungeonInfo = new Dungeon("시험의 던전", 0, 1, levels, 300, true, false, 0);
+
+            return dungeonInfo;
+        }
+
         public Dungeon SetupDungeon1Data()
         {
             Level level1 = new Level();
@@ -236,10 +239,10 @@ namespace HideAndSeek
             Level level4 = new Level();
             Level level5 = new Level();
             //            이름,번호, 함정, 괴물, 괴물, 도둑, 보석, 아이템 드랍, 다음레벨, 클리어, 오픈, 쇼타일
-            level1.setup("시작방", 1, 10, 1, 0, 0, 1, new ItemDropInfo[] { dropSetRare10 }, new int[] { 2, 4 }, false, false, tileN5T1E1);
-            level2.setup("방1", 2, 10, 2, 0, 0, 2, new ItemDropInfo[] { dropSetShow50 }, new int[] { 5 }, false, true, tileN4T1E1A);
-            level4.setup("방2", 4, 10, 2, 0, 0, 2, new ItemDropInfo[] { dropSetDestroy50, dropSetShow10 }, new int[] { 5 }, false, true, tileN4T1E1A);
-            level5.setup("최종방", 5, 12, 3, 0, 0, 0, new ItemDropInfo[] { dropSetHeal50 }, new int[] {}, false, true, tileN4T1E1B);
+            level1.setup("시작방", 1, 10, 0, 1, 0, 0, 1, new ItemDropInfo[] { dropSetRare10 }, new int[] { 2, 4 }, false, false, 7);
+            level2.setup("방1", 2, 10, 0, 2, 0, 0, 2, new ItemDropInfo[] { dropSetShow50 }, new int[] { 5 }, false, true, 6);
+            level4.setup("방2", 4, 10, 0, 2, 0, 0, 2, new ItemDropInfo[] { dropSetDestroy50, dropSetShow10 }, new int[] { 5 }, false, true, 6);
+            level5.setup("최종방", 5, 12, 0, 3, 0, 0, 0, new ItemDropInfo[] { dropSetHeal50 }, new int[] {}, false, true, 6);
 
             Level[] levels = { level1, level2, level4, level5 };
 
@@ -258,12 +261,12 @@ namespace HideAndSeek
             Level level6 = new Level();
 
             //            이름,번호, 함정, 괴물, 괴물, 도둑, 보석, 아이템 드랍, 다음레벨, 클리어, 오픈, 쇼타일
-            level1.setup( "시작방", 1, 12, 1, 0, 0, 2,  new ItemDropInfo[] { dropSetHeal50,  }, new int[] { 2, 4 }, false, false, tileN4T1E1A);
-            level2.setup( "방1", 2, 14, 2, 0, 0, 3,     new ItemDropInfo[] { dropSetShow50, dropSetExtend20 }, new int[] { 3,5 }, false, true, tileN4T1E1A );
-            level4.setup( "방2", 4, 14, 2, 0, 0, 3,     new ItemDropInfo[] { dropSetDestroy50, dropSetExtend20 }, new int[] { 5 }, false, true, tileN4T1E1A );
-            level3.setup( "방3", 3, 14, 2, 1, 0, 3,      new ItemDropInfo[] { dropSetShow50, dropSetRare10, dropSetDestroy10 }, new int[] { 6 }, false, true, tileN4T1E1B);
-            level5.setup( "방4", 5, 14, 3, 0, 0, 3,      new ItemDropInfo[] { dropSetDestroy50, dropSetRare10, dropSetShow10 }, new int[] { 6 }, false, true, tileN4T1E1B);
-            level6.setup( "최종방", 6, 16, 3, 1, 0, 0,   new ItemDropInfo[] { dropSetHeal50, dropSetTime20 }, new int[] { }, false, true, tileN3T1E1);
+            level1.setup( "시작방", 1, 12, 0, 1, 0, 0, 2,  new ItemDropInfo[] { dropSetHeal50,  }, new int[] { 2, 4 }, false, false, 6);
+            level2.setup( "방1", 2, 14, 0, 2, 0, 0, 3,     new ItemDropInfo[] { dropSetShow50, dropSetExtend20 }, new int[] { 3,5 }, false, true, 6);
+            level4.setup( "방2", 4, 14, 0, 2, 0, 0, 3,     new ItemDropInfo[] { dropSetDestroy50, dropSetExtend20 }, new int[] { 5 }, false, true, 6);
+            level3.setup( "방3", 3, 12, 2, 2, 1, 0, 3,      new ItemDropInfo[] { dropSetShow50, dropSetRare10, dropSetDestroy10 }, new int[] { 6 }, false, true, 5);
+            level5.setup( "방4", 5, 12, 2, 3, 0, 0, 3,      new ItemDropInfo[] { dropSetDestroy50, dropSetRare10, dropSetShow10 }, new int[] { 6 }, false, true, 5);
+            level6.setup( "최종방", 6, 12, 4, 3, 1, 0, 0,   new ItemDropInfo[] { dropSetHeal50, dropSetTime20 }, new int[] { }, false, true, 5);
 
             Level[] levels = { level1, level2, level4, level3, level5, level6 };
 
@@ -282,13 +285,13 @@ namespace HideAndSeek
             Level level8 = new Level();
             Level level9 = new Level();
             //            이름,번호, 함정, 괴물, 괴물, 도둑, 보석, 아이템 드랍, 다음레벨, 클리어, 오픈, 쇼타일
-            level1.setup("시작방", 1, 14, 2, 0, 0, 2, new ItemDropInfo[] { dropSetHeal50, dropSetExtend20 }, new int[] { 2, 4 }, false, false, tileN4T1E1A);
-            level2.setup("방1", 2, 15, 3, 0, 0, 3, new ItemDropInfo[] { dropSetRare10, dropSetExtend20 }, new int[] { 5 }, false, true, tileN4T1E1A);
-            level4.setup("방2", 4, 15, 3, 0, 0, 3, new ItemDropInfo[] { dropSetRare10, dropSetExtend20 }, new int[] { 5 }, false, true, tileN4T1E1A);
-            level5.setup("중간방", 5, 15, 2, 1, 0, 4, new ItemDropInfo[] { dropSetDestroy50, dropSetHeal10, dropSetShow10, dropSetTime20 }, new int[] { 6,8 }, false, true, tileN3T1);
-            level6.setup("방4", 6, 15, 3, 1, 0, 4, new ItemDropInfo[] { dropSetRare10, dropSetDestroy10}, new int[] { 9 }, false, true, tileN3T1);
-            level8.setup("방3", 8, 15, 2, 2, 0, 4, new ItemDropInfo[] { dropSetRare10, dropSetDestroy10}, new int[] { 9 }, false, true, tileN3A1);
-            level9.setup("최종방", 9, 16, 3, 2, 0, 0, new ItemDropInfo[] { dropSetShow50, dropSetHeal50 }, new int[] { }, false, true, tileN3E1);
+            level1.setup("시작방", 1, 14, 0, 2, 0, 0, 2, new ItemDropInfo[] { dropSetHeal50, dropSetExtend20 }, new int[] { 2, 4 }, false, false, 6);
+            level2.setup("방1", 2, 12, 2, 3, 0, 0, 3, new ItemDropInfo[] { dropSetRare10, dropSetExtend20 }, new int[] { 5 }, false, true, 6);
+            level4.setup("방2", 4, 12, 2, 3, 0, 0, 3, new ItemDropInfo[] { dropSetRare10, dropSetExtend20 }, new int[] { 5 }, false, true, 6);
+            level5.setup("중간방", 5, 10, 4, 2, 1, 0, 4, new ItemDropInfo[] { dropSetDestroy50, dropSetHeal10, dropSetShow10, dropSetTime20 }, new int[] { 6,8 }, false, true, 5);
+            level6.setup("방4", 6, 10, 4, 3, 1, 0, 4, new ItemDropInfo[] { dropSetRare10, dropSetDestroy10}, new int[] { 9 }, false, true, 5);
+            level8.setup("방3", 8, 10, 4, 2, 2, 0, 4, new ItemDropInfo[] { dropSetRare10, dropSetDestroy10}, new int[] { 9 }, false, true, 5);
+            level9.setup("최종방", 9, 10, 6, 3, 2, 0, 0, new ItemDropInfo[] { dropSetShow50, dropSetHeal50 }, new int[] { }, false, true, 5);
 
             Level[] levels = { level1, level2, level4, level5, level6, level8, level9 };
 
@@ -316,107 +319,39 @@ namespace HideAndSeek
             Level level14 = new Level();
             Level level15 = new Level();
             Level level16 = new Level();
-
-            List<ShowTile[]> list = new List<ShowTile[]>();
-            list.Add(tileN3A1); list.Add(tileN3E1); list.Add(tileN3T1);
-
-            var rIdx = new int[] { 0, 1, 2};
-            new System.Random().Shuffle(rIdx);            
-
+            
             // 13 14 15 16
             // 9  10 11 12
             // 5  6  7  8 
             // 1  2  3  4
 
             //            이름,번호, 함정, 괴물, 괴물, 도둑, 보석, 아이템 드랍, 다음레벨, 클리어, 오픈, 쇼타일
-            level1.setup("시작방", 1, 16, 3, 0, 0, 2, new ItemDropInfo[] { dropSetRare10, dropSetExtend20 }, new int[] { 2, 5 }, false, false, tileN4T1E1A);
-            level2.setup("방1", 2, 16, 3, 0, 0, 3, new ItemDropInfo[] { dropSetRare10, dropSetExtend20 }, new int[] { 3, 6 }, false, true, tileN4T1E1A);
-            level5.setup("방2", 5, 16, 3, 0, 0, 3, new ItemDropInfo[] { dropSetRare10, dropSetExtend20 }, new int[] { 6, 9 }, false, true, tileN4T1E1A);
+            level1.setup("시작방", 1, 16, 0, 3, 0, 0, 2, new ItemDropInfo[] { dropSetRare10, dropSetExtend20 }, new int[] { 2, 5 }, false, false, 6);
+            level2.setup("방1", 2, 16, 0, 3, 0, 0, 3, new ItemDropInfo[] { dropSetRare10, dropSetExtend20 }, new int[] { 3, 6 }, false, true, 6);
+            level5.setup("방2", 5, 16, 0, 3, 0, 0, 3, new ItemDropInfo[] { dropSetRare10, dropSetExtend20 }, new int[] { 6, 9 }, false, true, 6);
 
-            level3.setup("방3", 3, 17, 4, 0, 0, 4, new ItemDropInfo[] { dropSetHeal50, dropSetDestroy10 }, new int[] { 7, 4 }, false, true, tileN3T1);
-            level6.setup("방4", 6, 17, 4, 0, 0, 4, new ItemDropInfo[] { dropSetHeal50, dropSetDestroy10 }, new int[] { 7, 10 }, false, true, tileN3T1);
-            level9.setup("방5", 9, 17, 4, 0, 0, 4, new ItemDropInfo[] { dropSetHeal50, dropSetDestroy10 }, new int[] { 10, 13 }, false, true, tileN3T1);
+            level3.setup("방3", 3, 17, 0, 4, 0, 0, 4, new ItemDropInfo[] { dropSetHeal50, dropSetDestroy10 }, new int[] { 7, 4 }, false, true, 5);
+            level6.setup("방4", 6, 17, 0, 4, 0, 0, 4, new ItemDropInfo[] { dropSetHeal50, dropSetDestroy10 }, new int[] { 7, 10 }, false, true, 5);
+            level9.setup("방5", 9, 17, 0, 4, 0, 0, 4, new ItemDropInfo[] { dropSetHeal50, dropSetDestroy10 }, new int[] { 10, 13 }, false, true, 5);
 
-            level4.setup("중간방1", 4, 18, 2, 2, 0, 4, new ItemDropInfo[] { dropSetShow50, dropSetDestroy10}, new int[] { 3,8 }, false, true, tileN3T1);
-            level7.setup("중간방2", 7, 18, 2, 2, 0, 4, new ItemDropInfo[] { dropSetShow10, dropSetDestroy50 }, new int[] { 3,8,11 }, false, true, tileN3A1);
-            level10.setup("중간방3", 10, 18, 2, 2, 0, 4, new ItemDropInfo[] { dropSetShow50, dropSetDestroy10 }, new int[] { 9,14,11}, false, true, tileN3E1);
-            level13.setup("중간방4", 13, 18, 2, 2, 0, 4, new ItemDropInfo[] { dropSetShow10, dropSetDestroy50 }, new int[] { 9,14}, false, true, tileN3E1);
+            level4.setup("중간방1", 4, 16, 2, 2, 2, 0, 4, new ItemDropInfo[] { dropSetShow50, dropSetDestroy10}, new int[] { 3,8 }, false, true, 5);
+            level7.setup("중간방2", 7, 16, 2, 2, 2, 0, 4, new ItemDropInfo[] { dropSetShow10, dropSetDestroy50 }, new int[] { 3,8,11 }, false, true, 5);
+            level10.setup("중간방3", 10, 16, 2, 2, 2, 0, 4, new ItemDropInfo[] { dropSetShow50, dropSetDestroy10 }, new int[] { 9,14,11}, false, true, 5);
+            level13.setup("중간방4", 13, 16, 2, 2, 2, 0, 4, new ItemDropInfo[] { dropSetShow10, dropSetDestroy50 }, new int[] { 9,14}, false, true, 5);
 
-            level8.setup("방6", 8, 19, 3, 2, 0, 4, new ItemDropInfo[] { dropSetTime20, dropSetRare10, dropSetExtend20 }, new int[] { 4,7,12 }, false, false, tileN4T1E1A);
-            level11.setup("방7", 11, 19, 3, 2, 0, 4, new ItemDropInfo[] { dropSetTime20, dropSetRare10, dropSetExtend20 }, new int[] { 7,10,12,15 }, false, true, tileN4T1E1A);
-            level14.setup("방8", 14, 19, 3, 2, 0, 4, new ItemDropInfo[] { dropSetTime20, dropSetRare10, dropSetExtend20 }, new int[] { 10,13,15 }, false, true, tileN4T1E1A);
+            level8.setup("방6", 8, 15, 4, 3, 2, 0, 4, new ItemDropInfo[] { dropSetTime20, dropSetRare10, dropSetExtend20 }, new int[] { 4,7,12 }, false, false, 6);
+            level11.setup("방7", 11, 15, 4, 3, 2, 0, 4, new ItemDropInfo[] { dropSetTime20, dropSetRare10, dropSetExtend20 }, new int[] { 7,10,12,15 }, false, true, 6);
+            level14.setup("방8", 14, 15, 4, 3, 2, 0, 4, new ItemDropInfo[] { dropSetTime20, dropSetRare10, dropSetExtend20 }, new int[] { 10,13,15 }, false, true, 6);
 
-            level12.setup("방9", 12, 20, 2, 3, 0, 4, new ItemDropInfo[] { dropSetHeal10, dropSetDestroy50  }, new int[] { 8,11,16 }, false, true, list[rIdx[0]]);
-            level15.setup("방10", 15, 20, 2, 3, 0, 4, new ItemDropInfo[] { dropSetHeal50, dropSetDestroy10 }, new int[] { 11,14,16 }, false, true, list[rIdx[1]]);
-            level16.setup("최종방", 16, 20, 3, 3, 0, 0, new ItemDropInfo[] { dropSetRare10  }, new int[] {  }, false, true, list[rIdx[2]]);
+            level12.setup("방9", 12, 14, 6, 2, 3, 0, 4, new ItemDropInfo[] { dropSetHeal10, dropSetDestroy50  }, new int[] { 8,11,16 }, false, true, 5);
+            level15.setup("방10", 15, 14, 6, 2, 3, 0, 4, new ItemDropInfo[] { dropSetHeal50, dropSetDestroy10 }, new int[] { 11,14,16 }, false, true, 5);
+            level16.setup("최종방", 16, 10, 10, 3, 3, 0, 0, new ItemDropInfo[] { dropSetRare10  }, new int[] {  }, false, true, 5);
 
             Level[] levels = { level1, level2, level3, level4, level5, level6, level7, level8, level9, level10, level11, level12, level13, level14, level15, level16 };
 
-            Dungeon dungeonInfo = new Dungeon("지옥의 입구 lv1", 4, 5, levels, 120, true, false, 3);
+            Dungeon dungeonInfo = new Dungeon("지옥의 입구 lv1", 4, 5, levels, 120, false, true, 3);
 
             return dungeonInfo;
-        }
-
-        public void GenerateShowTileSet()
-        {
-            tileN3T1 = new ShowTile[]{
-                    new ShowTile(new Vector3(0, 0, 0), SHOW_TYPE.NEAR),
-                    new ShowTile(new Vector3(5, 3, 0), SHOW_TYPE.NEAR),
-                    new ShowTile(new Vector3(2, 4, 0), SHOW_TYPE.NEAR),
-                    new ShowTile(new Vector3(0, 7, 0), SHOW_TYPE.TRAP)
-            };
-
-            tileN3A1 = new ShowTile[]{
-                    new ShowTile(new Vector3(0, 0, 0), SHOW_TYPE.NEAR),
-                    new ShowTile(new Vector3(5, 3, 0), SHOW_TYPE.NEAR),
-                    new ShowTile(new Vector3(2, 4, 0), SHOW_TYPE.NEAR),
-                    new ShowTile(new Vector3(0, 7, 0), SHOW_TYPE.ALL)
-            };
-
-            tileN3E1 = new ShowTile[]{
-                    new ShowTile(new Vector3(0, 0, 0), SHOW_TYPE.NEAR),
-                    new ShowTile(new Vector3(5, 3, 0), SHOW_TYPE.NEAR),
-                    new ShowTile(new Vector3(2, 4, 0), SHOW_TYPE.NEAR),
-                    new ShowTile(new Vector3(0, 7, 0), SHOW_TYPE.MONSTER)
-            };
-
-            tileN3T1E1 = new ShowTile[]{
-                        new ShowTile(new Vector3(0, 0, 0), SHOW_TYPE.NEAR),
-                        new ShowTile(new Vector3(5, 3, 0), SHOW_TYPE.NEAR),
-                        new ShowTile(new Vector3(2, 4, 0), SHOW_TYPE.NEAR),
-                        new ShowTile(new Vector3(7, 0, 0), SHOW_TYPE.MONSTER),
-                        new ShowTile(new Vector3(0, 7, 0), SHOW_TYPE.TRAP)
-                    };
-
-
-            tileN4T1E1A = new ShowTile[]{
-                        new ShowTile(new Vector3(0, 0, 0), SHOW_TYPE.NEAR),
-                        new ShowTile(new Vector3(2, 2, 0), SHOW_TYPE.NEAR),
-                        new ShowTile(new Vector3(5, 2, 0), SHOW_TYPE.NEAR),
-                        new ShowTile(new Vector3(2, 5, 0), SHOW_TYPE.NEAR),                        
-                        new ShowTile(new Vector3(7, 0, 0), SHOW_TYPE.MONSTER),
-                        new ShowTile(new Vector3(0, 7, 0), SHOW_TYPE.TRAP)
-                };
-
-            tileN4T1E1B = new ShowTile[]{
-                        new ShowTile(new Vector3(0, 0, 0), SHOW_TYPE.NEAR),
-                        new ShowTile(new Vector3(5, 5, 0), SHOW_TYPE.NEAR),
-                        new ShowTile(new Vector3(5, 2, 0), SHOW_TYPE.NEAR),
-                        new ShowTile(new Vector3(2, 5, 0), SHOW_TYPE.NEAR),
-                        new ShowTile(new Vector3(7, 0, 0), SHOW_TYPE.MONSTER),
-                        new ShowTile(new Vector3(0, 7, 0), SHOW_TYPE.TRAP)
-                };
-
-            tileN5T1E1 = new ShowTile[]{
-                        new ShowTile(new Vector3(0, 0, 0), SHOW_TYPE.NEAR),
-                        new ShowTile(new Vector3(2, 2, 0), SHOW_TYPE.NEAR),
-                        new ShowTile(new Vector3(5, 2, 0), SHOW_TYPE.NEAR),
-                        new ShowTile(new Vector3(2, 5, 0), SHOW_TYPE.NEAR),
-                        new ShowTile(new Vector3(5, 5, 0), SHOW_TYPE.NEAR),
-                        new ShowTile(new Vector3(7, 0, 0), SHOW_TYPE.MONSTER),
-                        new ShowTile(new Vector3(0, 7, 0), SHOW_TYPE.TRAP)
-                    };
-
         }
     }
 }

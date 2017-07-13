@@ -28,9 +28,15 @@ namespace HideAndSeek
             Level curLevel = curDungeon.GetCurLevel();
 
             titleText.text = curLevel.name;
-            int numOfEnemy = curLevel.enemy + curLevel.strongEnemy;
+            int countOfEnemies = curLevel.enemy;
+            int countOfStongEnemies = curLevel.strongEnemy;
+            string enemyText = "해골 : " + countOfEnemies + "\n";
+            if(countOfStongEnemies > 0)
+            {
+                enemyText += "해골 Lv2 : " + countOfStongEnemies + "\n";
+            }
 
-            contentText.text = "해골: " + numOfEnemy + "\n"
+            contentText.text = enemyText
                 + "함정 수: " + curLevel.trap + "\n"
                 + "보석 수: " + curLevel.gem + "\n";
         }

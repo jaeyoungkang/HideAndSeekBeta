@@ -163,7 +163,9 @@ namespace HideAndSeek
             {
                 Renderer renderer = trap.GetComponent<SpriteRenderer>();
                 if (renderer) renderer.enabled = true;
-                LoseHP(1);
+
+                if(trap.name.Contains("trapLv2")) LoseHP(2);
+                else LoseHP(1);
                 SoundManager.instance.RandomizeSfx(attackedSound1, attackedSound2);
 
                 GameManager.instance.dungeonPlayData.damagedBytrapCount++;

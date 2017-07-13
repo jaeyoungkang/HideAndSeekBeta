@@ -38,6 +38,9 @@ namespace HideAndSeek
         public Dictionary<int, List<GameObject>> objsOnStages = new Dictionary<int, List<GameObject>>();
         public Dictionary<int, List<GameObject>> tilesOnStages = new Dictionary<int, List<GameObject>>();
 
+        public Dictionary<int, List<ShowTile>> showTilesOnStage = new Dictionary<int, List<ShowTile>>();
+        public List<ShowTile> curShowTilesOnStage = new List<ShowTile>();
+
         public GameInfo info = new GameInfo();
 
         public List<int> bag;
@@ -99,6 +102,11 @@ namespace HideAndSeek
             tilesOnStages[id].Add(tile);
         }
 
+        public void AddShowTile(ShowTile sTile, int id)
+        {
+            showTilesOnStage[id].Add(sTile);
+        }
+
         public bool ExtendBagSize()
         {
             if (bagSize < 6)
@@ -147,7 +155,7 @@ namespace HideAndSeek
             ChangeState(GAME_STATE.START);
 
             DungeonData dungeonData = new DungeonData();
-            dungeonData.GenerateShowTileSet();
+            tutorial = dungeonData.SetupTutorialData();
             dungeons[0] = dungeonData.SetupDungeon1Data();
             dungeons[1] = dungeonData.SetupDungeon2Data();
             dungeons[2] = dungeonData.SetupDungeon3Data();
@@ -257,7 +265,8 @@ namespace HideAndSeek
             if (!trapsOnStages.ContainsKey(levelId) ||
                 !objsOnStages.ContainsKey(levelId) ||
                 !tilesOnStages.ContainsKey(levelId) ||
-                !enemiesOnStages.ContainsKey(levelId))
+                !enemiesOnStages.ContainsKey(levelId) ||
+                !showTilesOnStage.ContainsKey(levelId))
             {
                 print("Error: wrong level id " + levelId);
                 return;
@@ -270,8 +279,10 @@ namespace HideAndSeek
 
             curTrapsOnStage = trapsOnStages[levelId];
             curObjsOnStage = objsOnStages[levelId];
-            curTilesOnStage = tilesOnStages[levelId];
+            curTilesOnStage = tilesOnStages[levelId];            
             curEnemiesOnStage = enemiesOnStages[levelId];
+
+            curShowTilesOnStage = showTilesOnStage[levelId];
 
             SetActiveObjs(curTrapsOnStage, true);
             SetActiveObjs(curObjsOnStage, true);
@@ -362,17 +373,19 @@ namespace HideAndSeek
             bag.Clear();
             dungeonPlayData.Init();
 
-            GameManager.instance.tilesOnStages.Clear();
-            GameManager.instance.objsOnStages.Clear();
-            GameManager.instance.trapsOnStages.Clear();
-            GameManager.instance.enemiesOnStages.Clear();
+            tilesOnStages.Clear();
+            objsOnStages.Clear();
+            trapsOnStages.Clear();
+            enemiesOnStages.Clear();
+            showTilesOnStage.Clear();
 
-            foreach(Level lv in curDungeon.levels)
+            foreach (Level lv in curDungeon.levels)
             {
-                GameManager.instance.tilesOnStages[lv.id] = new List<GameObject>();
-                GameManager.instance.objsOnStages[lv.id] = new List<GameObject>();
-                GameManager.instance.trapsOnStages[lv.id] = new List<GameObject>();
-                GameManager.instance.enemiesOnStages[lv.id] = new List<GameObject>();
+                tilesOnStages[lv.id] = new List<GameObject>();
+                objsOnStages[lv.id] = new List<GameObject>();
+                trapsOnStages[lv.id] = new List<GameObject>();
+                enemiesOnStages[lv.id] = new List<GameObject>();
+                showTilesOnStage[lv.id] = new List<ShowTile>();
             }
 
             bool bTutorial = curDungeon.id == 0;
@@ -596,9 +609,7 @@ namespace HideAndSeek
 
         public SHOW_TYPE CheckShowTile(Vector2 pos)
         {
-            Level curLv = curDungeon.GetCurLevel();
-
-            foreach(ShowTile sTile in curLv.showTiles)
+            foreach(ShowTile sTile in curShowTilesOnStage)
             {
                 if (sTile.x == pos.x && sTile.y == pos.y) return sTile.type;
 

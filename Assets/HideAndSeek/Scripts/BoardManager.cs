@@ -102,7 +102,7 @@ namespace HideAndSeek
                 }
             }
 
-            foreach(ShowTile sTile in lv.showTiles)
+            foreach(ShowTile sTile in GameManager.instance.showTilesOnStage[lv.id])
             {
                 Vector3 pos = new Vector3(sTile.x, sTile.y, 0f);
                 gridPositionsExcept.Add(pos);
@@ -146,8 +146,79 @@ namespace HideAndSeek
                     instance.transform.SetParent(boardHolder);
 
                     GameManager.instance.AddTile(instance, lv.id);
-                    SetShowTile(instance, lv.showTiles, x, y);
+                    SetShowTile(instance, GameManager.instance.showTilesOnStage[lv.id].ToArray(), x, y);
                 }                
+            }
+        }
+
+        Vector3[] postionA = {
+                                    new Vector3(0, 0, 0),
+                                    new Vector3(2, 2, 0),
+                                    new Vector3(5, 2, 0),
+                                    new Vector3(2, 5, 0),
+                                    new Vector3(5, 5, 0),
+                                    new Vector3(7, 0, 0),
+                                    new Vector3(0, 7, 0),
+                                };
+
+        SHOW_TYPE[] sTypeA = {
+                                    SHOW_TYPE.NEAR,
+                                    SHOW_TYPE.NEAR,
+                                    SHOW_TYPE.NEAR,
+                                    SHOW_TYPE.NEAR,
+                                    SHOW_TYPE.NEAR,
+                                    SHOW_TYPE.MONSTER,
+                                    SHOW_TYPE.TRAP
+                                };
+
+        public Vector3 GetRandomPos(List<Vector3> pos)
+        {
+            int randomIndex = UnityEngine.Random.Range(0, pos.Count);
+            Vector3 randomPosition = pos[randomIndex];
+            pos.RemoveAt(randomIndex);
+            return randomPosition;
+        }
+
+        void SetupTutorialShowTile()
+        {
+            GameManager.instance.AddShowTile(new ShowTile(new Vector3(0, 0, 0), SHOW_TYPE.NEAR), 1);
+            GameManager.instance.AddShowTile(new ShowTile(new Vector3(2, 2, 0), SHOW_TYPE.NEAR), 1);
+            GameManager.instance.AddShowTile(new ShowTile(new Vector3(5, 5, 0), SHOW_TYPE.NEAR), 1);
+            GameManager.instance.AddShowTile(new ShowTile(new Vector3(5, 2, 0), SHOW_TYPE.NEAR), 1);
+            GameManager.instance.AddShowTile(new ShowTile(new Vector3(2, 5, 0), SHOW_TYPE.NEAR), 1);
+            GameManager.instance.AddShowTile(new ShowTile(new Vector3(0, 7, 0), SHOW_TYPE.GEM_ITEM), 1);
+            GameManager.instance.AddShowTile(new ShowTile(new Vector3(7, 0, 0), SHOW_TYPE.TRAP), 1);
+        }
+
+        void GenerateShowTileRandom(int id, int count)
+        {
+            List<Vector3> postionA = new List<Vector3>(){
+                                    new Vector3(2, 2, 0),
+                                    new Vector3(5, 2, 0),
+                                    new Vector3(2, 5, 0),
+                                    new Vector3(5, 5, 0),
+                                    new Vector3(7, 0, 0),
+                                    new Vector3(0, 7, 0),
+                                };
+
+            List<SHOW_TYPE> sTypeA = new List<SHOW_TYPE>();
+            List<SHOW_TYPE> specailTiles = new List<SHOW_TYPE>() { SHOW_TYPE.MONSTER, SHOW_TYPE.TRAP, SHOW_TYPE.GEM_ITEM, SHOW_TYPE.ALL };
+            int idx = Random.Range(0, specailTiles.Count);
+            sTypeA.Add(specailTiles[idx]);
+            specailTiles.RemoveAt(idx);
+            idx = Random.Range(0, specailTiles.Count);
+            sTypeA.Add(specailTiles[idx]);
+            sTypeA.Add(SHOW_TYPE.NEAR);
+            sTypeA.Add(SHOW_TYPE.NEAR);
+            sTypeA.Add(SHOW_TYPE.NEAR);
+            sTypeA.Add(SHOW_TYPE.NEAR);
+
+            GameManager.instance.AddShowTile(new ShowTile(new Vector3(0, 0, 0), SHOW_TYPE.NEAR), id);
+
+            for (int i = 0; i < count-1; i++)
+            {
+                Vector3 rPos = GetRandomPos(postionA);
+                GameManager.instance.AddShowTile(new ShowTile(rPos, sTypeA[i]), id);
             }
         }
 
@@ -230,15 +301,22 @@ namespace HideAndSeek
             }
         }
 
-        void LayoutTrapAtRandom(int id, GameObject[] tileArray, int minimum, int maximum)
+        void LayoutTrapAtRandom(int id, GameObject trap, int trapNum)
         {
-            int objectCount = Random.Range(minimum, maximum + 1);
-
-            for (int i = 0; i < objectCount; i++)
+            for (int i = 0; i < trapNum; i++)
             {
                 Vector3 randomPosition = RandomGridsPosition();
-                GameObject tileChoice = tileArray[Random.Range(0, tileArray.Length)];
-                GameObject instance = Instantiate(tileChoice, randomPosition, Quaternion.identity);
+                GameObject instance = Instantiate(trap, randomPosition, Quaternion.identity);
+                GameManager.instance.AddTrap(instance, id);
+            }
+        }
+
+        void LayoutTrapLv2AtRandom(int id, GameObject trapLv2, int trapLv3Num)
+        {
+            for (int i = 0; i < trapLv3Num; i++)
+            {
+                Vector3 randomPosition = RandomGridsPosition();
+                GameObject instance = Instantiate(trapLv2, randomPosition, Quaternion.identity);
                 GameManager.instance.AddTrap(instance, id);
             }
         }
@@ -260,6 +338,8 @@ namespace HideAndSeek
         {
             foreach(Level lv in levelInfos)
             {
+                if (tutorial && lv.id == 1) SetupTutorialShowTile();
+                else GenerateShowTileRandom(lv.id, lv.showTileNum);
                 BoardSetup(lv);
                 InitialiseList(lv);
                 if(tutorial && lv.id == 1) SetupTutorialLevel(lv);
@@ -302,17 +382,20 @@ namespace HideAndSeek
             int strongEnemyCount = levelInfo.strongEnemy;
             int thiefCount = levelInfo.thief;
             int trapCount = levelInfo.trap;
+            int trapLv2Count = levelInfo.trapLv2;
+
             ItemDropInfo[] itemDropInfos = levelInfo.itemDropInfos;
 
             SetupItemDrops(itemDropInfos, levelInfo);
 
             LayoutObjectAtRandom(levelInfo.id, gemTiles, gemRate, gemRate);            
 
-            LayoutTrapAtRandom(levelInfo.id, trapTiles, trapCount, trapCount);
-                        
+            LayoutTrapAtRandom(levelInfo.id, trapTiles[0], trapCount);
+            LayoutTrapLv2AtRandom(levelInfo.id, trapTiles[1], trapLv2Count);
+            
             LayoutEnemiesAtRandom(levelInfo.id, enemyTiles, enemyCount, enemyCount);
             LayoutEnemiesAtRandom(levelInfo.id, strongEnemyTiles, strongEnemyCount, strongEnemyCount);
-            LayoutEnemiesAtRandom(levelInfo.id, thiefTiles, thiefCount, thiefCount);
+            LayoutEnemiesAtRandom(levelInfo.id, thiefTiles, thiefCount, thiefCount);            
         }
 
         public void SetupTutorialLevel(Level levelInfo)
@@ -357,8 +440,7 @@ namespace HideAndSeek
             for (int i = 0; i < tutorialTrapPositions.Length; i++)
             {
                 pos = tutorialTrapPositions[i];
-                GameObject tileChoice = trapTiles[Random.Range(0, trapTiles.Length)];
-                instance = Instantiate(tileChoice, pos, Quaternion.identity);
+                instance = Instantiate(trapTiles[0], pos, Quaternion.identity);
                 GameManager.instance.AddTrap(instance, levelInfo.id);
             }            
         }

@@ -43,6 +43,7 @@ namespace HideAndSeek
         {
             for (int i = 0; i < levelBtns.Length; i++)
             {
+                levelBtns[i].GetComponent<Image>().color = new Color32(54,54,54,255);
                 levelBtns[i].gameObject.SetActive(false);
             }
             
@@ -75,6 +76,7 @@ namespace HideAndSeek
         {
             foreach(Image img in lineImages)
             {
+                img.color = Color.gray;
                 img.gameObject.SetActive(false);
             }
 

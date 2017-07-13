@@ -21,6 +21,16 @@ namespace HideAndSeek
             returnBtn.onClick.AddListener(GameManager.instance.GotoDungeonMap);
         }
 
+        string getShoTileText(SHOW_TYPE type)
+        {
+            string showTileText = "";
+            if (type == SHOW_TYPE.ALL) showTileText = "전체보기";
+            if (type == SHOW_TYPE.GEM_ITEM) showTileText = "보물보기";
+            if (type == SHOW_TYPE.MONSTER) showTileText = "괴물보기";
+            if (type == SHOW_TYPE.TRAP) showTileText = "함정보기";
+            return showTileText;
+        }
+
         void SetupInfo()
         {
             Dungeon curDungeon = GameManager.instance.GetDungeonInfo();
@@ -35,10 +45,15 @@ namespace HideAndSeek
             {
                 enemyText += "해골 Lv2 : " + countOfStongEnemies + "\n";
             }
+                        
+            string showTileText = "\n특수 바닥 정보\n" + getShoTileText(GameManager.instance.curShowTilesOnStage[1].type) + ", " +
+                getShoTileText(GameManager.instance.curShowTilesOnStage[2].type) + ", " +
+                "근처보기" + (GameManager.instance.curShowTilesOnStage.Count - 2).ToString() + "개\n";
 
             contentText.text = enemyText
                 + "함정 수: " + curLevel.trap + "\n"
-                + "보석 수: " + curLevel.gem + "\n";
+                + "보석 수: " + curLevel.gem + "\n"
+                + showTileText;
         }
     }
 }

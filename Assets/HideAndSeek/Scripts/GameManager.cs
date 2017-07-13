@@ -258,40 +258,10 @@ namespace HideAndSeek
             }
         }
 
-        void setupLevel()
+        void StartLevel()
         {
-            int levelId = curDungeon.GetCurLevel().id;
-
-            if (!trapsOnStages.ContainsKey(levelId) ||
-                !objsOnStages.ContainsKey(levelId) ||
-                !tilesOnStages.ContainsKey(levelId) ||
-                !enemiesOnStages.ContainsKey(levelId) ||
-                !showTilesOnStage.ContainsKey(levelId))
-            {
-                print("Error: wrong level id " + levelId);
-                return;
-            }
-
-            SetActiveMap(trapsOnStages, false);
-            SetActiveMap(objsOnStages, false);
-            SetActiveMap(tilesOnStages, false);
-            SetActiveMap(enemiesOnStages, false);
-
-            curTrapsOnStage = trapsOnStages[levelId];
-            curObjsOnStage = objsOnStages[levelId];
-            curTilesOnStage = tilesOnStages[levelId];            
-            curEnemiesOnStage = enemiesOnStages[levelId];
-
-            curShowTilesOnStage = showTilesOnStage[levelId];
-
-            SetActiveObjs(curTrapsOnStage, true);
-            SetActiveObjs(curObjsOnStage, true);
-            SetActiveObjs(curTilesOnStage, true);
-            SetActiveObjs(curEnemiesOnStage, true);
-
             ChangeState(GAME_STATE.PLAY);
             ShowAllMap(false);
-
             Player player = FindObjectOfType(typeof(Player)) as Player;
             player.Init();            
         }
@@ -430,6 +400,36 @@ namespace HideAndSeek
         {
             SoundManager.instance.PlaySingle(btnClick);
             curDungeon.SetLevel(level);
+
+            int levelId = curDungeon.GetCurLevel().id;
+
+            if (!trapsOnStages.ContainsKey(levelId) ||
+                !objsOnStages.ContainsKey(levelId) ||
+                !tilesOnStages.ContainsKey(levelId) ||
+                !enemiesOnStages.ContainsKey(levelId) ||
+                !showTilesOnStage.ContainsKey(levelId))
+            {
+                print("Error: wrong level id " + levelId);
+                return;
+            }
+
+            SetActiveMap(trapsOnStages, false);
+            SetActiveMap(objsOnStages, false);
+            SetActiveMap(tilesOnStages, false);
+            SetActiveMap(enemiesOnStages, false);
+
+            curTrapsOnStage = trapsOnStages[levelId];
+            curObjsOnStage = objsOnStages[levelId];
+            curTilesOnStage = tilesOnStages[levelId];
+            curEnemiesOnStage = enemiesOnStages[levelId];
+
+            curShowTilesOnStage = showTilesOnStage[levelId];
+
+            SetActiveObjs(curTrapsOnStage, true);
+            SetActiveObjs(curObjsOnStage, true);
+            SetActiveObjs(curTilesOnStage, true);
+            SetActiveObjs(curEnemiesOnStage, true);
+
             GameManager.instance.ChangeState(GAME_STATE.LEVEL_INFO);
         }
 
@@ -438,7 +438,7 @@ namespace HideAndSeek
             SoundManager.instance.PlaySingle(btnClick);
             GameManager.instance.ChangeState(GAME_STATE.LEVEL);
             PageManager.instance.SetLevelEnterPageText(curDungeon.name, curDungeon.GetCurLevel().name);
-            Invoke("setupLevel", 2f);
+            Invoke("StartLevel", 2f);
 
             Analytics.CustomEvent("Level Enter", new Dictionary<string, object>
             {

@@ -260,10 +260,7 @@ namespace HideAndSeek
 
         void StartLevel()
         {
-            ChangeState(GAME_STATE.PLAY);
-            ShowAllMap(false);
-            Player player = FindObjectOfType(typeof(Player)) as Player;
-            player.Init();            
+            ChangeState(GAME_STATE.PLAY);            
         }
 
         GameObject highlightedTileobj = null;
@@ -429,6 +426,10 @@ namespace HideAndSeek
             SetActiveObjs(curObjsOnStage, true);
             SetActiveObjs(curTilesOnStage, true);
             SetActiveObjs(curEnemiesOnStage, true);
+
+            ShowAllMap(false);
+            Player player = FindObjectOfType(typeof(Player)) as Player;
+            player.Init();
 
             GameManager.instance.ChangeState(GAME_STATE.LEVEL_INFO);
         }

@@ -372,7 +372,7 @@ namespace HideAndSeek
                 case "회복20": GameManager.instance.RecoverHP(2); break;
                 case "회복30": GameManager.instance.RecoverHP(3); break;
                 case "근처보기":
-                    GameManager.instance.ShowMap(transform.position, SHOW_TYPE.NEAR);
+                    GameManager.instance.ShowMap(transform.position, SHOW_TYPE.NEAR);                    
                     break;
                 case "괴물보기":
                     GameManager.instance.ShowMap(transform.position, SHOW_TYPE.MONSTER);
@@ -402,7 +402,10 @@ namespace HideAndSeek
                 case "시간멈춤":
                     GameManager.instance.StopTime(true);
                     break;
-                
+
+                case "방탈출":
+                    GameManager.instance.GotoDungeonMap();
+                    break;
             }
 
             Analytics.CustomEvent("Use Item", new Dictionary<string, object>

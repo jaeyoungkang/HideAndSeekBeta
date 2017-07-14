@@ -3,6 +3,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Analytics;
 using Random = UnityEngine.Random; 		//Tells Random to use the Unity Engine random number generator.
 
+using System;
 using System.Collections;
 using System.Collections.Generic;       //Allows us to use Lists. 
 
@@ -130,15 +131,6 @@ namespace HideAndSeek
             if (instance == null)
             {
                 instance = this;
-#if UNITY_EDITOR
-                //string culomnName = "";
-                //culomnName += "dungeonName \t levelName \t gemCount \t deathCount \t attackedCount \t damagedByTimeCount \t (getItem, useItem, hps)";
-
-                //DateTime dt = DateTime.Now;
-                //String strDate = dt.ToString("MMdd_HHmmss");
-                //logfileName = "log/" + strDate + "_playData.txt";
-                //SaveLoad.WriteFile(logfileName, culomnName);
-#endif
             }
             else if (instance != this)
                 Destroy(gameObject);
@@ -148,6 +140,7 @@ namespace HideAndSeek
             boardScript = GetComponent<BoardManager>();
 
             SaveLoad.Load();
+            SaveLoad.LoadTime();
 
             Notice.instance.InitUI();
             PageManager.instance.InitUI();
@@ -448,10 +441,7 @@ namespace HideAndSeek
             });
         }
 
-        public void StartGame()
-        {
-            Invoke("GoToLobby", 2f);
-        }
+        
 
         public void GoToLobby()
         {
@@ -1075,6 +1065,41 @@ namespace HideAndSeek
             List<GameObject> targetEnemies = SearchEnemies(range);
             StartCoroutine(DestroyEffectFloor(targetTiles));
             StartCoroutine(DestroyEffect(targetEnemies));
+        }
+
+        public void WatchAd()
+        {
+            if (CheckTimeEnableToWatch())
+            {
+                preGenTime = DateTime.Now.ToLocalTime();
+                info.enableCount += 1;
+                Notice.instance.Show("광고:하태하태!\n(코인을 하나 받았다!)", 2f, Color.blue);
+                SaveLoad.SaveTime();
+            }
+            else
+            {
+                Notice.instance.Show("더 기다려야한다...", 2f, Color.blue);
+            }
+        }
+
+
+        public void ShowPurchase()
+        {
+            Notice.instance.Show("주화 10개 : 1$, 주화 50개 : 3$, 주화 100개 : 5$", 2f, Color.yellow);
+        }
+        
+        public float TIME_INTERVAL_GEN = 600f;
+        public DateTime preGenTime = new DateTime(2000, 1, 1, 0, 0, 0, 0).ToLocalTime();
+
+        public bool CheckTimeEnableToWatch()
+        {
+            DateTime now = DateTime.Now.ToLocalTime();
+            TimeSpan gen = now - preGenTime;
+
+            if (gen.TotalSeconds > TIME_INTERVAL_GEN)
+                return true;
+
+            return false;
         }
     }
 }

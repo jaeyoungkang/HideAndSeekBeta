@@ -221,7 +221,7 @@ namespace HideAndSeek
             Level level3 = new Level();
 
             //            이름,번호, 함정, 괴물, 괴물, 도둑, 보석, 아이템 드랍, 다음레벨, 클리어, 오픈, 쇼타일
-            level1.setup("시작방", 1, 10, 0, 1, 0, 0, 1, new ItemDropInfo[] { dropSetRare10 }, new int[] { 2 }, false, false, 7); // boardmanager에 하드코딩되어 있음
+            level1.setup("시작방", 1, 27, 0, 0, 0, 0, 2, new ItemDropInfo[] { dropSetRare10 }, new int[] { 2 }, false, false, 7); // boardmanager에 하드코딩되어 있음
             level2.setup("중간방", 2, 9, 0, 1, 0, 0, 2, new ItemDropInfo[] { dropSetDestroy50, dropSetShow50 }, new int[] { 3 }, false, true, 7); 
             level3.setup("최종방", 3, 9, 0, 2, 0, 0, 0, new ItemDropInfo[] { dropSetHeal50 }, new int[] { }, false, true, 7);
 
@@ -262,10 +262,10 @@ namespace HideAndSeek
 
             //            이름,번호, 함정, 괴물, 괴물, 도둑, 보석, 아이템 드랍, 다음레벨, 클리어, 오픈, 쇼타일
             level1.setup( "시작방", 1, 12, 0, 1, 0, 0, 2,  new ItemDropInfo[] { dropSetHeal50,  }, new int[] { 2, 4 }, false, false, 6);
-            level2.setup( "방1", 2, 14, 0, 2, 0, 0, 3,     new ItemDropInfo[] { dropSetShow50, dropSetExtend20 }, new int[] { 3,5 }, false, true, 6);
-            level4.setup( "방2", 4, 14, 0, 2, 0, 0, 3,     new ItemDropInfo[] { dropSetDestroy50, dropSetExtend20 }, new int[] { 5 }, false, true, 6);
-            level3.setup( "방3", 3, 12, 2, 2, 1, 0, 3,      new ItemDropInfo[] { dropSetShow50, dropSetRare10, dropSetDestroy10 }, new int[] { 6 }, false, true, 5);
-            level5.setup( "방4", 5, 12, 2, 3, 0, 0, 3,      new ItemDropInfo[] { dropSetDestroy50, dropSetRare10, dropSetShow10 }, new int[] { 6 }, false, true, 5);
+            level2.setup( "방1", 2, 16, 0, 1, 0, 0, 3,     new ItemDropInfo[] { dropSetShow50, dropSetExtend20 }, new int[] { 3,5 }, false, true, 6);
+            level4.setup( "방2", 4, 16, 0, 1, 0, 0, 3,     new ItemDropInfo[] { dropSetDestroy50, dropSetExtend20 }, new int[] { 5 }, false, true, 6);
+            level3.setup( "방3", 3, 14, 2, 2, 1, 0, 3,      new ItemDropInfo[] { dropSetShow50, dropSetRare10, dropSetDestroy10 }, new int[] { 6 }, false, true, 5);
+            level5.setup( "방4", 5, 14, 2, 3, 0, 0, 3,      new ItemDropInfo[] { dropSetDestroy50, dropSetRare10, dropSetShow10 }, new int[] { 6 }, false, true, 5);
             level6.setup( "최종방", 6, 12, 4, 3, 1, 0, 0,   new ItemDropInfo[] { dropSetHeal50, dropSetTime20 }, new int[] { }, false, true, 5);
 
             Level[] levels = { level1, level2, level4, level3, level5, level6 };
@@ -285,13 +285,13 @@ namespace HideAndSeek
             Level level8 = new Level();
             Level level9 = new Level();
             //            이름,번호, 함정, 괴물, 괴물, 도둑, 보석, 아이템 드랍, 다음레벨, 클리어, 오픈, 쇼타일
-            level1.setup("시작방", 1, 14, 0, 2, 0, 0, 2, new ItemDropInfo[] { dropSetHeal50, dropSetExtend20 }, new int[] { 2, 4 }, false, false, 6);
-            level2.setup("방1", 2, 12, 2, 3, 0, 0, 3, new ItemDropInfo[] { dropSetDestroy10, dropSetExtend20 }, new int[] { 5 }, false, true, 6);
-            level4.setup("방2", 4, 12, 2, 3, 0, 0, 3, new ItemDropInfo[] { dropSetDestroy10, dropSetExtend20 }, new int[] { 5 }, false, true, 6);
-            level5.setup("중간방", 5, 10, 4, 2, 1, 0, 4, new ItemDropInfo[] { dropSetDestroy50, dropSetHeal10, dropSetShow10, dropSetTime20 }, new int[] { 6,8 }, false, true, 5);
-            level6.setup("방4", 6, 10, 4, 3, 1, 0, 4, new ItemDropInfo[] { dropSetRare10, dropSetTime20 }, new int[] { 9 }, false, true, 5);
-            level8.setup("방3", 8, 10, 4, 2, 2, 0, 4, new ItemDropInfo[] { dropSetRare10, dropSetTime20 }, new int[] { 9 }, false, true, 5);
-            level9.setup("최종방", 9, 10, 6, 3, 2, 0, 0, new ItemDropInfo[] { dropSetShow50, dropSetHeal50 }, new int[] { }, false, true, 5);
+            level1.setup("시작방", 1, 14, 0, 1, 0, 0, 2, new ItemDropInfo[] { dropSetHeal50, dropSetExtend20 }, new int[] { 2, 4 }, false, false, 6);
+            level2.setup("방1", 2, 14, 2, 2, 0, 0, 3, new ItemDropInfo[] { dropSetDestroy10, dropSetExtend20 }, new int[] { 5 }, false, true, 6);
+            level4.setup("방2", 4, 14, 2, 2, 0, 0, 3, new ItemDropInfo[] { dropSetDestroy10, dropSetExtend20 }, new int[] { 5 }, false, true, 6);
+            level5.setup("중간방", 5, 12, 4, 2, 1, 0, 4, new ItemDropInfo[] { dropSetDestroy50, dropSetHeal10, dropSetShow10, dropSetTime20 }, new int[] { 6,8 }, false, true, 5);
+            level6.setup("방4", 6, 12, 4, 3, 1, 0, 4, new ItemDropInfo[] { dropSetRare10, dropSetTime20 }, new int[] { 9 }, false, true, 5);
+            level8.setup("방3", 8, 12, 4, 2, 2, 0, 4, new ItemDropInfo[] { dropSetRare10, dropSetTime20 }, new int[] { 9 }, false, true, 5);
+            level9.setup("최종방", 9, 12, 6, 3, 2, 0, 0, new ItemDropInfo[] { dropSetShow50, dropSetHeal50 }, new int[] { }, false, true, 5);
 
             Level[] levels = { level1, level2, level4, level5, level6, level8, level9 };
 
@@ -349,7 +349,7 @@ namespace HideAndSeek
 
             Level[] levels = { level1, level2, level3, level4, level5, level6, level7, level8, level9, level10, level11, level12, level13, level14, level15, level16 };
 
-            Dungeon dungeonInfo = new Dungeon("지옥의 입구 lv1", 4, 5, levels, 150, false, true, 3);
+            Dungeon dungeonInfo = new Dungeon("지옥의 입구", 4, 5, levels, 150, false, true, 3);
 
             return dungeonInfo;
         }

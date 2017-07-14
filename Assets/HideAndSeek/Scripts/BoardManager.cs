@@ -182,12 +182,12 @@ namespace HideAndSeek
         void SetupTutorialShowTile()
         {
             GameManager.instance.AddShowTile(new ShowTile(new Vector3(0, 0, 0), SHOW_TYPE.NEAR), 1);
+            GameManager.instance.AddShowTile(new ShowTile(new Vector3(0, 7, 0), SHOW_TYPE.GEM_ITEM), 1);
+            GameManager.instance.AddShowTile(new ShowTile(new Vector3(7, 0, 0), SHOW_TYPE.TRAP), 1);            
             GameManager.instance.AddShowTile(new ShowTile(new Vector3(2, 2, 0), SHOW_TYPE.NEAR), 1);
             GameManager.instance.AddShowTile(new ShowTile(new Vector3(5, 5, 0), SHOW_TYPE.NEAR), 1);
             GameManager.instance.AddShowTile(new ShowTile(new Vector3(5, 2, 0), SHOW_TYPE.NEAR), 1);
-            GameManager.instance.AddShowTile(new ShowTile(new Vector3(2, 5, 0), SHOW_TYPE.NEAR), 1);
-            GameManager.instance.AddShowTile(new ShowTile(new Vector3(0, 7, 0), SHOW_TYPE.GEM_ITEM), 1);
-            GameManager.instance.AddShowTile(new ShowTile(new Vector3(7, 0, 0), SHOW_TYPE.TRAP), 1);
+            GameManager.instance.AddShowTile(new ShowTile(new Vector3(2, 5, 0), SHOW_TYPE.NEAR), 1);            
         }
 
         void GenerateShowTileRandom(int id, int count)

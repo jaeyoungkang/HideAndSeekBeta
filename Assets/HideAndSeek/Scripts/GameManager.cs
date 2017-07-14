@@ -253,6 +253,8 @@ namespace HideAndSeek
 
         void StartLevel()
         {
+            Player player = FindObjectOfType(typeof(Player)) as Player;
+            player.CheckStartPos();
             ChangeState(GAME_STATE.PLAY);            
         }
 
@@ -422,8 +424,7 @@ namespace HideAndSeek
 
             ShowAllMap(false);
             Player player = FindObjectOfType(typeof(Player)) as Player;
-            player.Init();
-
+            player.Init(); // 미리 원점으로 이동시켜둬야된다. 안그러면 종료위치에 있기때문에 시작과 동시에 끝나버린다. 
             GameManager.instance.ChangeState(GAME_STATE.LEVEL_INFO);
         }
 

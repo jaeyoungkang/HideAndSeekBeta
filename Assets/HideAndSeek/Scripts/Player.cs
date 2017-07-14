@@ -32,7 +32,11 @@ namespace HideAndSeek
         public void Init()
         {
             enabled = true;
-            transform.position = new Vector3(0, 0, 0);
+            transform.position = new Vector3(0, 0, 0);            
+        }
+
+        public void CheckStartPos()
+        {
             SHOW_TYPE type = checkPos(0, 0);
             GameManager.instance.ShowMap(transform.position, type);
         }

@@ -448,7 +448,11 @@ namespace HideAndSeek
             });
         }
 
-        
+        public void StartGame()
+        {
+            Invoke("GoToLobby", 2f);
+        }
+
         public void GoToLobby()
         {
             SoundManager.instance.PlaySingle(btnClick);

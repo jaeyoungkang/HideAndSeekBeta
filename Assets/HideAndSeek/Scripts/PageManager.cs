@@ -58,7 +58,19 @@ namespace HideAndSeek
             dungeonTitleText = GameObject.Find("DungeonTitleText").GetComponent<Text>();
             levelTitleText = GameObject.Find("LevelTitleText").GetComponent<Text>();
 
-            startButton.onClick.AddListener(GameManager.instance.GoToLobby);
+            startButton.onClick.AddListener(ShowNotice);
+        }
+
+        public void ShowNotice()
+        {
+            startButton.gameObject.SetActive(false);
+            GameObject.Find("FrontPageNoticeText").GetComponent<Text>().text = "※ 주의\n본 게임은 클라이언트 기반의 게임입니다.\n게임을 삭제하면 게임기록도 같이 삭제됩니다.";            
+            Invoke("StartGame", 4f);
+        }
+
+        public void StartGame()
+        {            
+            GameManager.instance.GoToLobby();
         }
 
         public void Setup(GAME_STATE gameState)

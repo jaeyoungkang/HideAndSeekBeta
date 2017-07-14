@@ -1069,11 +1069,17 @@ namespace HideAndSeek
 
         public void WatchAd()
         {
+            if(info.enableCount >= 5)
+            {
+                Notice.instance.Show("이미 주화가 5개 이상일때는 더 받을 수 없다....", 2f, Color.blue);
+                return;
+            }
+
             if (CheckTimeEnableToWatch())
             {
                 preGenTime = DateTime.Now.ToLocalTime();
                 info.enableCount += 1;
-                Notice.instance.Show("광고:하태하태!\n(코인을 하나 받았다!)", 2f, Color.blue);
+                Notice.instance.Show("광고:하태하태!\n(주화을 하나 받았다!)", 2f, Color.blue);
                 SaveLoad.SaveTime();
             }
             else
@@ -1088,7 +1094,7 @@ namespace HideAndSeek
             Notice.instance.Show("주화 10개 : 1$, 주화 50개 : 3$, 주화 100개 : 5$", 2f, Color.yellow);
         }
         
-        public float TIME_INTERVAL_GEN = 600f;
+        public float TIME_INTERVAL_GEN = 300f;
         public DateTime preGenTime = new DateTime(2000, 1, 1, 0, 0, 0, 0).ToLocalTime();
 
         public bool CheckTimeEnableToWatch()

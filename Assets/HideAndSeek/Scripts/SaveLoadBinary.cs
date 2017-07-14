@@ -32,8 +32,28 @@ namespace HideAndSeek
 
     public static class SaveLoad
     {
+        public static string fileName2 = "/timerecord.gd";
         public static string fileName = "/games16.gd";
         public static List<GameInfo> savedGames = new List<GameInfo>();
+
+        public static void SaveTime()
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream file = File.Create(Application.persistentDataPath + fileName2);
+            bf.Serialize(file, GameManager.instance.preGenTime);
+            file.Close();
+        }
+
+        public static void LoadTime()
+        {
+            if (File.Exists(Application.persistentDataPath + fileName2))
+            {
+                BinaryFormatter bf = new BinaryFormatter();
+                FileStream file = File.Open(Application.persistentDataPath + fileName2, FileMode.Open);
+                GameManager.instance.preGenTime = (DateTime)bf.Deserialize(file);
+                file.Close();
+            }
+        }
 
         public static void Save()
         {

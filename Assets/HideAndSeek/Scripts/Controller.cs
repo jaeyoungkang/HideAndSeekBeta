@@ -54,6 +54,7 @@ namespace HideAndSeek
         {
             for (int i = 0; i < slotBtns.Length; i++)
             {
+                slotBtns[i].image.sprite = null;
                 slotBtns[i].GetComponentInChildren<Text>().text = "";
                 slotBtns[i].GetComponent<Image>().color = Color.Lerp(Color.black, Color.gray, 0.5f);
                 slotBtns[i].enabled = false;
@@ -63,12 +64,9 @@ namespace HideAndSeek
             {
                 if (slotBtns.Length <= i) break;
                 Item item = ItemManager.instance.GetItemByItemId(GameManager.instance.bag[i]);
-                slotBtns[i].GetComponentInChildren<Text>().text = item.name;
                 slotBtns[i].enabled = true;
-                slotBtns[i].GetComponent<Image>().color = Color.gray;
-
-                Color itemGradeColor = ItemManager.instance.GetColorByItemGrade(item.grade);
-                ItemManager.instance.SetItemUIColor(slotBtns[i], itemGradeColor);
+                slotBtns[i].image.sprite = item.tile;
+                slotBtns[i].image.color = Color.white;
             }
         }
 

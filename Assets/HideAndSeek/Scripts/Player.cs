@@ -372,9 +372,9 @@ namespace HideAndSeek
             switch (name)
             {
                 case "은신": Hide(); break;
-                case "회복10": GameManager.instance.RecoverHP(1); break;
-                case "회복20": GameManager.instance.RecoverHP(2); break;
-                case "회복30": GameManager.instance.RecoverHP(3); break;
+                case "회복1": GameManager.instance.RecoverHP(1); break;
+                case "회복2": GameManager.instance.RecoverHP(2); break;
+                case "회복3": GameManager.instance.RecoverHP(3); break;
                 case "근처보기":
                     GameManager.instance.ShowMap(transform.position, SHOW_TYPE.NEAR);                    
                     break;

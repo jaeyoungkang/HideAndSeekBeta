@@ -11,7 +11,14 @@ namespace HideAndSeek
 
         void Start()
         {
-
+            Item itemInfo = ItemManager.instance.GetItemByItemId(itemId);
+            if(itemInfo == null)
+            {
+                print("Error : wrong id! " + itemId);
+                return;
+            }
+            SpriteRenderer renterer = gameObject.GetComponent<SpriteRenderer>();
+            renterer.sprite = itemInfo.tile;
         }
     }
 }

@@ -124,7 +124,7 @@ namespace HideAndSeek
             switch (showType)
             {
                 case SHOW_TYPE.ALL: msg = "검은색 바닥을 밟으니 방 전체가 보인다."; textColor = Color.gray; break;
-                case SHOW_TYPE.GEM_ITEM: msg = "노란색  닥을 밟으니 아이템들이 보인다."; textColor = Color.yellow; break;
+                case SHOW_TYPE.GEM_ITEM: msg = "노란색 바닥을 밟으니 아이템들이 보인다."; textColor = Color.yellow; break;
                 case SHOW_TYPE.NEAR: msg = "초록색 바닥을 밟으니 주변이 보인다."; textColor = Color.green; break;
                 case SHOW_TYPE.MONSTER: msg = "빨간색 바닥을 밟으니 괴물들이 보인다."; textColor = Color.red; break;
                 case SHOW_TYPE.TRAP: msg = "파란색 바닥을 밟으니 함정들이 보인다."; textColor = Color.blue; break;

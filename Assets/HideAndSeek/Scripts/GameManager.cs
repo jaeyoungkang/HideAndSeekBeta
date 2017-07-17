@@ -319,7 +319,7 @@ namespace HideAndSeek
             {
                 if (info.enableCount <= 0)
                 {
-                    Notice.instance.Show("고대주화가 없어서 입장 할 수 없다...", 2f, Color.yellow);
+                    Notice.instance.Show("도굴 삽이 없어서 들어 갈 수 없다...", 2f, Color.yellow);
                     return;
                 }
                 info.enableCount--;

@@ -202,9 +202,6 @@ namespace HideAndSeek
                 if (GameManager.instance.bag.Count <= i) break;
                 Item item = ItemManager.instance.GetItemByItemId(GameManager.instance.bag[i]);
                 BagBtns[i].GetComponentInChildren<Text>().text = item.price.ToString();
-                BagBtns[i].GetComponentInChildren<Text>().color = Color.yellow;
-                BagBtns[i].GetComponentInChildren<Text>().fontSize = 48;
-                BagBtns[i].GetComponentInChildren<Text>().fontStyle = FontStyle.Bold;
 
                 BagBtns[i].image.sprite = item.tile;
                 BagBtns[i].image.color = Color.white;
@@ -251,18 +248,16 @@ namespace HideAndSeek
                 Item itemInfo = ItemManager.instance.GetItemByItemId(curDisplay[i]);
                 if (itemInfo == null) continue;
 
-                curButtons[i].image.sprite = itemInfo.tile;
-                curButtons[i].image.color = Color.white;
+                curButtons[i].image.overrideSprite = itemInfo.tile;
+                 curButtons[i].image.color = Color.white;
                 curButtons[i].GetComponentInChildren<Text>().text = itemInfo.price.ToString();
-                curButtons[i].GetComponentInChildren<Text>().color = Color.yellow;
-                curButtons[i].GetComponentInChildren<Text>().fontSize = 48;
-                curButtons[i].GetComponentInChildren<Text>().fontStyle = FontStyle.Bold;
+                
 
 //                Color itemGradeColor = ItemManager.instance.GetColorByItemGrade(itemInfo.grade);
 //                ItemManager.instance.SetItemUIColor(curButtons[i], itemGradeColor);
-                
 
-                if(type != 0)
+
+                if (type != 0)
                 {
                     curButtons[i].gameObject.transform.Find("discribe").gameObject.GetComponentInChildren<Text>().text = itemInfo.description;
                 }

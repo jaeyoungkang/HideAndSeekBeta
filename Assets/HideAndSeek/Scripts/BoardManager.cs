@@ -181,7 +181,8 @@ namespace HideAndSeek
 
         void SetupTutorialShowTile()
         {
-            GameManager.instance.AddShowTile(new ShowTile(new Vector3(0, 0, 0), SHOW_TYPE.ALL), 1);
+//            GameManager.instance.AddShowTile(new ShowTile(new Vector3(0, 0, 0), SHOW_TYPE.ALL), 1);
+            GameManager.instance.AddShowTile(new ShowTile(new Vector3(0, 0, 0), SHOW_TYPE.NEAR), 1);
             GameManager.instance.AddShowTile(new ShowTile(new Vector3(0, 7, 0), SHOW_TYPE.GEM_ITEM), 1);
             GameManager.instance.AddShowTile(new ShowTile(new Vector3(7, 0, 0), SHOW_TYPE.TRAP), 1);            
             GameManager.instance.AddShowTile(new ShowTile(new Vector3(2, 2, 0), SHOW_TYPE.NEAR), 1);
@@ -400,15 +401,15 @@ namespace HideAndSeek
 
         public void SetupTutorialLevel(Level levelInfo)
         {
-            for(int i =0; i< itemTiles.Length; i++)
-            {
-                int x = i%6+1;
-                int y = i/6+1;
+            //for(int i =0; i< itemTiles.Length; i++)
+            //{
+            //    int x = i%6+1;
+            //    int y = i/6+1;
 
-                GameObject itemIns = Instantiate(itemTiles[i], new Vector3(x, y, 0f), Quaternion.identity);
-                GameManager.instance.AddObj(itemIns, levelInfo.id);
-            }
-            return;
+            //    GameObject itemIns = Instantiate(itemTiles[i], new Vector3(x, y, 0f), Quaternion.identity);
+            //    GameManager.instance.AddObj(itemIns, levelInfo.id);
+            //}
+            //return;
 
 
             GameObject showItemTile = null;

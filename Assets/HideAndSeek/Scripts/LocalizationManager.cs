@@ -4,14 +4,13 @@ using UnityEngine;
 
 namespace HideAndSeek
 {
+    public enum GAME_STRING { ROT, NO_SHOVEL, GEM_START };
     public class LocalizationManager : MonoBehaviour
-    {
+    {        
         public static LocalizationManager instance = null;
 
-        public enum LOCAL { KOR, ENG };
-
-        public Dictionary<LOCAL, string[]> contents = new Dictionary<LOCAL, string[]>();
-        public LOCAL loc = LOCAL.KOR;
+        public Dictionary<GAME_STRING, Dictionary<SystemLanguage, string>> contents = new Dictionary<GAME_STRING, Dictionary<SystemLanguage, string>>();
+        public SystemLanguage locallanguage;
 
         void Awake()
         {
@@ -29,17 +28,33 @@ namespace HideAndSeek
 
         void SetupContents()
         {
-            string[] kor = { "무언가 썩고있는 냄새가 난다..." };
-            string[] eng = { "Something smells rotten." };
+            locallanguage = Application.systemLanguage;
+            print(Application.systemLanguage);
+            print(Application.systemLanguage.ToString());
 
-            contents[LOCAL.KOR] = kor;
-            contents[LOCAL.ENG] = eng;
+            contents[GAME_STRING.ROT] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "무언가 썩고있는 냄새가 난다..."},
+                {SystemLanguage.English,  "Something smells rotten..."},
+            };
+
+            contents[GAME_STRING.NO_SHOVEL] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "도굴 삽 없이는 들어 갈 수 없다..."},
+                {SystemLanguage.English,  "I can not enter without a shovel..."},
+            };
+
+            contents[GAME_STRING.GEM_START] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "{0}개의 보석을 가지고 시작한다."},
+                {SystemLanguage.English,  "Start with {0} gem(s)."},
+            };
         }
 
 
-        public string GetLocalString(int index)
+        public string GetLocalString(GAME_STRING gs)
         {
-            return contents[loc][index];
+            return contents[gs][locallanguage];
         }
     }
 }

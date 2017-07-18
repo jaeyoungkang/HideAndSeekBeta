@@ -310,17 +310,11 @@ namespace HideAndSeek
 
         public void EnterDungeon()
         {
-            if (curDungeon.locked)
-            {
-                Notice.instance.Show("유료 던전 이다... 유료 결재를 해야한다!", 2f, Color.yellow);
-                return;
-            }
-
             if(curDungeon.id != 0)
             {
                 if (info.enableCount <= 0)
                 {
-                    Notice.instance.Show("도굴 삽이 없어서 들어 갈 수 없다...", 2f, Color.yellow);
+                    Notice.instance.Show(LocalizationManager.instance.GetLocalString(GAME_STRING.NO_SHOVEL), 2f, Color.yellow);
                     return;
                 }
                 info.enableCount--;
@@ -366,7 +360,11 @@ namespace HideAndSeek
             if(curDungeon.id == 4) ChangeState(GAME_STATE.MAP_LARGE);
             else ChangeState(GAME_STATE.MAP);
 
-            if(curDungeon.id != 0) Notice.instance.Show(curDungeon.gem + "개의 보석을 가지고 시작한다.", 2f, Color.green);            
+            if (curDungeon.id != 0)
+            {
+                string gem_start = string.Format(LocalizationManager.instance.GetLocalString(GAME_STRING.GEM_START), curDungeon.gem);
+                Notice.instance.Show(gem_start, 2f, Color.green);
+            }
 
             Analytics.CustomEvent("Dungeon Try", new Dictionary<string, object>
             {
@@ -454,12 +452,6 @@ namespace HideAndSeek
                 {
                     if (dungeon.id == openedId) dungeon.open = true;
                 }
-            }
-
-            foreach (Dungeon dungeon in dungeons)
-            {
-                if (dungeon.locked && info.purchaseUser)
-                    dungeon.locked = false;
             }
 
             SaveLoad.Save();
@@ -1073,7 +1065,7 @@ namespace HideAndSeek
         {
             if(info.enableCount >= 5)
             {
-                Notice.instance.Show("이미 도굴삽이 5개 이상일때는 더 받을 수 없다....", 2f, Color.blue);
+                Notice.instance.Show("이미 도굴삽이 5개 이상일때는 더 받을 수 없다...", 2f, Color.blue);
                 return;
             }
 
@@ -1095,7 +1087,6 @@ namespace HideAndSeek
         {
             SoundManager.instance.PlaySingle(btnClick);
             ChangeState(GAME_STATE.PURCHASE);
-            //            Notice.instance.Show("도굴삽 10개 : 1$, 도굴삽 50개 : 3$, 도굴삽 100개 : 5$", 2f, Color.yellow);
         }
 
         public float TIME_INTERVAL_GEN = 300f;

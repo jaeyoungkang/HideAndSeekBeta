@@ -73,7 +73,7 @@ namespace HideAndSeek
                 {
                     SoundManager.instance.PlaySingle(noticeSound);
                     bSpottedPlayer = true;
-                    Notice.instance.Show(LocalizationManager.instance.GetLocalString(0), 2f, Color.red);
+                    Notice.instance.Show(LocalizationManager.instance.GetLocalString(GAME_STRING.ROT), 2f, Color.red);
                 }
             }
             else

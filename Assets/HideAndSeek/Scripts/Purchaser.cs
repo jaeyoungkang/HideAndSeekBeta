@@ -16,6 +16,8 @@ namespace HideAndSeek
         public Button purchaseBtn2;
         public Button purchaseBtn3;
 
+        public AudioClip btnClickSound;
+
         private static IStoreController m_StoreController;          // The Unity Purchasing system.
         private static IExtensionProvider m_StoreExtensionProvider; // The store-specific Purchasing subsystems.
 
@@ -101,18 +103,21 @@ namespace HideAndSeek
 
         public void BuyConsumable1()
         {
+            SoundManager.instance.PlaySingle(btnClickSound);
             // Buy the consumable product using its general identifier. Expect a response either 
             // through ProcessPurchase or OnPurchaseFailed asynchronously.
-            BuyProductID(kProductIDConsumable10);
+            BuyProductID(kProductIDConsumable10);            
         }
 
         public void BuyConsumable2()
         {
+            SoundManager.instance.PlaySingle(btnClickSound);
             BuyProductID(kProductIDConsumable50);
         }
 
         public void BuyConsumable3()
         {
+            SoundManager.instance.PlaySingle(btnClickSound);
             BuyProductID(kProductIDConsumable100);
         }
 

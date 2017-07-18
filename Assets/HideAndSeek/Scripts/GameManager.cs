@@ -1093,6 +1093,7 @@ namespace HideAndSeek
 
         public void ShowPurchase()
         {
+            SoundManager.instance.PlaySingle(btnClick);
             ChangeState(GAME_STATE.PURCHASE);
             //            Notice.instance.Show("도굴삽 10개 : 1$, 도굴삽 50개 : 3$, 도굴삽 100개 : 5$", 2f, Color.yellow);
         }

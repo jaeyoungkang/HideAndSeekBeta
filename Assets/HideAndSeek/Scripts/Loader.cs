@@ -5,7 +5,8 @@ namespace HideAndSeek
 {	
 	public class Loader : MonoBehaviour 
 	{
-		public GameObject gameManager;
+        public GameObject localizationManager;
+        public GameObject gameManager;
 		public GameObject soundManager;
         public GameObject pageManager;
         public GameObject itemManager;
@@ -13,6 +14,9 @@ namespace HideAndSeek
 
         void Awake ()
 		{
+            if (LocalizationManager.instance == null)
+                Instantiate(localizationManager);
+            
             if (PageManager.instance == null)
                 Instantiate(pageManager);
 
@@ -26,8 +30,7 @@ namespace HideAndSeek
                 Instantiate(itemManager);		
 
 			if (SoundManager.instance == null)
-				Instantiate(soundManager);
-            
+				Instantiate(soundManager);            
         }
 	}
 }

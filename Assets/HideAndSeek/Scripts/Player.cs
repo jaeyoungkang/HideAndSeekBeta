@@ -19,11 +19,9 @@ namespace HideAndSeek
         public AudioClip attackedSound2;
         public AudioClip moveSound1;
 		public AudioClip moveSound2;
-		public AudioClip eatSound1;
-		public AudioClip drinkSound1;
 		public AudioClip gameOverSound;
-        public AudioClip showSound;
-        public AudioClip goldASound;
+        public AudioClip gemSound;
+        public AudioClip itemSound;
         public AudioClip levelClearSound;
         public AudioClip skillSound;
 
@@ -110,7 +108,6 @@ namespace HideAndSeek
             if(showType != SHOW_TYPE.NONE)
             {
                 if(GameManager.instance.GetDungeonInfo().id == 0) ShowExplainTextTile(showType);
-                SoundManager.instance.PlaySingle(showSound);
 
                 if (bHideMode) BreakedHiding("특수 바닥을 밟아서 은신이 풀렸다...");
             }
@@ -207,7 +204,7 @@ namespace HideAndSeek
                 
                 SoundManager.instance.RandomizeSfx(attackedSound1, attackedSound2);
                 GetGem(2);
-                SoundManager.instance.RandomizeSfx(goldASound, goldASound);
+                SoundManager.instance.PlaySingle(gemSound);
                 Analytics.CustomEvent("Attack Thief", new Dictionary<string, object>{{ "Attack Thief", 1}});
 
                 hitThief.Hitted();
@@ -227,7 +224,7 @@ namespace HideAndSeek
             {
                 Renderer renderer = other.gameObject.GetComponent<SpriteRenderer>();
                 if (renderer) renderer.enabled = true;
-                SoundManager.instance.RandomizeSfx(goldASound, goldASound);
+                SoundManager.instance.PlaySingle(gemSound);
                 GetGem(1);
                 StartCoroutine(HideAni(other.gameObject));
 
@@ -259,7 +256,7 @@ namespace HideAndSeek
                 }
                 else if (GameManager.instance.AddItemInBag(item.itemId))
                 {                    
-                    SoundManager.instance.RandomizeSfx(goldASound, goldASound);
+                    SoundManager.instance.PlaySingle(itemSound);
                     StartCoroutine(HideAni(other.gameObject));
                     Controller controller = FindObjectOfType(typeof(Controller)) as Controller;
                     controller.SetupSlots();

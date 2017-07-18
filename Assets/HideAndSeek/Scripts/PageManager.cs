@@ -65,7 +65,7 @@ namespace HideAndSeek
         {
             startButton.gameObject.SetActive(false);
             GameObject.Find("FrontPageNoticeText").GetComponent<Text>().text = "※ 주의\n본 게임은 클라이언트 기반의 게임입니다.\n게임을 삭제하면 게임기록도 같이 삭제됩니다.";            
-            Invoke("StartGame", 4f);
+            Invoke("StartGame", 3f);
         }
 
         public void StartGame()

@@ -7,6 +7,7 @@ namespace HideAndSeek
 {
     public class PageManager : MonoBehaviour {
         public static PageManager instance = null;
+        public GameObject purchaseImage;
         public GameObject titleImage;
         public GameObject lobbyImage;
         public GameObject levelEnterImage;
@@ -39,6 +40,7 @@ namespace HideAndSeek
 
         public void InitUI()
         {
+            purchaseImage = GameObject.Find("PurchaseImage");
             titleImage = GameObject.Find("FrontPageImage");
             lobbyImage = GameObject.Find("LobbyImage");
             shopImage = GameObject.Find("ShopImage");
@@ -78,6 +80,7 @@ namespace HideAndSeek
             bool bTitle = false;
             bool bLobby = false;
             bool bShop = false;
+            bool bPurchase = false;
             bool bDungeon = false;
             bool bDungeonInfo = false;
             bool bLevelInfo = false;
@@ -88,6 +91,7 @@ namespace HideAndSeek
 
             switch (gameState)
             {
+                case GAME_STATE.PURCHASE: bPurchase = true; break;
                 case GAME_STATE.START: bTitle = true; break;
                 case GAME_STATE.SHOP: bShop = true; break;
                 case GAME_STATE.LOBBY: bLobby = true; break;
@@ -101,6 +105,7 @@ namespace HideAndSeek
                 case GAME_STATE.OVER: bResult = true; break;
             }
 
+            purchaseImage.SetActive(bPurchase);
             shopImage.SetActive(bShop);
             lobbyImage.SetActive(bLobby);
             titleImage.SetActive(bTitle);

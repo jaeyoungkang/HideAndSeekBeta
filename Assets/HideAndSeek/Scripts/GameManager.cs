@@ -9,7 +9,7 @@ using System.Collections.Generic;       //Allows us to use Lists.
 
 namespace HideAndSeek
 {    
-    public enum GAME_STATE { START, LOBBY, SHOP, DUNGEON_INFO, LEVEL, LEVEL_INFO, MAP, MAP_LARGE, PLAY, RESULT, OVER }
+    public enum GAME_STATE { PURCHASE, START, LOBBY, SHOP, DUNGEON_INFO, LEVEL, LEVEL_INFO, MAP, MAP_LARGE, PLAY, RESULT, OVER }
 
     public class GameManager : MonoBehaviour
     {
@@ -1072,7 +1072,7 @@ namespace HideAndSeek
         {
             if(info.enableCount >= 5)
             {
-                Notice.instance.Show("이미 주화가 5개 이상일때는 더 받을 수 없다....", 2f, Color.blue);
+                Notice.instance.Show("이미 도굴삽이 5개 이상일때는 더 받을 수 없다....", 2f, Color.blue);
                 return;
             }
 
@@ -1080,7 +1080,7 @@ namespace HideAndSeek
             {
                 preGenTime = DateTime.Now.ToLocalTime();
                 info.enableCount += 1;
-                Notice.instance.Show("광고:하태하태!\n(주화을 하나 받았다!)", 2f, Color.blue);
+                Notice.instance.Show("광고:하태하태!\n(도굴삽을 하나 구했다!)", 2f, Color.blue);
                 SaveLoad.SaveTime();
             }
             else
@@ -1092,9 +1092,10 @@ namespace HideAndSeek
 
         public void ShowPurchase()
         {
-            Notice.instance.Show("주화 10개 : 1$, 주화 50개 : 3$, 주화 100개 : 5$", 2f, Color.yellow);
+            ChangeState(GAME_STATE.PURCHASE);
+            //            Notice.instance.Show("도굴삽 10개 : 1$, 도굴삽 50개 : 3$, 도굴삽 100개 : 5$", 2f, Color.yellow);
         }
-        
+
         public float TIME_INTERVAL_GEN = 300f;
         public DateTime preGenTime = new DateTime(2000, 1, 1, 0, 0, 0, 0).ToLocalTime();
 

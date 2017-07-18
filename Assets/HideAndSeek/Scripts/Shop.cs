@@ -23,7 +23,6 @@ namespace HideAndSeek
 
         public Button[] BagBtns;
         public Button ReturnBtn;
-        public Button ExtendBtn;
 
         public Button AllBtn;
         public Button DetailBtn1;
@@ -32,6 +31,8 @@ namespace HideAndSeek
 
         public Image simpleView;
         public Image detailView1;
+
+        public AudioClip buySellSound;
 
         private int curTab = 0;
 
@@ -164,6 +165,8 @@ namespace HideAndSeek
             GameManager.instance.dungeonGem -= price;
             SetupBag();
 
+            SoundManager.instance.PlaySingle(buySellSound);
+
             GameManager.instance.dungeonPlayData.butItems++;
             Analytics.CustomEvent("Buy Item", new Dictionary<string, object>
             {
@@ -184,6 +187,7 @@ namespace HideAndSeek
             GameManager.instance.dungeonGem += price;
             GameManager.instance.bag.RemoveAt(index);
             SetupBag();
+            SoundManager.instance.PlaySingle(buySellSound);
 
             GameManager.instance.dungeonPlayData.sellItems++;            
         }
@@ -204,11 +208,7 @@ namespace HideAndSeek
                 BagBtns[i].GetComponentInChildren<Text>().text = item.price.ToString();
 
                 BagBtns[i].image.sprite = item.tile;
-                BagBtns[i].image.color = Color.white;
-
-
-                //Color itemGradeColor = ItemManager.instance.GetColorByItemGrade(item.grade);
-                //ItemManager.instance.SetItemUIColor(BagBtns[i], itemGradeColor);
+                BagBtns[i].image.color = Color.white;                
             }            
         }
 
@@ -249,14 +249,8 @@ namespace HideAndSeek
                 if (itemInfo == null) continue;
 
                 curButtons[i].image.overrideSprite = itemInfo.tile;
-                 curButtons[i].image.color = Color.white;
+                curButtons[i].image.color = Color.white;
                 curButtons[i].GetComponentInChildren<Text>().text = itemInfo.price.ToString();
-                
-
-//                Color itemGradeColor = ItemManager.instance.GetColorByItemGrade(itemInfo.grade);
-//                ItemManager.instance.SetItemUIColor(curButtons[i], itemGradeColor);
-
-
                 if (type != 0)
                 {
                     curButtons[i].gameObject.transform.Find("discribe").gameObject.GetComponentInChildren<Text>().text = itemInfo.description;

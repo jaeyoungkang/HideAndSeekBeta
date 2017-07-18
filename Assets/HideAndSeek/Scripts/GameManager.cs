@@ -290,7 +290,8 @@ namespace HideAndSeek
             ChangeState(preGameState);
         }
 
-        public AudioClip btnClick;
+        public AudioClip btnClick;        
+
         public void ShowDungeonInfo(int index)
         {            
             SoundManager.instance.PlaySingle(btnClick);

@@ -5,7 +5,7 @@ using UnityEngine;
 namespace HideAndSeek
 {
     public enum UI_STRING { FRONT_TITLE, FRONT_WARNING, FRONT_BUTTON,
-    LOBBY_TITLE, LOBBY_BUTTON_AD, LOBBY_BUTTON_PURCHASE, LOBBY_TIME_REMAIN }
+    LOBBY_TITLE, LOBBY_BUTTON_AD, LOBBY_BUTTON_PURCHASE, LOBBY_TIME_REMAIN, PURCHASE_TITLE, PURCHASE_1, PURCHASE_2, PURCHASE_3, PURCHASE_BTN, PURCHASE_NOTICE }
 
     public enum GAME_STRING { ROT, NO_SHOVEL, GEM_START, LIMIT_SHOVEL, GET_SHOVEL, WAIT, DAMAGE_TIME, FLOOR_SHOW_ALL, FLOOR_SHOW_ITEM, FLOOR_SHOW_NEAR, FLOOR_SHOW_MONSTER, FLOOR_SHOW_TRAP,
         INC_MAXHP, LIMIT_MAXHP, INC_BAG, LIMIT_BAG, NO_SPACE_BAG, FOUND_ITEM, LACK_GEM, LACK_TIME, HIDE_BROKEN_DAMAGE, HIDE_BROKEN_USE, HIDE_BROKEN_FLOOR, HIDE_BROKEN_BUMP, HIDE_BROKEN_GEM,
@@ -138,13 +138,49 @@ namespace HideAndSeek
             uiStrings[UI_STRING.LOBBY_BUTTON_PURCHASE] = new Dictionary<SystemLanguage, string>()
             {
                 {SystemLanguage.Korean,  "구입"},
-                {SystemLanguage.English,  "PURCHASE"},
+                {SystemLanguage.English,  "BUY"},
             };
 
             uiStrings[UI_STRING.LOBBY_TIME_REMAIN] = new Dictionary<SystemLanguage, string>()
             {
                 {SystemLanguage.Korean,  "다음 획득 기회까지 남은시간 : "},
                 {SystemLanguage.English,  "Time remaining until next chance : "},
+            };
+
+            uiStrings[UI_STRING.PURCHASE_TITLE] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "도굴삽 구입"},
+                {SystemLanguage.English,  "PURCHASE SHOVELS"},
+            };
+
+            uiStrings[UI_STRING.PURCHASE_1] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "도굴삽 10개  1000원"},
+                {SystemLanguage.English,  "Shovel 10 pieces 1$"},
+            };
+
+            uiStrings[UI_STRING.PURCHASE_2] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "도굴삽 50개  3000원"},
+                {SystemLanguage.English,  "Shovel 50 pieces 3$"},
+            };
+
+            uiStrings[UI_STRING.PURCHASE_3] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "도굴삽 100개  5000원"},
+                {SystemLanguage.English,  "Shovel 100 pieces 5$"},
+            };
+
+            uiStrings[UI_STRING.PURCHASE_BTN] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "구입"},
+                {SystemLanguage.English,  "BUY"},
+            };
+
+            uiStrings[UI_STRING.PURCHASE_NOTICE] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "\n앱을 삭제 하면\n구입 내역도 같이 삭제 되니\n주의하세요!!!"},
+                {SystemLanguage.English,  "If you delet this application,\nyour purchase history will also be deleted!\nBe careful!"},
             };
 
             //uiStrings[UI_STRING] = new Dictionary<SystemLanguage, string>()

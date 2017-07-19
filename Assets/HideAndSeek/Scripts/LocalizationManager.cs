@@ -48,6 +48,7 @@ namespace HideAndSeek
                 locallanguage = SystemLanguage.English;
                 SetupContents();
                 SetupItemContents();
+                SetupItemDiscriptionContents();
             }
             else if (instance != this)
                 Destroy(gameObject);
@@ -172,6 +173,111 @@ namespace HideAndSeek
             {
                 {SystemLanguage.Korean, "탈출 티켓"},
                 {SystemLanguage.English, "a ticket of escape"},
+            };
+        }
+
+        void SetupItemDiscriptionContents()
+        {
+            itemDiscriptions[ITEM_ID.HEAL1] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "HP를 1칸 회복한다."},
+                {SystemLanguage.English,  "Recover HP 1 point."},
+            };
+
+            itemDiscriptions[ITEM_ID.HEAL2] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "HP를 2칸 회복한다."},
+                {SystemLanguage.English,  "Recover HP 2 point."},
+            };
+
+            itemDiscriptions[ITEM_ID.HEAL3] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean, "HP를 3칸 회복한다."},
+                {SystemLanguage.English,  "Recover HP 3 point."},
+            };
+
+            itemDiscriptions[ITEM_ID.FRAGMENT_NEAR] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "주위 3칸반경을 밝힌다."},
+                {SystemLanguage.English,  "Can view around(3blocks)"},
+            };
+
+            itemDiscriptions[ITEM_ID.FRAGMENT_MONSTER] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "전 영역의 괴물의 위치를 본다. "},
+                {SystemLanguage.English,  "Can view monsters"},
+            };
+
+            itemDiscriptions[ITEM_ID.FRAGMENT_TRAP] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "전 영역의 함정의 위치를 본다."},
+                {SystemLanguage.English,  "Can view traps"},
+            };
+
+            itemDiscriptions[ITEM_ID.FRAGMENT_ALL] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "전체를 본다."},
+                {SystemLanguage.English,  "Can veiw all"},
+            };
+
+            itemDiscriptions[ITEM_ID.FRAGMENT_ITEM] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "전 영역에 있는 보석이나 아이템을 본다. "},
+                {SystemLanguage.English,  "Can view items and gems"},
+            };
+
+            itemDiscriptions[ITEM_ID.DESTROY_4D] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean, "상하좌우 1칸의 괴물이나 함정을 제거한다."},
+                {SystemLanguage.English,  "Destory monsters or traps from up, down, left, and right."},
+            };
+
+            itemDiscriptions[ITEM_ID.DESTROY_LR] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean, "좌우 2칸씩 괴물이나 함정을 제거한다."},
+                {SystemLanguage.English, "Destory monsters or traps from left, and right. (two blocks)"},
+            };
+
+            itemDiscriptions[ITEM_ID.DESTROY_UD] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "상하 2칸씩 괴물이나 함정을 제거한다."},
+                {SystemLanguage.English,  "Destory monsters or traps from up, and down. (two blocks)"},
+            };
+
+            itemDiscriptions[ITEM_ID.ADD_TIME] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean, "제한시간이 30초 늘어난다."},
+                {SystemLanguage.English, "The time limit is increased by 30 seconds."},
+            };
+
+            itemDiscriptions[ITEM_ID.STOP_TIME] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean, "움직이지 않을동안 시간을 멈춘다."},
+                {SystemLanguage.English, "The time stop while not moving."},
+            };
+
+            itemDiscriptions[ITEM_ID.HIDE] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean, "적이 나를 못본다. 하지만 쉽게 풀린다!"},
+                {SystemLanguage.English, "it makes Monster can't find me, but it is broken easily"},
+            };
+
+            itemDiscriptions[ITEM_ID.EXTEND_MAX_HP] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean, "최대 HP가 1칸 늘어난다."},
+                {SystemLanguage.English, "Increas maximum HP  1 point."},
+            };
+
+            itemDiscriptions[ITEM_ID.EXTEND_BAG] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean, "가방 슬롯이 1칸 늘어난다. "},
+                {SystemLanguage.English, "Increas one space in the bag"},
+            };
+
+            itemDiscriptions[ITEM_ID.ESCAPE] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean, "방을 탈출해서 방선택화면으로 이동."},
+                {SystemLanguage.English, "Escape to the chamber select phase."},
             };
         }
 

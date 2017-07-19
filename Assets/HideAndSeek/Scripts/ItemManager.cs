@@ -33,6 +33,7 @@ namespace HideAndSeek
                 if (!itemList.ContainsKey(item.id))
                 {
                     item.name = LocalizationManager.instance.GetItemName(item.id);
+                    item.description = LocalizationManager.instance.GetItemDiscription(item.id);
                     itemList.Add(item.id, item);
                 }
             }

@@ -61,12 +61,19 @@ namespace HideAndSeek
             levelTitleText = GameObject.Find("LevelTitleText").GetComponent<Text>();
 
             startButton.onClick.AddListener(ShowNotice);
+
+            GameObject.Find("FrontPageTitleText").GetComponent<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.FRONT_TITLE);
+            GameObject.Find("FrontPageButton").GetComponentInChildren<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.FRONT_BUTTON);
+
+            GameObject.Find("LobbyTitleText").GetComponent<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.LOBBY_TITLE);
+            GameObject.Find("WatchAdButton").GetComponentInChildren<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.LOBBY_BUTTON_AD);
+            GameObject.Find("PurchaseButton").GetComponentInChildren<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.LOBBY_BUTTON_PURCHASE);
         }
 
         public void ShowNotice()
         {
             startButton.gameObject.SetActive(false);
-            GameObject.Find("FrontPageNoticeText").GetComponent<Text>().text = "※ 주의\n본 게임은 클라이언트 기반의 게임입니다.\n게임을 삭제하면 게임기록도 같이 삭제됩니다.";            
+            GameObject.Find("FrontPageNoticeText").GetComponent<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.FRONT_WARNING);
             Invoke("StartGame", 3f);
         }
 

@@ -9,21 +9,8 @@ using System.Text;
 
 namespace HideAndSeek
 {
-    static class RandomExtensions
-    {
-        public static void Shuffle<T>(this System.Random rng, T[] array)
-        {
-            int n = array.Length;
-            while (n > 1)
-            {
-                int k = rng.Next(n--);
-                T temp = array[n];
-                array[n] = array[k];
-                array[k] = temp;
-            }
-        }
-    }
 
+    public enum DUNGEON_ID { TUTORIAL, RUIN, TOMB, MAZE, HELLGATE };
     public enum SHOW_TYPE { NONE, NEAR, MONSTER, TRAP, GEM_ITEM, ALL };
 
     [System.Serializable]
@@ -227,7 +214,8 @@ namespace HideAndSeek
 
             Level[] levels = { level1, level2, level3};
 
-            Dungeon dungeonInfo = new Dungeon("시험의 던전", 0, 1, levels, 300, true, false, 0);
+            string dName = LocalizationManager.instance.GetDungeonString(DUNGEON_ID.TUTORIAL);
+            Dungeon dungeonInfo = new Dungeon(dName, 0, 1, levels, 300, true, false, 0);
 
             return dungeonInfo;
         }
@@ -246,7 +234,8 @@ namespace HideAndSeek
 
             Level[] levels = { level1, level2, level4, level5 };
 
-            Dungeon dungeonInfo = new Dungeon("고대 유적지", 1, 2, levels, 60, false, false, 1);
+            string dName = LocalizationManager.instance.GetDungeonString(DUNGEON_ID.RUIN);
+            Dungeon dungeonInfo = new Dungeon(dName, 1, 2, levels, 60, false, false, 1);
 
             return dungeonInfo;           
         }
@@ -270,7 +259,8 @@ namespace HideAndSeek
 
             Level[] levels = { level1, level2, level4, level3, level5, level6 };
 
-            Dungeon dungeonInfo = new Dungeon("왕의 무덤", 2, 3, levels, 90, false, false, 1);
+            string dName = LocalizationManager.instance.GetDungeonString(DUNGEON_ID.TOMB);
+            Dungeon dungeonInfo = new Dungeon(dName, 2, 3, levels, 90, false, false, 1);
 
             return dungeonInfo;
         }
@@ -295,7 +285,8 @@ namespace HideAndSeek
 
             Level[] levels = { level1, level2, level4, level5, level6, level8, level9 };
 
-            Dungeon dungeonInfo = new Dungeon("신비한 미로", 3, 4, levels, 120, false, false, 2);
+            string dName = LocalizationManager.instance.GetDungeonString(DUNGEON_ID.MAZE);
+            Dungeon dungeonInfo = new Dungeon(dName, 3, 4, levels, 120, false, false, 2);
 
             return dungeonInfo;
         }
@@ -349,7 +340,8 @@ namespace HideAndSeek
 
             Level[] levels = { level1, level2, level3, level4, level5, level6, level7, level8, level9, level10, level11, level12, level13, level14, level15, level16 };
 
-            Dungeon dungeonInfo = new Dungeon("지옥의 입구", 4, 5, levels, 150, false, true, 3);
+            string dName = LocalizationManager.instance.GetDungeonString(DUNGEON_ID.HELLGATE);
+            Dungeon dungeonInfo = new Dungeon(dName, 4, 5, levels, 150, false, true, 3);
 
             return dungeonInfo;
         }

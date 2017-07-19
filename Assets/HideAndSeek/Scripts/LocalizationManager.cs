@@ -4,34 +4,20 @@ using UnityEngine;
 
 namespace HideAndSeek
 {
-    public enum GAME_STRING { ROT, NO_SHOVEL, GEM_START,
-        LIMIT_SHOVEL,
-        GET_SHOVEL,
-        WAIT,
-        DAMAGE_TIME,
-        FLOOR_SHOW_ALL,
-        FLOOR_SHOW_ITEM,
-        FLOOR_SHOW_NEAR,
-        FLOOR_SHOW_MONSTER,
-        FLOOR_SHOW_TRAP,
-        INC_MAXHP,
-        LIMIT_MAXHP,
-        INC_BAG,
-        LIMIT_BAG,
-        NO_SPACE_BAG,
-        FOUND_ITEM,
-        LACK_GEM,
-        LACK_TIME,
-        HIDE_BROKEN_DAMAGE,
-        HIDE_BROKEN_USE,
-        HIDE_BROKEN_FLOOR,
-        HIDE_BROKEN_BUMP,
-        HIDE_BROKEN_GEM,
-        HIDE_BROKEN_PICK_ITEM,
-    };
+    public enum UI_STRING { FRONT_TITLE, FRONT_WARNING, FRONT_BUTTON,
+    LOBBY_TITLE, LOBBY_BUTTON_AD, LOBBY_BUTTON_PURCHASE, LOBBY_TIME_REMAIN }
+
+    public enum GAME_STRING { ROT, NO_SHOVEL, GEM_START, LIMIT_SHOVEL, GET_SHOVEL, WAIT, DAMAGE_TIME, FLOOR_SHOW_ALL, FLOOR_SHOW_ITEM, FLOOR_SHOW_NEAR, FLOOR_SHOW_MONSTER, FLOOR_SHOW_TRAP,
+        INC_MAXHP, LIMIT_MAXHP, INC_BAG, LIMIT_BAG, NO_SPACE_BAG, FOUND_ITEM, LACK_GEM, LACK_TIME, HIDE_BROKEN_DAMAGE, HIDE_BROKEN_USE, HIDE_BROKEN_FLOOR, HIDE_BROKEN_BUMP, HIDE_BROKEN_GEM,
+        HIDE_BROKEN_PICK_ITEM };
+
     public class LocalizationManager : MonoBehaviour
     {        
         public static LocalizationManager instance = null;
+
+        public Dictionary<DUNGEON_ID, Dictionary<SystemLanguage, string>> dungeonStrings = new Dictionary<DUNGEON_ID, Dictionary<SystemLanguage, string>>();
+        
+        public Dictionary<UI_STRING, Dictionary<SystemLanguage, string>> uiStrings = new Dictionary<UI_STRING, Dictionary<SystemLanguage, string>>();
 
         public Dictionary<GAME_STRING, Dictionary<SystemLanguage, string>> contents = new Dictionary<GAME_STRING, Dictionary<SystemLanguage, string>>();
         public Dictionary<ITEM_ID, Dictionary<SystemLanguage, string>> itemNames = new Dictionary<ITEM_ID, Dictionary<SystemLanguage, string>>();
@@ -47,8 +33,10 @@ namespace HideAndSeek
 //                locallanguage = Application.systemLanguage;
                 locallanguage = SystemLanguage.English;
                 SetupContents();
-                SetupItemContents();
-                SetupItemDiscriptionContents();
+                SetupUIStrings();
+                SetupDungeonStrings();
+                SetupItemStrings();
+                SetupItemDiscriptionStrings();
             }
             else if (instance != this)
                 Destroy(gameObject);
@@ -71,7 +59,102 @@ namespace HideAndSeek
             return itemDiscriptions[itemId][locallanguage];
         }
 
-        void SetupItemContents()
+        public string GetLocalUIString(UI_STRING us)
+        {
+            return uiStrings[us][locallanguage];
+        }
+
+        public string GetDungeonString(DUNGEON_ID did)
+        {
+            return dungeonStrings[did][locallanguage];
+        }
+
+        void SetupDungeonStrings()
+        {
+            dungeonStrings[DUNGEON_ID.TUTORIAL] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "시험의 던전"},
+                {SystemLanguage.English,  "DUNGEON OF THE TEST"},
+            };
+
+            dungeonStrings[DUNGEON_ID.RUIN] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "고대 유적지"},
+                {SystemLanguage.English,  "ANCIENT RUIN"},
+            };
+
+            dungeonStrings[DUNGEON_ID.TOMB] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "왕의 무덤"},
+                {SystemLanguage.English,  "KING'S TOMB"},
+            };
+
+            dungeonStrings[DUNGEON_ID.MAZE] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "신비한 미로"},
+                {SystemLanguage.English,  "MAZE"},
+            };
+
+            dungeonStrings[DUNGEON_ID.HELLGATE] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "지옥의 입구"},
+                {SystemLanguage.English,  "HELL GATE"},
+            };
+        }
+
+        void SetupUIStrings()
+        {
+            uiStrings[UI_STRING.FRONT_TITLE] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "던전 마스터"},
+                {SystemLanguage.English,  "DUNGEON MASTER"},
+            };
+
+            uiStrings[UI_STRING.FRONT_WARNING] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "※ 주의!\n본 게임은 클라이언트 기반의 게임입니다.\n게임을 삭제하면 게임기록도 같이 삭제됩니다."},
+                {SystemLanguage.English,  "※ Warning!\nThis game is based on the client,\n If you delete this game application, your game history is also deleted."},
+            };
+
+            uiStrings[UI_STRING.FRONT_BUTTON] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "시작"},
+                {SystemLanguage.English,  "START"},
+            };
+
+            uiStrings[UI_STRING.LOBBY_TITLE] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "로비"},
+                {SystemLanguage.English,  "LOBBY"},
+            };
+
+            uiStrings[UI_STRING.LOBBY_BUTTON_AD] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "광고"},
+                {SystemLanguage.English,  "AD"},
+            };
+
+
+            uiStrings[UI_STRING.LOBBY_BUTTON_PURCHASE] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "구입"},
+                {SystemLanguage.English,  "PURCHASE"},
+            };
+
+            uiStrings[UI_STRING.LOBBY_TIME_REMAIN] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "다음 획득 기회까지 남은시간 : "},
+                {SystemLanguage.English,  "Time remaining until next chance : "},
+            };
+
+            //uiStrings[UI_STRING] = new Dictionary<SystemLanguage, string>()
+            //{
+            //    {SystemLanguage.Korean,  ""},
+            //    {SystemLanguage.English,  ""},
+            //};
+        }
+
+        void SetupItemStrings()
         {
             itemNames[ITEM_ID.HEAL1] = new Dictionary<SystemLanguage, string>()
             {
@@ -176,7 +259,7 @@ namespace HideAndSeek
             };
         }
 
-        void SetupItemDiscriptionContents()
+        void SetupItemDiscriptionStrings()
         {
             itemDiscriptions[ITEM_ID.HEAL1] = new Dictionary<SystemLanguage, string>()
             {

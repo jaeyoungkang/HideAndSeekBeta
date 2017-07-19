@@ -68,7 +68,7 @@ namespace HideAndSeek
                 int minute = (int)(remainTime / 60);
                 float remain = remainTime % 60;
                 string time = String.Format("{0:0}:{1:00}", minute, Mathf.Floor(remain));
-                remainTimeText = "다음 획득 기회까지 남은시간 : " + time;
+                remainTimeText = LocalizationManager.instance.GetLocalUIString(UI_STRING.LOBBY_TIME_REMAIN) + time;
             }
             timeText.text = remainTimeText;
 

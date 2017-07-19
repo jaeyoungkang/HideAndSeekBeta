@@ -66,7 +66,7 @@ namespace HideAndSeek
 
             if (GameManager.instance.timeLimit <= 0)
             {
-                Notice.instance.Show("시간이 다되어서 피해를 입었다...", 1f, Color.red);
+                Notice.instance.Show(LocalizationManager.instance.GetLocalString(GAME_STRING.DAMAGE_TIME), 1f, Color.red);
                 GameManager.instance.timeLimit = 10;
                 LoseHP(1);
                 GameManager.instance.dungeonPlayData.damagedByTimeCount++;
@@ -109,7 +109,7 @@ namespace HideAndSeek
             {
                 if(GameManager.instance.GetDungeonInfo().id == 0) ShowExplainTextTile(showType);
 
-                if (bHideMode) BreakedHiding("특수 바닥을 밟아서 은신이 풀렸다...");
+                if (bHideMode) BreakedHiding(LocalizationManager.instance.GetLocalString(GAME_STRING.HIDE_BROKEN_FLOOR));
             }
             return showType;
         }
@@ -120,11 +120,11 @@ namespace HideAndSeek
             string msg = "";
             switch (showType)
             {
-                case SHOW_TYPE.ALL: msg = "검은색 바닥을 밟으니 방 전체가 보인다."; textColor = Color.gray; break;
-                case SHOW_TYPE.GEM_ITEM: msg = "노란색 바닥을 밟으니 아이템들이 보인다."; textColor = Color.yellow; break;
-                case SHOW_TYPE.NEAR: msg = "초록색 바닥을 밟으니 주변이 보인다."; textColor = Color.green; break;
-                case SHOW_TYPE.MONSTER: msg = "빨간색 바닥을 밟으니 괴물들이 보인다."; textColor = Color.red; break;
-                case SHOW_TYPE.TRAP: msg = "파란색 바닥을 밟으니 함정들이 보인다."; textColor = Color.blue; break;
+                case SHOW_TYPE.ALL: msg = LocalizationManager.instance.GetLocalString(GAME_STRING.FLOOR_SHOW_ALL); textColor = Color.gray; break;
+                case SHOW_TYPE.GEM_ITEM: msg = LocalizationManager.instance.GetLocalString(GAME_STRING.FLOOR_SHOW_ITEM); textColor = Color.yellow; break;
+                case SHOW_TYPE.NEAR: msg = LocalizationManager.instance.GetLocalString(GAME_STRING.FLOOR_SHOW_NEAR); textColor = Color.green; break;
+                case SHOW_TYPE.MONSTER: msg = LocalizationManager.instance.GetLocalString(GAME_STRING.FLOOR_SHOW_MONSTER); textColor = Color.red; break;
+                case SHOW_TYPE.TRAP: msg = LocalizationManager.instance.GetLocalString(GAME_STRING.FLOOR_SHOW_TRAP); textColor = Color.blue; break;
             }
 
             Notice.instance.Show(msg, 1f, textColor);
@@ -192,7 +192,7 @@ namespace HideAndSeek
                 color.a = 1.0f;
                 sprite.material.color = color;
 
-                if (bHideMode) BreakedHiding("무언가에 부딪쳐서 은신이 풀렸다...");
+                if (bHideMode) BreakedHiding(LocalizationManager.instance.GetLocalString(GAME_STRING.HIDE_BROKEN_BUMP));
             }
 
             if (hitEnemy.tag == "Thief")
@@ -229,7 +229,7 @@ namespace HideAndSeek
                 StartCoroutine(HideAni(other.gameObject));
 
                 GameManager.instance.dungeonPlayData.gemCount++;
-                if (bHideMode) BreakedHiding("보석을 줍는 소리에 은신이 풀렸다...");
+                if (bHideMode) BreakedHiding(LocalizationManager.instance.GetLocalString(GAME_STRING.HIDE_BROKEN_GEM));
 
                 Analytics.CustomEvent("Discover Gem", new Dictionary<string, object>
                 {
@@ -242,16 +242,16 @@ namespace HideAndSeek
                 ItemObject item = other.gameObject.GetComponent<ItemObject>();
 
                 string itemName = ItemManager.instance.GetNameByItemId(item.itemId);
-                if(itemName == "최대체력")
+                if(item.itemId == ITEM_ID.EXTEND_MAX_HP)
                 {
-                    if(GameManager.instance.ExtendHp(1)) Notice.instance.Show("최대 체력이 늘어났다.", 1f, Color.yellow);
-                    else Notice.instance.Show("이미 최대 체력이다.", 1f, Color.yellow);
+                    if(GameManager.instance.ExtendHp(1)) Notice.instance.Show(LocalizationManager.instance.GetLocalString(GAME_STRING.INC_MAXHP), 1f, Color.yellow);
+                    else Notice.instance.Show(LocalizationManager.instance.GetLocalString(GAME_STRING.LIMIT_MAXHP), 1f, Color.yellow);
                     StartCoroutine(HideAni(other.gameObject));
                 }
-                else if (itemName == "가방확장")
+                else if (item.itemId == ITEM_ID.EXTEND_BAG)
                 {
-                    if(GameManager.instance.ExtendBagSize()) Notice.instance.Show("가방 공간이 늘어났다.", 1f, Color.yellow);
-                    else Notice.instance.Show("이미 최대치이다...", 1F, Color.white);
+                    if(GameManager.instance.ExtendBagSize()) Notice.instance.Show(LocalizationManager.instance.GetLocalString(GAME_STRING.INC_BAG), 1f, Color.yellow);
+                    else Notice.instance.Show(LocalizationManager.instance.GetLocalString(GAME_STRING.LIMIT_BAG), 1F, Color.white);
                     StartCoroutine(HideAni(other.gameObject));
                 }
                 else if (GameManager.instance.AddItemInBag(item.itemId))
@@ -262,7 +262,7 @@ namespace HideAndSeek
                     controller.SetupSlots();
 
                     GameManager.instance.dungeonPlayData.getItems.Add(itemName);
-                    if (bHideMode) BreakedHiding("아이템을 줍는 소리에 은신이 풀렸다...");
+                    if (bHideMode) BreakedHiding(LocalizationManager.instance.GetLocalString(GAME_STRING.HIDE_BROKEN_PICK_ITEM));
 
                     Analytics.CustomEvent("Discover Item", new Dictionary<string, object>
                     {
@@ -274,15 +274,16 @@ namespace HideAndSeek
                 }
                 else
                 {
-                    Notice.instance.Show("가방에 공간이 부족하다.", 2f, Color.white);
+                    Notice.instance.Show(LocalizationManager.instance.GetLocalString(GAME_STRING.NO_SPACE_BAG), 2f, Color.white);
                 }
             }
         }
 
-        void ShowExplainTextItem(int itemId)
+        void ShowExplainTextItem(ITEM_ID itemId)
         {
             string itemName = ItemManager.instance.GetNameByItemId(itemId);
-            Notice.instance.Show(itemName + "을 발견했다.", 2f, Color.white);
+            string explain = string.Format(LocalizationManager.instance.GetLocalString(GAME_STRING.FOUND_ITEM), itemName);
+            Notice.instance.Show(explain, 2f, Color.white);
         }
 
         void GetGem(int count)
@@ -306,7 +307,7 @@ namespace HideAndSeek
 
 		public void LoseHP (int loss)
 		{
-            if (bHideMode) BreakedHiding("피해를 입어서 은신이 풀렸다...");
+            if (bHideMode) BreakedHiding(LocalizationManager.instance.GetLocalString(GAME_STRING.HIDE_BROKEN_DAMAGE));
             animator.SetTrigger ("playerHit");
             GameManager.instance.LoseHp(loss);
             
@@ -361,50 +362,51 @@ namespace HideAndSeek
         public void UseItem(int index)
         {
             if (index >= GameManager.instance.bag.Count) return;
-            if (bHideMode) BreakedHiding("아이템 사용하는 소리에 은신이 풀렸다...");
+            if (bHideMode) BreakedHiding(LocalizationManager.instance.GetLocalString(GAME_STRING.HIDE_BROKEN_USE));
             SoundManager.instance.PlaySingle(skillSound);
             string name = ItemManager.instance.GetNameByItemId(GameManager.instance.bag[index]);
+            ITEM_ID itemId = GameManager.instance.bag[index];
 
             GameManager.instance.dungeonPlayData.useItems.Add(name);
-            switch (name)
+            switch (itemId)
             {
-                case "은신": Hide(); break;
-                case "회복1": GameManager.instance.RecoverHP(1); break;
-                case "회복2": GameManager.instance.RecoverHP(2); break;
-                case "회복3": GameManager.instance.RecoverHP(3); break;
-                case "근처보기":
+                case ITEM_ID.HIDE: Hide(); break;
+                case ITEM_ID.HEAL1: GameManager.instance.RecoverHP(1); break;
+                case ITEM_ID.HEAL2: GameManager.instance.RecoverHP(2); break;
+                case ITEM_ID.HEAL3: GameManager.instance.RecoverHP(3); break;
+                case ITEM_ID.FRAGMENT_NEAR:
                     GameManager.instance.ShowMap(transform.position, SHOW_TYPE.NEAR);                    
                     break;
-                case "괴물보기":
+                case ITEM_ID.FRAGMENT_MONSTER:
                     GameManager.instance.ShowMap(transform.position, SHOW_TYPE.MONSTER);
                     break;
-                case "함정보기":
+                case ITEM_ID.FRAGMENT_TRAP:
                     GameManager.instance.ShowMap(transform.position, SHOW_TYPE.TRAP);
                     break;
-                case "보물보기":
+                case ITEM_ID.FRAGMENT_ITEM:
                     GameManager.instance.ShowMap(transform.position, SHOW_TYPE.GEM_ITEM);
                     break;
-                case "전체보기":
+                case ITEM_ID.FRAGMENT_ALL:
                     GameManager.instance.ShowMap(transform.position, SHOW_TYPE.ALL);
                     break;
-                case "사방공격":
-                    GameManager.instance.DestoryEnemies(transform.position, 0);
+                case ITEM_ID.DESTROY_4D:
+                    GameManager.instance.DestoryEnemies(transform.position, ITEM_ID.DESTROY_4D);
                     break;
-                case "좌우공격":
-                    GameManager.instance.DestoryEnemies(transform.position, 1);
+                case ITEM_ID.DESTROY_LR:
+                    GameManager.instance.DestoryEnemies(transform.position, ITEM_ID.DESTROY_LR);
                     break;
-                case "상하공격":
-                    GameManager.instance.DestoryEnemies(transform.position, 2);
+                case ITEM_ID.DESTROY_UD:
+                    GameManager.instance.DestoryEnemies(transform.position, ITEM_ID.DESTROY_UD);
                     break;
-                case "30초추가":
+                case ITEM_ID.ADD_TIME:
                     GameManager.instance.AddTime(30);
                     break;
 
-                case "시간멈춤":
+                case ITEM_ID.STOP_TIME:
                     GameManager.instance.StopTime(true);
                     break;
 
-                case "방탈출":
+                case ITEM_ID.ESCAPE:
                     GameManager.instance.GotoDungeonMap();
                     break;
             }

@@ -48,7 +48,7 @@ namespace HideAndSeek
                         
             string showTileText = "\n특수 바닥 정보\n" + getShoTileText(GameManager.instance.curShowTilesOnStage[1].type) + ", " +
                 getShoTileText(GameManager.instance.curShowTilesOnStage[2].type) + ", " +
-                "근처보기" + (GameManager.instance.curShowTilesOnStage.Count - 2).ToString() + "개\n";
+                "VIEWAROUND" + (GameManager.instance.curShowTilesOnStage.Count - 2).ToString() + "개\n";
 
             contentText.text = enemyText
                 + "함정 수: " + curLevel.trap + "\n"

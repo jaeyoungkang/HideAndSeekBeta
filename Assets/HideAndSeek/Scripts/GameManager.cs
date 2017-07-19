@@ -44,7 +44,7 @@ namespace HideAndSeek
 
         public GameInfo info = new GameInfo();
 
-        public List<int> bag;
+        public List<ITEM_ID> bag;
         public int maxBagSize;
         public int bagSize;
         public int maxHp;
@@ -67,12 +67,12 @@ namespace HideAndSeek
                 Enemy en = obj.GetComponent<Enemy>();
                 if (en.playerDamage == 1)
                 {
-                    int[] dropItemList = { 101, 104, 114 };
+                    ITEM_ID[] dropItemList = { ITEM_ID.HEAL1, ITEM_ID.FRAGMENT_NEAR, ITEM_ID.HIDE };
                     DropItem(obj.transform.position, dropItemList);
                 }
                 else if (en.playerDamage == 2)
                 {
-                    int[] dropItemList = { 109, 110, 111};
+                    ITEM_ID[] dropItemList = { ITEM_ID.DESTROY_4D, ITEM_ID.DESTROY_LR, ITEM_ID.DESTROY_UD};
                     DropItem(obj.transform.position, dropItemList);
                 }
             }
@@ -119,7 +119,7 @@ namespace HideAndSeek
             return false;
         }
 
-        public bool AddItemInBag(int itemId)
+        public bool AddItemInBag(ITEM_ID itemId)
         {
             if (bag.Count == bagSize) return false;
             bag.Add(itemId);
@@ -693,11 +693,11 @@ namespace HideAndSeek
         }
 
 
-        public Vector3[] GetDestroyRange(Vector3 targetPos, int type)
+        public Vector3[] GetDestroyRange(Vector3 targetPos, ITEM_ID itemId)
         {            
-            switch (type)
+            switch (itemId)
             {
-                case 0:
+                case ITEM_ID.DESTROY_4D:
                     return new Vector3[]
                     {
                         new Vector3(targetPos.x+1, targetPos.y, 0  ),
@@ -706,7 +706,7 @@ namespace HideAndSeek
                         new Vector3(targetPos.x, targetPos.y-1, 0  )
                     };
 
-                case 1:
+                case ITEM_ID.DESTROY_LR:
                     return new Vector3[]
                     {
                         new Vector3(targetPos.x+1, targetPos.y, 0  ),
@@ -714,7 +714,7 @@ namespace HideAndSeek
                         new Vector3(targetPos.x-1, targetPos.y, 0  ),
                         new Vector3(targetPos.x-2, targetPos.y, 0  )
                     };
-                case 2:
+                case ITEM_ID.DESTROY_UD:
                     return new Vector3[]
                     {
                         new Vector3(targetPos.x, targetPos.y-1, 0  ),
@@ -723,14 +723,14 @@ namespace HideAndSeek
                         new Vector3(targetPos.x, targetPos.y+2, 0  )
                     };
 
-                case 3:
-                    return new Vector3[]
-                    {
-                        new Vector3(targetPos.x+1, targetPos.y+1, 0  ),
-                        new Vector3(targetPos.x+1, targetPos.y-1, 0  ),
-                        new Vector3(targetPos.x-1, targetPos.y+1, 0  ),
-                        new Vector3(targetPos.x-1, targetPos.y-1, 0  )
-                    };
+                //case 3:
+                //    return new Vector3[]
+                //    {
+                //        new Vector3(targetPos.x+1, targetPos.y+1, 0  ),
+                //        new Vector3(targetPos.x+1, targetPos.y-1, 0  ),
+                //        new Vector3(targetPos.x-1, targetPos.y+1, 0  ),
+                //        new Vector3(targetPos.x-1, targetPos.y-1, 0  )
+                //    };
 
                 default:
                     return new Vector3[]
@@ -879,7 +879,7 @@ namespace HideAndSeek
             dungeonPlayData.destroyTrap++;
         }
 
-        public void DropItem(Vector3 dropPos, int[] dropItemList)
+        public void DropItem(Vector3 dropPos, ITEM_ID[] dropItemList)
         {            
             int randomIndex = Random.Range(0, dropItemList.Length);
 
@@ -1033,9 +1033,9 @@ namespace HideAndSeek
             }
         }
 
-        public void DestoryEnemies(Vector3 targetPos, int type)
+        public void DestoryEnemies(Vector3 targetPos, ITEM_ID itemId)
         {
-            Vector3[] range = GetDestroyRange(targetPos, type);
+            Vector3[] range = GetDestroyRange(targetPos, itemId);
 
             List<GameObject> targetTiles = new List<GameObject>();
 
@@ -1065,7 +1065,7 @@ namespace HideAndSeek
         {
             if(info.enableCount >= 5)
             {
-                Notice.instance.Show("이미 도굴삽이 5개 이상일때는 더 받을 수 없다...", 2f, Color.blue);
+                Notice.instance.Show(LocalizationManager.instance.GetLocalString(GAME_STRING.LIMIT_SHOVEL), 2f, Color.blue);
                 return;
             }
 
@@ -1078,7 +1078,7 @@ namespace HideAndSeek
             }
             else
             {
-                Notice.instance.Show("더 기다려야한다...", 2f, Color.blue);
+                Notice.instance.Show(LocalizationManager.instance.GetLocalString(GAME_STRING.WAIT), 2f, Color.blue);
             }
         }
 

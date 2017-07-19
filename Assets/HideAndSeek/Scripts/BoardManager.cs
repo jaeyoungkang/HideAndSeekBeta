@@ -151,26 +151,6 @@ namespace HideAndSeek
             }
         }
 
-        Vector3[] postionA = {
-                                    new Vector3(0, 0, 0),
-                                    new Vector3(2, 2, 0),
-                                    new Vector3(5, 2, 0),
-                                    new Vector3(2, 5, 0),
-                                    new Vector3(5, 5, 0),
-                                    new Vector3(7, 0, 0),
-                                    new Vector3(0, 7, 0),
-                                };
-
-        SHOW_TYPE[] sTypeA = {
-                                    SHOW_TYPE.NEAR,
-                                    SHOW_TYPE.NEAR,
-                                    SHOW_TYPE.NEAR,
-                                    SHOW_TYPE.NEAR,
-                                    SHOW_TYPE.NEAR,
-                                    SHOW_TYPE.MONSTER,
-                                    SHOW_TYPE.TRAP
-                                };
-
         public Vector3 GetRandomPos(List<Vector3> pos)
         {
             int randomIndex = UnityEngine.Random.Range(0, pos.Count);
@@ -363,7 +343,7 @@ namespace HideAndSeek
                 }                                
             }
 
-            foreach (int id in dropItems)
+            foreach (ITEM_ID id in dropItems)
             {
                 foreach (GameObject itemTile in itemTiles)
                 {
@@ -418,8 +398,8 @@ namespace HideAndSeek
             foreach (GameObject itemTile in itemTiles)
             {
                 ItemObject itemObj = itemTile.GetComponent<ItemObject>();
-                if (itemObj.itemId == 104) showItemTile = itemTile;
-                if (itemObj.itemId == 101) healItemTile = itemTile;
+                if (itemObj.itemId == ITEM_ID.FRAGMENT_NEAR) showItemTile = itemTile;
+                if (itemObj.itemId == ITEM_ID.HEAL1) healItemTile = itemTile;
             }
 
             Vector3 pos = new Vector3(2f, 7f, 0f);

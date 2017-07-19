@@ -7,7 +7,7 @@ namespace HideAndSeek
 {
     public class ItemObject : MonoBehaviour
     {
-        public int itemId;
+        public ITEM_ID itemId;
 
         void Start()
         {

@@ -8,7 +8,7 @@ namespace HideAndSeek
     public class ItemManager : MonoBehaviour
     {
         public static ItemManager instance = null;
-        public Dictionary<int, Item> itemList = new Dictionary<int, Item>();
+        public Dictionary<ITEM_ID, Item> itemList = new Dictionary<ITEM_ID, Item>();
         public Item[] items;
 
         void Awake()
@@ -16,19 +16,29 @@ namespace HideAndSeek
             if (instance == null)
             {
                 instance = this;
+                MakeItemList();
             }
             else if (instance != this)
                 Destroy(gameObject);
 
             DontDestroyOnLoad(gameObject);
+            
+        }
+
+        public void MakeItemList()
+        {
             itemList.Clear();
             foreach (Item item in items)
             {
-                if (!itemList.ContainsKey(item.id)) itemList.Add(item.id, item);
+                if (!itemList.ContainsKey(item.id))
+                {
+                    item.name = LocalizationManager.instance.GetItemName(item.id);
+                    itemList.Add(item.id, item);
+                }
             }
         }
 
-        public int GetPriceByItemId(int id)
+        public int GetPriceByItemId(ITEM_ID id)
         {
             if (itemList.ContainsKey(id)) return itemList[id].price;
 
@@ -36,7 +46,7 @@ namespace HideAndSeek
             return -1;
         }
 
-        public Item GetItemByItemId(int id)
+        public Item GetItemByItemId(ITEM_ID id)
         {
             if (itemList.ContainsKey(id)) return itemList[id];
 
@@ -44,7 +54,7 @@ namespace HideAndSeek
             return null;
         }
 
-        public string GetNameByItemId(int id)
+        public string GetNameByItemId(ITEM_ID id)
         {
             if (itemList.ContainsKey(id)) return itemList[id].name;
 
@@ -52,35 +62,14 @@ namespace HideAndSeek
             return "";
         }
 
-        public int[] GetEnableToSellItemIds()
+        public ITEM_ID[] GetEnableToSellItemIds()
         {
-            List<int> itemIds = new List<int>();
+            List<ITEM_ID> itemIds = new List<ITEM_ID>();
             foreach(Item item in items)
             {
                 if (item.enableSell) itemIds.Add(item.id);
             }
             return itemIds.ToArray();
-        }
-
-        public void SetItemUIColor(Button btn, Color itemGradeColor)
-        {
-            btn.GetComponentInChildren<Text>().color = itemGradeColor;
-            //var colors = btn.colors;
-            //colors.normalColor = itemGradeColor;
-            //btn.colors = colors;
-        }
-
-        public Color GetColorByItemGrade(int grade)
-        {
-            switch(grade)
-            {
-                case 1: return Color.white;
-                case 2: return Color.green;
-                case 3: return Color.cyan;
-                case 4: return Color.yellow;
-                default:
-                    return Color.white;
-            }
         }
     }
 }

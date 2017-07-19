@@ -88,7 +88,7 @@ namespace HideAndSeek
         {
             if(bShow == false)
             {
-                Notice.instance.Show("시간이 부족하다...", 1f, Color.red);
+                Notice.instance.Show(LocalizationManager.instance.GetLocalString(GAME_STRING.LACK_TIME), 1f, Color.red);
             }            
         }
     }

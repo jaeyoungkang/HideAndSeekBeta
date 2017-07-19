@@ -18,8 +18,8 @@ namespace HideAndSeek
     {
         public Button[] DetailDisplayBtns;
         public Button[] DisplayBtns;
-        public int[] display;
-        public List<int> curDisplay = new List<int>();
+        public ITEM_ID[] display;
+        public List<ITEM_ID> curDisplay = new List<ITEM_ID>();
 
         public Button[] BagBtns;
         public Button ReturnBtn;
@@ -33,8 +33,6 @@ namespace HideAndSeek
         public Image detailView1;
 
         public AudioClip buySellSound;
-
-        private int curTab = 0;
 
         void EnableBagSlot()
         {
@@ -131,31 +129,30 @@ namespace HideAndSeek
 
             if (GameManager.instance.dungeonGem < price)
             {
-                Notice.instance.Show("보석이 부족합니다.", 2f, Color.white);
+                Notice.instance.Show(LocalizationManager.instance.GetLocalString(GAME_STRING.LACK_GEM), 2f, Color.white);
                 return;
             }
 
-            string itemName= ItemManager.instance.GetNameByItemId(curDisplay[index]);
-            if (itemName == "최대체력")
+            if (curDisplay[index] == ITEM_ID.EXTEND_MAX_HP)
             {
                 if (GameManager.instance.ExtendHp(1))
                 {
-                    Notice.instance.Show("최대 체력이 늘어났다.", 1f, Color.yellow);
+                    Notice.instance.Show(LocalizationManager.instance.GetLocalString(GAME_STRING.INC_MAXHP), 1f, Color.yellow);
                     GameManager.instance.dungeonGem -= price;
                 }
-                else Notice.instance.Show("이미 최대 체력이다.", 1f, Color.yellow);
+                else Notice.instance.Show(LocalizationManager.instance.GetLocalString(GAME_STRING.LIMIT_MAXHP), 1f, Color.yellow);
                 
                 return;
             }
-            else if (itemName == "가방확장")
+            else if (curDisplay[index] == ITEM_ID.EXTEND_BAG)
             {
                 if (GameManager.instance.ExtendBagSize())
                 {
-                    Notice.instance.Show("가방 공간이 늘어났다.", 1f, Color.yellow);
+                    Notice.instance.Show(LocalizationManager.instance.GetLocalString(GAME_STRING.INC_BAG), 1f, Color.yellow);
                     GameManager.instance.dungeonGem -= price;
                     EnableBagSlot();
                 }
-                else Notice.instance.Show("이미 최대치이다...", 1F, Color.white);
+                else Notice.instance.Show(LocalizationManager.instance.GetLocalString(GAME_STRING.LIMIT_BAG), 1F, Color.white);
                 
                 return;
             }

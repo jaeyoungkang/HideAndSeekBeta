@@ -39,8 +39,8 @@ namespace HideAndSeek
             if (instance == null)
             {
                 instance = this;
-//                locallanguage = Application.systemLanguage;
-                locallanguage = SystemLanguage.English;
+                locallanguage = Application.systemLanguage;
+//                locallanguage = SystemLanguage.English;
                 SetupContents();
                 SetupUIStrings();
                 SetupDungeonStrings();
@@ -374,7 +374,7 @@ namespace HideAndSeek
 
             uiStrings[UI_STRING.PURCHASE_NOTICE] = new Dictionary<SystemLanguage, string>()
             {
-                {SystemLanguage.Korean,  "\n앱을 삭제 하면\n구입 내역도 같이 삭제 되니\n주의하세요!!!"},
+                {SystemLanguage.Korean,  "앱을 삭제 하면\n구입 내역도 같이 삭제 되니\n주의하세요!!!"},
                 {SystemLanguage.English,  "If you delet this application,\nyour purchase history will also be deleted!\nBe careful!"},
             };
 

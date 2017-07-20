@@ -62,12 +62,15 @@ namespace HideAndSeek
             {
                 int btnIndex = levels[i].id-1;
                 if (btnIndex >= levelBtns.Length) continue;
-                levelBtns[btnIndex].GetComponentInChildren<Text>().text = levels[i].name;                
+                levelBtns[btnIndex].GetComponentInChildren<Text>().text = levels[i].name;
+                levelBtns[btnIndex].GetComponentInChildren<Text>().color = Color.white;
                 levelBtns[btnIndex].enabled = !levels[i].close;
                 if (!levels[i].close)
                 {
-                    if(levels[i].clear) levelBtns[btnIndex].GetComponent<Image>().color = Color.yellow;
+                    if (levels[i].clear) levelBtns[btnIndex].GetComponent<Image>().color = Color.yellow;
                     else levelBtns[btnIndex].GetComponent<Image>().color = Color.green;
+
+                    levelBtns[btnIndex].GetComponentInChildren<Text>().color = Color.black;
                 }
             }           
         }

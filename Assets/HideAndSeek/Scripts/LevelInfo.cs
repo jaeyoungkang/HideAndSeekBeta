@@ -24,10 +24,10 @@ namespace HideAndSeek
         string getShoTileText(SHOW_TYPE type)
         {
             string showTileText = "";
-            if (type == SHOW_TYPE.ALL) showTileText = "전체보기";
-            if (type == SHOW_TYPE.GEM_ITEM) showTileText = "보물보기";
-            if (type == SHOW_TYPE.MONSTER) showTileText = "괴물보기";
-            if (type == SHOW_TYPE.TRAP) showTileText = "함정보기";
+            if (type == SHOW_TYPE.ALL) showTileText = LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.CHAMBER_INFO_TILE_ALL);
+            if (type == SHOW_TYPE.GEM_ITEM) showTileText = LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.CHAMBER_INFO_TILE_ITEM);
+            if (type == SHOW_TYPE.MONSTER) showTileText = LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.CHAMBER_INFO_TILE_MONSTER);
+            if (type == SHOW_TYPE.TRAP) showTileText = LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.CHAMBER_INFO_TILE_TRAP);;
             return showTileText;
         }
 
@@ -40,19 +40,20 @@ namespace HideAndSeek
             titleText.text = curLevel.name;
             int countOfEnemies = curLevel.enemy;
             int countOfStongEnemies = curLevel.strongEnemy;
-            string enemyText = "해골 : " + countOfEnemies + "\n";
+            string enemyText = LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.CHAMBER_INFO_SKELETON) + countOfEnemies + "\n";
             if(countOfStongEnemies > 0)
             {
-                enemyText += "해골 Lv2 : " + countOfStongEnemies + "\n";
+                enemyText += LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.CHAMBER_INFO_SKELETON2) + countOfStongEnemies + "\n";
             }
                         
-            string showTileText = "\n특수 바닥 정보\n" + getShoTileText(GameManager.instance.curShowTilesOnStage[1].type) + ", " +
-                getShoTileText(GameManager.instance.curShowTilesOnStage[2].type) + ", " +
-                "VIEWAROUND" + (GameManager.instance.curShowTilesOnStage.Count - 2).ToString() + "개\n";
+            string showTileText = "\n" + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.CHAMBER_INFO_TILE_INFO) + "\n" 
+                + getShoTileText(GameManager.instance.curShowTilesOnStage[1].type) + " (1)\n" 
+                + getShoTileText(GameManager.instance.curShowTilesOnStage[2].type) + " (1)\n" 
+                + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.CHAMBER_INFO_TILE_NEAR) + " (" + (GameManager.instance.curShowTilesOnStage.Count - 2).ToString() + ")\n";
 
             contentText.text = enemyText
-                + "함정 수: " + curLevel.trap + "\n"
-                + "보석 수: " + curLevel.gem + "\n"
+                + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.CHAMBER_INFO_TRAP) + curLevel.trap + "\n"
+                + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.CHAMBER_INFO_GEM) + curLevel.gem + "\n"
                 + showTileText;
         }
     }

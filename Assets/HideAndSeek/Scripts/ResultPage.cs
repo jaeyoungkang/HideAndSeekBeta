@@ -32,46 +32,46 @@ namespace HideAndSeek
             contentsText.text = "";
             if (curDungeon.IsEnd())
             {
-                titleText.text = curDungeon.name +" 클리어!";
+                titleText.text = curDungeon.name + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.CLEAR);
 
-                contentsText.text = "획득한 보석 : " + GameManager.instance.dungeonPlayData.gemCount + "\n\n"
-                    + "획득한 아이템 수 : " + GameManager.instance.dungeonPlayData.getItems.Count + "\n"
-                    + "사용한 아이템 수 : " + GameManager.instance.dungeonPlayData.useItems.Count + "\n"
-                    + "구입한 아이템 수 : " + GameManager.instance.dungeonPlayData.butItems + "\n"
-                    + "판매한 아이템 수 : " + GameManager.instance.dungeonPlayData.sellItems + "\n\n"
+                contentsText.text = LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_GET_GEM) + GameManager.instance.dungeonPlayData.gemCount + "\n\n"
+                    + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_GET_ITEM) + GameManager.instance.dungeonPlayData.getItems.Count + "\n"
+                    + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_USE_ITEM) + GameManager.instance.dungeonPlayData.useItems.Count + "\n"
+                    + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_BUY_ITEM) + GameManager.instance.dungeonPlayData.butItems + "\n"
+                    + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_USE_ITEM) + GameManager.instance.dungeonPlayData.sellItems + "\n\n"
 
-                    + "괴물에 의한 피해 : " + GameManager.instance.dungeonPlayData.damagedByEnemyCount + "\n"
-                    + "함정에 의한 피해 : " + GameManager.instance.dungeonPlayData.damagedBytrapCount + "\n"
-                    + "시간에 의한 피해 : " + GameManager.instance.dungeonPlayData.damagedByTimeCount + "\n\n"
+                    + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_DESTROY_MONSTER) + GameManager.instance.dungeonPlayData.damagedByEnemyCount + "\n"
+                    + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_DAMAGED_TRAP) + GameManager.instance.dungeonPlayData.damagedBytrapCount + "\n"
+                    + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_DAMAGED_TIME) + GameManager.instance.dungeonPlayData.damagedByTimeCount + "\n\n"
 
-                    + "제거한 괴물 수 : " + GameManager.instance.dungeonPlayData.destroyEnemy + "\n"
-                    + "제거한 함정 수 : " + GameManager.instance.dungeonPlayData.destroyTrap + "\n";
+                    + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_DESTROY_MONSTER) + GameManager.instance.dungeonPlayData.destroyEnemy + "\n"
+                    + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_DESTROY_TRAP) + GameManager.instance.dungeonPlayData.destroyTrap + "\n";
 
-                retunrBtn.GetComponentInChildren<Text>().text = "GO TO LOBBY";
+                retunrBtn.GetComponentInChildren<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.GOTO_LOBBY_BTN);
                 retunrBtn.onClick.AddListener(GameManager.instance.GoToLobby);                
             }
             else if(GameManager.instance.IsGameOver())
             {
-                titleText.text = "실패!";
-                contentsText.text = "획득한 보석 : " + GameManager.instance.dungeonPlayData.gemCount + "\n\n"
-                    + "획득한 아이템 수 : " + GameManager.instance.dungeonPlayData.getItems.Count + "\n"
-                    + "사용한 아이템 수 : " + GameManager.instance.dungeonPlayData.useItems.Count + "\n"
-                    + "구입한 아이템 수 : " + GameManager.instance.dungeonPlayData.butItems + "\n"
-                    + "판매한 아이템 수 : " + GameManager.instance.dungeonPlayData.sellItems + "\n\n"
+                titleText.text = LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.FAIL);
+                contentsText.text = LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_GET_GEM) + GameManager.instance.dungeonPlayData.gemCount + "\n\n"
+                    + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_GET_ITEM) + GameManager.instance.dungeonPlayData.getItems.Count + "\n"
+                    + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_USE_ITEM) + GameManager.instance.dungeonPlayData.useItems.Count + "\n"
+                    + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_BUY_ITEM) + GameManager.instance.dungeonPlayData.butItems + "\n"
+                    + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_USE_ITEM) + GameManager.instance.dungeonPlayData.sellItems + "\n\n"
 
-                    + "괴물에 의한 피해 : " + GameManager.instance.dungeonPlayData.damagedByEnemyCount + "\n"
-                    + "함정에 의한 피해 : " + GameManager.instance.dungeonPlayData.damagedBytrapCount + "\n"
-                    + "시간에 의한 피해 : " + GameManager.instance.dungeonPlayData.damagedByTimeCount + "\n\n"
+                    + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_DESTROY_MONSTER) + GameManager.instance.dungeonPlayData.damagedByEnemyCount + "\n"
+                    + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_DAMAGED_TRAP) + GameManager.instance.dungeonPlayData.damagedBytrapCount + "\n"
+                    + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_DAMAGED_TIME) + GameManager.instance.dungeonPlayData.damagedByTimeCount + "\n\n"
 
-                    + "제거한 괴물 수 : " + GameManager.instance.dungeonPlayData.destroyEnemy + "\n"
-                    + "제거한 함정 수 : " + GameManager.instance.dungeonPlayData.destroyTrap + "\n";
-                retunrBtn.GetComponentInChildren<Text>().text = "GO TO LOBBY";
+                    + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_DESTROY_MONSTER) + GameManager.instance.dungeonPlayData.destroyEnemy + "\n"
+                    + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_DESTROY_TRAP) + GameManager.instance.dungeonPlayData.destroyTrap + "\n";
+                retunrBtn.GetComponentInChildren<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.GOTO_LOBBY_BTN);
                 retunrBtn.onClick.AddListener(GameManager.instance.GoToLobby);
             }
             else
             {
-                titleText.text = "레벨 클리어!";
-                retunrBtn.GetComponentInChildren<Text>().text = "RETUN TO MAP";
+                titleText.text = LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.CLEAR_CHAMBER);
+                retunrBtn.GetComponentInChildren<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.GOTO_MAP_BTN);
                 retunrBtn.onClick.AddListener(GameManager.instance.GotoDungeonMap);
             }            
         }

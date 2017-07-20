@@ -5,14 +5,20 @@ using UnityEngine;
 namespace HideAndSeek
 {
     public enum UI_STRING { FRONT_TITLE, FRONT_WARNING, FRONT_BUTTON,
-    LOBBY_TITLE, LOBBY_BUTTON_AD, LOBBY_BUTTON_PURCHASE, LOBBY_TIME_REMAIN, PURCHASE_TITLE, PURCHASE_1, PURCHASE_2, PURCHASE_3, PURCHASE_BTN, PURCHASE_NOTICE, RETURN_BTN, ENTER_BTN, SHOP_BTN
+    LOBBY_TITLE, LOBBY_BUTTON_AD, LOBBY_BUTTON_PURCHASE, LOBBY_TIME_REMAIN, PURCHASE_TITLE, PURCHASE_1, PURCHASE_2, PURCHASE_3, PURCHASE_BTN, PURCHASE_NOTICE, RETURN_BTN, ENTER_BTN, SHOP_BTN,
+    GOTO_LOBBY_BTN, GOTO_MAP_BTN
     }
 
     public enum GAME_STRING { ROT, NO_SHOVEL, GEM_START, LIMIT_SHOVEL, GET_SHOVEL, WAIT, DAMAGE_TIME, FLOOR_SHOW_ALL, FLOOR_SHOW_ITEM, FLOOR_SHOW_NEAR, FLOOR_SHOW_MONSTER, FLOOR_SHOW_TRAP,
         INC_MAXHP, LIMIT_MAXHP, INC_BAG, LIMIT_BAG, NO_SPACE_BAG, FOUND_ITEM, LACK_GEM, LACK_TIME, HIDE_BROKEN_DAMAGE, HIDE_BROKEN_USE, HIDE_BROKEN_FLOOR, HIDE_BROKEN_BUMP, HIDE_BROKEN_GEM,
         HIDE_BROKEN_PICK_ITEM };
 
-    public enum DUNGEON_STRING { TUTORIAL, RUIN, TOMB, MAZE, HELLGATE, CHAMBER, INFO_NEED_SHOVEL, INFO_FREE_ENTER, INFO_TIME_LIMIT, INFO_NUM_CHAMBER, INFO_NUM_SHOVEL, INFO_NUM_CHALLANGE, INFO_NUM_CLEAR };
+    public enum DUNGEON_STRING { TUTORIAL, RUIN, TOMB, MAZE, HELLGATE, CHAMBER, INFO_NEED_SHOVEL, INFO_FREE_ENTER, INFO_TIME_LIMIT, INFO_NUM_CHAMBER, INFO_NUM_SHOVEL, INFO_NUM_CHALLANGE, INFO_NUM_CLEAR,
+      CLEAR_CHAMBER, CLEAR, FAIL,
+      RESULT_GET_GEM, RESULT_GET_ITEM, RESULT_USE_ITEM, RESULT_BUY_ITEM, RESULT_SELL_ITEM, RESULT_DAMAGED_MONSTER, RESULT_DAMAGED_TRAP, RESULT_DAMAGED_TIME, RESULT_DESTROY_MONSTER, RESULT_DESTROY_TRAP,
+      CHAMBER_INFO_SKELETON, CHAMBER_INFO_SKELETON2, CHAMBER_INFO_TRAP, CHAMBER_INFO_GEM, CHAMBER_INFO_TILE_NEAR, CHAMBER_INFO_TILE_MONSTER, CHAMBER_INFO_TILE_TRAP, CHAMBER_INFO_TILE_ITEM,
+        CHAMBER_INFO_TILE_ALL, CHAMBER_INFO_TILE_INFO
+    };
 
     public class LocalizationManager : MonoBehaviour
     {        
@@ -151,6 +157,144 @@ namespace HideAndSeek
                 {SystemLanguage.Korean,  "정복 회수 : "},
                 {SystemLanguage.English,  "Number of clear: "},
             };
+
+            dungeonStrings[DUNGEON_STRING.CLEAR_CHAMBER] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "탐색 완료!"},
+                {SystemLanguage.English,  "CHAMBER CLEAR!"},
+            };
+
+            dungeonStrings[DUNGEON_STRING.CLEAR] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  " 정복!"},
+                {SystemLanguage.English,  " CLEAR!"},
+            };
+
+            dungeonStrings[DUNGEON_STRING.FAIL] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  " 실패!"},
+                {SystemLanguage.English,  "FAIL!"},
+            };
+
+            dungeonStrings[DUNGEON_STRING.RESULT_GET_GEM] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "획득한 보석 : "},
+                {SystemLanguage.English,  "Count of gems I picked up :"},
+            };
+
+            dungeonStrings[DUNGEON_STRING.RESULT_GET_ITEM] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "획득한 아이템 수 : "},
+                {SystemLanguage.English,  "Count of items I picked up : "},
+            };
+
+            dungeonStrings[DUNGEON_STRING.RESULT_USE_ITEM] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "사용한 아이템 수 : "},
+                {SystemLanguage.English,  "Count of items I used : "},
+            };
+
+            dungeonStrings[DUNGEON_STRING.RESULT_BUY_ITEM] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "구입한 아이템 수 : "},
+                {SystemLanguage.English,  "Count of items I bought : "},
+            };
+
+            dungeonStrings[DUNGEON_STRING.RESULT_SELL_ITEM] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "판매한 아이템 수 : "},
+                {SystemLanguage.English,  "Count of items I sold : "},
+            };
+
+            dungeonStrings[DUNGEON_STRING.RESULT_DAMAGED_MONSTER] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean, "괴물에 의한 피해 : "},
+                {SystemLanguage.English,  "Damage Points by Monsters : "},
+            };
+
+            dungeonStrings[DUNGEON_STRING.RESULT_DAMAGED_TRAP] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean, "함정에 의한 피해 : "},
+                {SystemLanguage.English,  "Damage Points by Traps : "},
+            };
+
+            dungeonStrings[DUNGEON_STRING.RESULT_DAMAGED_TIME] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean, "시간에 부족에의한 피해 : " },
+                {SystemLanguage.English,  "Damage Points by Out of time : "},
+            };
+
+            dungeonStrings[DUNGEON_STRING.RESULT_DESTROY_MONSTER] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean, "제거한 괴물 수 : " },
+                {SystemLanguage.English,  "Count of Monsters that destroied : "},
+            };
+
+            dungeonStrings[DUNGEON_STRING.RESULT_DESTROY_TRAP] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean, "제거한 함정 수 : " },
+                {SystemLanguage.English,  "Count of Traps that destroied : "},
+            };
+                        
+            dungeonStrings[DUNGEON_STRING.CHAMBER_INFO_SKELETON] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean, "해골 : " },
+                {SystemLanguage.English,  "SKELETON : "},
+            };
+
+            dungeonStrings[DUNGEON_STRING.CHAMBER_INFO_SKELETON2] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean, "해골 LV2 :" },
+                {SystemLanguage.English,  "SKELETON LV2 : "},
+            };
+
+            dungeonStrings[DUNGEON_STRING.CHAMBER_INFO_TRAP] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean, "함정 수 :" },
+                {SystemLanguage.English,  "Number of Traps : "},
+            };
+
+            dungeonStrings[DUNGEON_STRING.CHAMBER_INFO_GEM] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean, "보석 수 :" },
+                {SystemLanguage.English,  "Number of Gems : "},
+            };
+
+            dungeonStrings[DUNGEON_STRING.CHAMBER_INFO_TILE_NEAR] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean, "근처보기" },
+                {SystemLanguage.English,  "VEIW NEAR"},
+            };
+
+            dungeonStrings[DUNGEON_STRING.CHAMBER_INFO_TILE_TRAP] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean, "함정보기" },
+                {SystemLanguage.English,  "VIEW TRAPS"},
+            };
+
+            dungeonStrings[DUNGEON_STRING.CHAMBER_INFO_TILE_MONSTER] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean, "괴물보기" },
+                {SystemLanguage.English,  "VIEW MONSTERS"},
+            };
+
+            dungeonStrings[DUNGEON_STRING.CHAMBER_INFO_TILE_ITEM] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean, "아이템보기" },
+                {SystemLanguage.English,  "VIEW ITEMS"},
+            };
+
+            dungeonStrings[DUNGEON_STRING.CHAMBER_INFO_TILE_ALL] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean, "전체보기" },
+                {SystemLanguage.English,  "VIEW ALL"},
+            };
+
+            dungeonStrings[DUNGEON_STRING.CHAMBER_INFO_TILE_INFO] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean, "특수 바닥 정보" },
+                {SystemLanguage.English,  "Inforamtion of speacial floors"},
+            };
         }
 
         void SetupUIStrings()
@@ -251,6 +395,18 @@ namespace HideAndSeek
                 {SystemLanguage.Korean,  "상점"},
                 {SystemLanguage.English,  "SHOP"},
             };
+
+            uiStrings[UI_STRING.GOTO_LOBBY_BTN] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "로비로 돌아가기"},
+                {SystemLanguage.English,  "Go to the Lobby"},
+            };
+
+            uiStrings[UI_STRING.GOTO_MAP_BTN] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "던전 지도로 돌아가기"},
+                {SystemLanguage.English,  "Go to the Dungeon map"},
+            };            
         }
 
         void SetupItemStrings()

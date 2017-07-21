@@ -70,9 +70,6 @@ namespace HideAndSeek
             GameObject.Find("PurchaseButton").GetComponentInChildren<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.LOBBY_BUTTON_PURCHASE);
 
             GameObject.Find("PurchaseTitleText").GetComponent<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.PURCHASE_TITLE);
-            GameObject.Find("PurchaseText1").GetComponent<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.PURCHASE_1);
-            GameObject.Find("PurchaseText2").GetComponent<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.PURCHASE_2);
-            GameObject.Find("PurchaseText3").GetComponent<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.PURCHASE_3);
             GameObject.Find("PurchaseNoticeText").GetComponent<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.PURCHASE_NOTICE);
             GameObject.Find("PurchaseButton1").GetComponentInChildren<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.PURCHASE_BTN);
             GameObject.Find("PurchaseButton2").GetComponentInChildren<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.PURCHASE_BTN);

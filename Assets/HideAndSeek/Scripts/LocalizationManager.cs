@@ -350,20 +350,20 @@ namespace HideAndSeek
 
             uiStrings[UI_STRING.PURCHASE_1] = new Dictionary<SystemLanguage, string>()
             {
-                {SystemLanguage.Korean,  "도굴삽 10개  1000원"},
-                {SystemLanguage.English,  "Shovel 10 pieces 1$"},
+                {SystemLanguage.Korean,  "도굴삽 10개  {0}"},
+                {SystemLanguage.English,  "Shovel 10 pieces  {0}"},
             };
 
             uiStrings[UI_STRING.PURCHASE_2] = new Dictionary<SystemLanguage, string>()
             {
-                {SystemLanguage.Korean,  "도굴삽 50개  3000원"},
-                {SystemLanguage.English,  "Shovel 50 pieces 3$"},
+                {SystemLanguage.Korean,  "도굴삽 50개  {0}" },
+                {SystemLanguage.English,  "Shovel 50 pieces  {0}"},
             };
 
             uiStrings[UI_STRING.PURCHASE_3] = new Dictionary<SystemLanguage, string>()
             {
-                {SystemLanguage.Korean,  "도굴삽 100개  5000원"},
-                {SystemLanguage.English,  "Shovel 100 pieces 5$"},
+                {SystemLanguage.Korean,  "도굴삽 100개  {0}"},
+                {SystemLanguage.English,  "Shovel 100 pieces  {0}"},
             };
 
             uiStrings[UI_STRING.PURCHASE_BTN] = new Dictionary<SystemLanguage, string>()

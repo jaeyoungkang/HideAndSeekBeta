@@ -11,6 +11,10 @@ namespace HideAndSeek
     // Deriving the Purchaser class from IStoreListener enables it to receive messages from Unity Purchasing.
     public class Purchaser : MonoBehaviour, IStoreListener
     {
+        public Text purchaseText1;
+        public Text purchaseText2;
+        public Text purchaseText3;
+
         public Button backBtn;
         public Button purchaseBtn1;
         public Button purchaseBtn2;
@@ -49,6 +53,16 @@ namespace HideAndSeek
                 // Begin to configure our connection to Purchasing
                 InitializePurchasing();
             }
+
+            string purchaseLocalText = string.Format(LocalizationManager.instance.GetLocalUIString(UI_STRING.PURCHASE_1), 
+                m_StoreController.products.WithID(kProductIDConsumable10).metadata.localizedPriceString);
+            purchaseText1.text = purchaseLocalText;
+            purchaseLocalText = string.Format(LocalizationManager.instance.GetLocalUIString(UI_STRING.PURCHASE_2),
+                m_StoreController.products.WithID(kProductIDConsumable50).metadata.localizedPriceString);
+            purchaseText2.text = purchaseLocalText;
+            purchaseLocalText = string.Format(LocalizationManager.instance.GetLocalUIString(UI_STRING.PURCHASE_3),
+                m_StoreController.products.WithID(kProductIDConsumable100).metadata.localizedPriceString);
+            purchaseText3.text = purchaseLocalText;
 
             backBtn.onClick.AddListener(GameManager.instance.BacktoPreState);
             purchaseBtn1.onClick.AddListener(BuyConsumable1);

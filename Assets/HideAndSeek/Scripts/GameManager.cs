@@ -1061,7 +1061,7 @@ namespace HideAndSeek
             StartCoroutine(DestroyEffect(targetEnemies));
         }
 
-        public void WatchAd()
+        public void GetAShovel()
         {
             if(info.enableCount >= 5)
             {
@@ -1069,11 +1069,11 @@ namespace HideAndSeek
                 return;
             }
 
-            if (CheckTimeEnableToWatch())
+            if (CheckTimeEnableToGet())
             {
                 preGenTime = DateTime.Now.ToLocalTime();
                 info.enableCount += 1;
-                Notice.instance.Show("광고:하태하태!\n(도굴삽을 하나 구했다!)", 2f, Color.blue);
+                Notice.instance.Show(LocalizationManager.instance.GetLocalString(GAME_STRING.GET_A_SHOVEL), 2f, Color.blue);
                 SaveLoad.SaveTime();
             }
             else
@@ -1092,7 +1092,7 @@ namespace HideAndSeek
         public float TIME_INTERVAL_GEN = 300f;
         public DateTime preGenTime = new DateTime(2000, 1, 1, 0, 0, 0, 0).ToLocalTime();
 
-        public bool CheckTimeEnableToWatch()
+        public bool CheckTimeEnableToGet()
         {
             DateTime now = DateTime.Now.ToLocalTime();
             TimeSpan gen = now - preGenTime;

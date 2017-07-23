@@ -10,6 +10,7 @@ namespace HideAndSeek
 {
     public class ResultPage : MonoBehaviour
     {
+        public Text clearText;
         public Text titleText;
         public Text contentsText;
 
@@ -29,7 +30,9 @@ namespace HideAndSeek
             Dungeon curDungeon = GameManager.instance.GetDungeonInfo();
             if (curDungeon == null) return;
 
+            titleText.text = "";
             contentsText.text = "";
+            clearText.text = "";
             if (curDungeon.IsEnd())
             {
                 titleText.text = curDungeon.name + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.CLEAR);
@@ -70,7 +73,7 @@ namespace HideAndSeek
             }
             else
             {
-                titleText.text = LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.CLEAR_CHAMBER);
+                clearText.text = LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.CLEAR_CHAMBER);
                 retunrBtn.GetComponentInChildren<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.GOTO_MAP_BTN);
                 retunrBtn.onClick.AddListener(GameManager.instance.GotoDungeonMap);
             }            

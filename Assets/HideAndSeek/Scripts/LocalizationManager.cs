@@ -5,11 +5,11 @@ using UnityEngine;
 namespace HideAndSeek
 {
     public enum UI_STRING { FRONT_TITLE, FRONT_WARNING, FRONT_BUTTON,
-    LOBBY_TITLE, LOBBY_BUTTON_AD, LOBBY_BUTTON_PURCHASE, LOBBY_TIME_REMAIN, PURCHASE_TITLE, PURCHASE_1, PURCHASE_2, PURCHASE_3, PURCHASE_BTN, PURCHASE_NOTICE, RETURN_BTN, ENTER_BTN, SHOP_BTN,
-    GOTO_LOBBY_BTN, GOTO_MAP_BTN
+    LOBBY_TITLE, LOBBY_BUTTON_SHOVEL, LOBBY_BUTTON_PURCHASE, LOBBY_TIME_REMAIN, PURCHASE_TITLE, PURCHASE_1, PURCHASE_2, PURCHASE_3, PURCHASE_BTN, PURCHASE_NOTICE, RETURN_BTN, ENTER_BTN, ENTER_SHOP_BTN,
+    GOTO_LOBBY_BTN, GOTO_MAP_BTN, SHOP_TITLE, SHOP_DISPLAY, SHOP_BAG
     }
 
-    public enum GAME_STRING { ROT, NO_SHOVEL, GEM_START, LIMIT_SHOVEL, GET_SHOVEL, WAIT, DAMAGE_TIME, FLOOR_SHOW_ALL, FLOOR_SHOW_ITEM, FLOOR_SHOW_NEAR, FLOOR_SHOW_MONSTER, FLOOR_SHOW_TRAP,
+    public enum GAME_STRING { ROT, NO_SHOVEL, GEM_START, LIMIT_SHOVEL, GET_A_SHOVEL, WAIT, DAMAGE_TIME, FLOOR_SHOW_ALL, FLOOR_SHOW_ITEM, FLOOR_SHOW_NEAR, FLOOR_SHOW_MONSTER, FLOOR_SHOW_TRAP,
         INC_MAXHP, LIMIT_MAXHP, INC_BAG, LIMIT_BAG, NO_SPACE_BAG, FOUND_ITEM, LACK_GEM, LACK_TIME, HIDE_BROKEN_DAMAGE, HIDE_BROKEN_USE, HIDE_BROKEN_FLOOR, HIDE_BROKEN_BUMP, HIDE_BROKEN_GEM,
         HIDE_BROKEN_PICK_ITEM };
 
@@ -17,7 +17,7 @@ namespace HideAndSeek
       CLEAR_CHAMBER, CLEAR, FAIL,
       RESULT_GET_GEM, RESULT_GET_ITEM, RESULT_USE_ITEM, RESULT_BUY_ITEM, RESULT_SELL_ITEM, RESULT_DAMAGED_MONSTER, RESULT_DAMAGED_TRAP, RESULT_DAMAGED_TIME, RESULT_DESTROY_MONSTER, RESULT_DESTROY_TRAP,
       CHAMBER_INFO_SKELETON, CHAMBER_INFO_SKELETON2, CHAMBER_INFO_TRAP, CHAMBER_INFO_GEM, CHAMBER_INFO_TILE_NEAR, CHAMBER_INFO_TILE_MONSTER, CHAMBER_INFO_TILE_TRAP, CHAMBER_INFO_TILE_ITEM,
-        CHAMBER_INFO_TILE_ALL, CHAMBER_INFO_TILE_INFO
+      CHAMBER_INFO_TILE_ALL, CHAMBER_INFO_TILE_INFO
     };
 
     public class LocalizationManager : MonoBehaviour
@@ -301,7 +301,7 @@ namespace HideAndSeek
         {
             uiStrings[UI_STRING.FRONT_TITLE] = new Dictionary<SystemLanguage, string>()
             {
-                {SystemLanguage.Korean,  "던전 마스터"},
+                {SystemLanguage.Korean,  "DUNGEON MASTER\n던전 마스터"},
                 {SystemLanguage.English,  "DUNGEON MASTER"},
             };
 
@@ -323,12 +323,11 @@ namespace HideAndSeek
                 {SystemLanguage.English,  "LOBBY"},
             };
 
-            uiStrings[UI_STRING.LOBBY_BUTTON_AD] = new Dictionary<SystemLanguage, string>()
+            uiStrings[UI_STRING.LOBBY_BUTTON_SHOVEL] = new Dictionary<SystemLanguage, string>()
             {
-                {SystemLanguage.Korean,  "광고"},
-                {SystemLanguage.English,  "AD"},
+                {SystemLanguage.Korean,  "삽받기"},
+                {SystemLanguage.English,  "GET"},
             };
-
 
             uiStrings[UI_STRING.LOBBY_BUTTON_PURCHASE] = new Dictionary<SystemLanguage, string>()
             {
@@ -375,7 +374,7 @@ namespace HideAndSeek
             uiStrings[UI_STRING.PURCHASE_NOTICE] = new Dictionary<SystemLanguage, string>()
             {
                 {SystemLanguage.Korean,  "앱을 삭제 하면\n구입 내역도 같이 삭제 되니\n주의하세요!!!"},
-                {SystemLanguage.English,  "If you delet this application,\nyour purchase history will also be deleted!\nBe careful!"},
+                {SystemLanguage.English,  "If you delet this application,\nyour purchase history will \nbe deleted! Be careful!"},
             };
 
             uiStrings[UI_STRING.RETURN_BTN] = new Dictionary<SystemLanguage, string>()
@@ -390,7 +389,7 @@ namespace HideAndSeek
                 {SystemLanguage.English,  "ENTER"},
             };
 
-            uiStrings[UI_STRING.SHOP_BTN] = new Dictionary<SystemLanguage, string>()
+            uiStrings[UI_STRING.ENTER_SHOP_BTN] = new Dictionary<SystemLanguage, string>()
             {
                 {SystemLanguage.Korean,  "상점"},
                 {SystemLanguage.English,  "SHOP"},
@@ -406,7 +405,25 @@ namespace HideAndSeek
             {
                 {SystemLanguage.Korean,  "던전 지도로 돌아가기"},
                 {SystemLanguage.English,  "Go to the Dungeon map"},
-            };            
+            };
+
+            uiStrings[UI_STRING.SHOP_TITLE] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "상점"},
+                {SystemLanguage.English,  "SHOP"},
+            };
+
+            uiStrings[UI_STRING.SHOP_DISPLAY] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "상품목록"},
+                {SystemLanguage.English,  "DISPLAY"},
+            };
+
+            uiStrings[UI_STRING.SHOP_BAG] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "가방"},
+                {SystemLanguage.English,  "BAG"},
+            };
         }
 
         void SetupItemStrings()
@@ -645,7 +662,7 @@ namespace HideAndSeek
                 {SystemLanguage.English,  "You can not get more when you have 5 or more shovels ..."},
             };
 
-            contents[GAME_STRING.GET_SHOVEL] = new Dictionary<SystemLanguage, string>()
+            contents[GAME_STRING.GET_A_SHOVEL] = new Dictionary<SystemLanguage, string>()
             {
                 {SystemLanguage.Korean,  "도굴삽을 하나 구했다!"},
                 {SystemLanguage.English,  "I got a shovel!"},

@@ -66,7 +66,7 @@ namespace HideAndSeek
             GameObject.Find("FrontPageButton").GetComponentInChildren<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.FRONT_BUTTON);
 
             GameObject.Find("LobbyTitleText").GetComponent<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.LOBBY_TITLE);
-            GameObject.Find("WatchAdButton").GetComponentInChildren<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.LOBBY_BUTTON_AD);
+            GameObject.Find("GetAShovelButton").GetComponentInChildren<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.LOBBY_BUTTON_SHOVEL);
             GameObject.Find("PurchaseButton").GetComponentInChildren<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.LOBBY_BUTTON_PURCHASE);
 
             GameObject.Find("PurchaseTitleText").GetComponent<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.PURCHASE_TITLE);
@@ -82,7 +82,11 @@ namespace HideAndSeek
             GameObject.Find("LevelInfoEnterButton").GetComponentInChildren<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.ENTER_BTN);
             GameObject.Find("LevelInfoReturnButton").GetComponentInChildren<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.RETURN_BTN);
 
-            GameObject.Find("DungeonMapshop").GetComponentInChildren<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.SHOP_BTN);
+            GameObject.Find("DungeonMapshop").GetComponentInChildren<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.ENTER_SHOP_BTN);
+
+            GameObject.Find("ShopTitleText").GetComponentInChildren<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.SHOP_TITLE);
+            GameObject.Find("ShopDisplayText").GetComponentInChildren<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.SHOP_DISPLAY);
+            GameObject.Find("ShopBagText").GetComponentInChildren<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.SHOP_BAG);
         }
 
         public void ShowNotice()

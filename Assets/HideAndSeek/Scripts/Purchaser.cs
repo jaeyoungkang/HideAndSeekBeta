@@ -39,12 +39,6 @@ namespace HideAndSeek
         public static string kProductIDConsumable50 = "com.JY.dungeonMaster.shovels50";
         public static string kProductIDConsumable100 = "com.JY.dungeonMaster.shovels100";
 
-        // Apple App Store-specific product identifier for the subscription product.
-        private static string kProductNameAppleSubscription = "com.unity3d.subscription.new";
-
-        // Google Play Store-specific product identifier subscription product.
-        private static string kProductNameGooglePlaySubscription = "com.unity3d.subscription.original";
-
         void Start()
         {
             // If we haven't set up the Unity Purchasing reference

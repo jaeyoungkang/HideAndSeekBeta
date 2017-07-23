@@ -52,7 +52,7 @@ namespace HideAndSeek
             dungeonBtns[3].onClick.AddListener(() => { GameManager.instance.ShowDungeonInfo(3); });
             tutorialBtn.onClick.AddListener(() => { GameManager.instance.ShowDungeonInfo(100); });
 
-            watachAdBtn.onClick.AddListener(GameManager.instance.WatchAd);
+            watachAdBtn.onClick.AddListener(GameManager.instance.GetAShovel);
             purchaseBtn.onClick.AddListener(GameManager.instance.ShowPurchase);
         }
 

@@ -35,7 +35,7 @@ namespace HideAndSeek
             clearText.text = "";
             if (curDungeon.IsEnd())
             {
-                titleText.text = curDungeon.name + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.CLEAR);
+                titleText.text = curDungeon.name + "\n" + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.CLEAR);
 
                 contentsText.text = LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_GET_GEM) + GameManager.instance.dungeonPlayData.gemCount + "\n\n"
                     + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_GET_ITEM) + GameManager.instance.dungeonPlayData.getItems.Count + "\n"

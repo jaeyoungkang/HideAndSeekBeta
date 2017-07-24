@@ -35,9 +35,9 @@ namespace HideAndSeek
         // when defining the Product Identifiers on the store. Except, for illustration purposes, the 
         // kProductIDSubscription - it has custom Apple and Google identifiers. We declare their store-
         // specific mapping to Unity Purchasing's AddProduct, below.
-        public static string kProductIDConsumable10 = "com.jy.dungeonmaster.shovels10test";
-        public static string kProductIDConsumable50 = "com.jy.dungeonmaster.shovels50test";
-        public static string kProductIDConsumable100 = "com.jy.dungeonmaster.shovels100test";
+        public static string kProductIDConsumable10 = "com.jy.dungeonmaster.shovels10";
+        public static string kProductIDConsumable50 = "com.jy.dungeonmaster.shovels50";
+        public static string kProductIDConsumable100 = "com.jy.dungeonmaster.shovels100";
 
         void Start()
         {

@@ -39,8 +39,8 @@ namespace HideAndSeek
             if (instance == null)
             {
                 instance = this;
-                locallanguage = Application.systemLanguage;
-//                locallanguage = SystemLanguage.English;
+//                locallanguage = Application.systemLanguage;
+                locallanguage = SystemLanguage.English;
                 SetupContents();
                 SetupUIStrings();
                 SetupDungeonStrings();
@@ -161,7 +161,7 @@ namespace HideAndSeek
             dungeonStrings[DUNGEON_STRING.CLEAR_CHAMBER] = new Dictionary<SystemLanguage, string>()
             {
                 {SystemLanguage.Korean,  "탐색 완료!"},
-                {SystemLanguage.English,  "CHAMBER CLEAR!"},
+                {SystemLanguage.English,  "CLEAR!"},
             };
 
             dungeonStrings[DUNGEON_STRING.CLEAR] = new Dictionary<SystemLanguage, string>()
@@ -319,8 +319,8 @@ namespace HideAndSeek
 
             uiStrings[UI_STRING.LOBBY_TITLE] = new Dictionary<SystemLanguage, string>()
             {
-                {SystemLanguage.Korean,  "로비"},
-                {SystemLanguage.English,  "LOBBY"},
+                {SystemLanguage.Korean,  "던전목록"},
+                {SystemLanguage.English,  "DUNGEON LIST"},
             };
 
             uiStrings[UI_STRING.LOBBY_BUTTON_SHOVEL] = new Dictionary<SystemLanguage, string>()
@@ -379,14 +379,14 @@ namespace HideAndSeek
 
             uiStrings[UI_STRING.GOTO_LOBBY_BTN] = new Dictionary<SystemLanguage, string>()
             {
-                {SystemLanguage.Korean,  "로비로 돌아가기"},
-                {SystemLanguage.English,  "Go to the Lobby"},
+                {SystemLanguage.Korean,  "던전목록으로 돌아가기"},
+                {SystemLanguage.English,  "GO TO THE DUNGEON LIST"},
             };
 
             uiStrings[UI_STRING.GOTO_MAP_BTN] = new Dictionary<SystemLanguage, string>()
             {
                 {SystemLanguage.Korean,  "던전 지도로 돌아가기"},
-                {SystemLanguage.English,  "Go to the Dungeon map"},
+                {SystemLanguage.English,  "GO TO THE DUNGEONMAP"},
             };
 
             uiStrings[UI_STRING.SHOP_TITLE] = new Dictionary<SystemLanguage, string>()

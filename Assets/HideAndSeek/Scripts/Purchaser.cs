@@ -48,15 +48,9 @@ namespace HideAndSeek
                 InitializePurchasing();
             }
 
-            string purchaseLocalText = string.Format(LocalizationManager.instance.GetLocalUIString(UI_STRING.PURCHASE_1), 
-                m_StoreController.products.WithID(kProductIDConsumable10).metadata.localizedPriceString);
-            purchaseText1.text = purchaseLocalText;
-            purchaseLocalText = string.Format(LocalizationManager.instance.GetLocalUIString(UI_STRING.PURCHASE_2),
-                m_StoreController.products.WithID(kProductIDConsumable50).metadata.localizedPriceString);
-            purchaseText2.text = purchaseLocalText;
-            purchaseLocalText = string.Format(LocalizationManager.instance.GetLocalUIString(UI_STRING.PURCHASE_3),
-                m_StoreController.products.WithID(kProductIDConsumable100).metadata.localizedPriceString);
-            purchaseText3.text = purchaseLocalText;
+            purchaseText1.text = m_StoreController.products.WithID(kProductIDConsumable10).metadata.localizedPriceString;
+            purchaseText2.text = m_StoreController.products.WithID(kProductIDConsumable50).metadata.localizedPriceString;
+            purchaseText3.text = m_StoreController.products.WithID(kProductIDConsumable100).metadata.localizedPriceString;
 
             backBtn.onClick.AddListener(GameManager.instance.BacktoPreState);
             purchaseBtn1.onClick.AddListener(BuyConsumable1);
@@ -195,7 +189,7 @@ namespace HideAndSeek
         {
             // Purchasing has succeeded initializing. Collect our Purchasing references.
             Debug.Log("OnInitialized: PASS");
-
+            Notice.instance.Show("OnInitialized: PASS", 2f, Color.white);
             // Overall Purchasing system, configured with products for this application.
             m_StoreController = controller;
             // Store specific subsystem, for accessing device-specific store features.
@@ -207,6 +201,7 @@ namespace HideAndSeek
         {
             // Purchasing set-up has not succeeded. Check error for reason. Consider sharing this reason with the user.
             Debug.Log("OnInitializeFailed InitializationFailureReason:" + error);
+            Notice.instance.Show("OnInitializeFailed InitializationFailureReason:" + error, 2f, Color.white);
         }
 
 

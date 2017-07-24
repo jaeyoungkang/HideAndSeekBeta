@@ -5,7 +5,7 @@ using UnityEngine;
 namespace HideAndSeek
 {
     public enum UI_STRING { FRONT_TITLE, FRONT_WARNING, FRONT_BUTTON,
-    LOBBY_TITLE, LOBBY_BUTTON_SHOVEL, LOBBY_BUTTON_PURCHASE, LOBBY_TIME_REMAIN, PURCHASE_TITLE, PURCHASE_1, PURCHASE_2, PURCHASE_3, PURCHASE_BTN, PURCHASE_NOTICE, RETURN_BTN, ENTER_BTN, ENTER_SHOP_BTN,
+    LOBBY_TITLE, LOBBY_BUTTON_SHOVEL, LOBBY_BUTTON_PURCHASE, LOBBY_TIME_REMAIN, PURCHASE_TITLE, PURCHASE_BTN, PURCHASE_NOTICE, RETURN_BTN, ENTER_BTN, ENTER_SHOP_BTN,
     GOTO_LOBBY_BTN, GOTO_MAP_BTN, SHOP_TITLE, SHOP_DISPLAY, SHOP_BAG
     }
 
@@ -345,24 +345,6 @@ namespace HideAndSeek
             {
                 {SystemLanguage.Korean,  "도굴삽 구입"},
                 {SystemLanguage.English,  "PURCHASE SHOVELS"},
-            };
-
-            uiStrings[UI_STRING.PURCHASE_1] = new Dictionary<SystemLanguage, string>()
-            {
-                {SystemLanguage.Korean,  "도굴삽 10개  {0}"},
-                {SystemLanguage.English,  "Shovel 10 pieces  {0}"},
-            };
-
-            uiStrings[UI_STRING.PURCHASE_2] = new Dictionary<SystemLanguage, string>()
-            {
-                {SystemLanguage.Korean,  "도굴삽 50개  {0}" },
-                {SystemLanguage.English,  "Shovel 50 pieces  {0}"},
-            };
-
-            uiStrings[UI_STRING.PURCHASE_3] = new Dictionary<SystemLanguage, string>()
-            {
-                {SystemLanguage.Korean,  "도굴삽 100개  {0}"},
-                {SystemLanguage.English,  "Shovel 100 pieces  {0}"},
             };
 
             uiStrings[UI_STRING.PURCHASE_BTN] = new Dictionary<SystemLanguage, string>()

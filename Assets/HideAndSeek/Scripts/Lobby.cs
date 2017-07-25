@@ -65,7 +65,7 @@ namespace HideAndSeek
             else
             {
                 developerComment.gameObject.SetActive(false);
-            }            
+            }
         }
 
         void Update()

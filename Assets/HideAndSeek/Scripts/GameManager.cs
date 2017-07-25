@@ -9,7 +9,7 @@ using System.Collections.Generic;       //Allows us to use Lists.
 
 namespace HideAndSeek
 {    
-    public enum GAME_STATE { PURCHASE, START, LOBBY, SHOP, DUNGEON_INFO, LEVEL, LEVEL_INFO, MAP, MAP_LARGE, PLAY, RESULT, OVER }
+    public enum GAME_STATE { DEVELOPER_COMMENTS, PURCHASE, START, LOBBY, SHOP, DUNGEON_INFO, LEVEL, LEVEL_INFO, MAP, MAP_LARGE, PLAY, RESULT, OVER }
 
     public class GameManager : MonoBehaviour
     {
@@ -1082,6 +1082,11 @@ namespace HideAndSeek
             }
         }
 
+        public void ShowDeveloperComment()
+        {
+            SoundManager.instance.PlaySingle(btnClick);
+            ChangeState(GAME_STATE.DEVELOPER_COMMENTS);
+        }
 
         public void ShowPurchase()
         {

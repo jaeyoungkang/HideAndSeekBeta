@@ -17,6 +17,8 @@ namespace HideAndSeek
         private Dungeon[] dungeons;
         private Dungeon tutorial;
 
+        public Button developerComment;
+
         void SetupDungeonBtns()
         {
             for (int i = 0; i < dungeons.Length; i++)
@@ -54,6 +56,16 @@ namespace HideAndSeek
 
             watachAdBtn.onClick.AddListener(GameManager.instance.GetAShovel);
             purchaseBtn.onClick.AddListener(GameManager.instance.ShowPurchase);
+            developerComment.onClick.AddListener(GameManager.instance.ShowDeveloperComment);
+
+            if(GameManager.instance.info.dungeonClearCount.ContainsKey(4))
+            {
+                developerComment.gameObject.SetActive(true);
+            }
+            else
+            {
+                developerComment.gameObject.SetActive(false);
+            }            
         }
 
         void Update()

@@ -431,7 +431,14 @@ namespace HideAndSeek
         {
             SoundManager.instance.PlaySingle(btnClick);
             GameManager.instance.ChangeState(GAME_STATE.LEVEL);
-            PageManager.instance.SetLevelEnterPageText(curDungeon.name, curDungeon.GetCurLevel().name);
+
+            string levelName = curDungeon.GetCurLevel().name;
+            if (curDungeon.id >= 4)
+            {
+                levelName = LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.CHAMBER) + " " + levelName;
+            }
+
+            PageManager.instance.SetLevelEnterPageText(curDungeon.name, levelName);
             Invoke("StartLevel", 2f);
 
             Analytics.CustomEvent("Level Enter", new Dictionary<string, object>

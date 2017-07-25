@@ -247,12 +247,14 @@ namespace HideAndSeek
                     if(GameManager.instance.ExtendHp(1)) Notice.instance.Show(LocalizationManager.instance.GetLocalString(GAME_STRING.INC_MAXHP), 1f, Color.yellow);
                     else Notice.instance.Show(LocalizationManager.instance.GetLocalString(GAME_STRING.LIMIT_MAXHP), 1f, Color.yellow);
                     StartCoroutine(HideAni(other.gameObject));
+                    SoundManager.instance.PlaySingle(skillSound);
                 }
                 else if (item.itemId == ITEM_ID.EXTEND_BAG)
                 {
                     if(GameManager.instance.ExtendBagSize()) Notice.instance.Show(LocalizationManager.instance.GetLocalString(GAME_STRING.INC_BAG), 1f, Color.yellow);
                     else Notice.instance.Show(LocalizationManager.instance.GetLocalString(GAME_STRING.LIMIT_BAG), 1F, Color.white);
                     StartCoroutine(HideAni(other.gameObject));
+                    SoundManager.instance.PlaySingle(skillSound);
                 }
                 else if (GameManager.instance.AddItemInBag(item.itemId))
                 {                    

@@ -36,8 +36,16 @@ namespace HideAndSeek
             Dungeon curDungeon = GameManager.instance.GetDungeonInfo();
             if (curDungeon == null) return;
             Level curLevel = curDungeon.GetCurLevel();
+            
+            if(curDungeon.id >= 4)
+            {
+                titleText.text = LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.CHAMBER) + " " + curLevel.name;
+            }
+            else
+            {
+                titleText.text = curLevel.name;
+            }
 
-            titleText.text = curLevel.name;
             int countOfEnemies = curLevel.enemy;
             int countOfStongEnemies = curLevel.strongEnemy;
             string enemyText = LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.CHAMBER_INFO_SKELETON) + countOfEnemies + "\n";

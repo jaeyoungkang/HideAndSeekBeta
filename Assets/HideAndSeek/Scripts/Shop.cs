@@ -33,6 +33,7 @@ namespace HideAndSeek
         public Image detailView1;
 
         public AudioClip buySellSound;
+        public AudioClip skillSound;
 
         void EnableBagSlot()
         {
@@ -139,6 +140,7 @@ namespace HideAndSeek
                 {
                     Notice.instance.Show(LocalizationManager.instance.GetLocalString(GAME_STRING.INC_MAXHP), 1f, Color.yellow);
                     GameManager.instance.dungeonGem -= price;
+                    SoundManager.instance.PlaySingle(skillSound);
                 }
                 else Notice.instance.Show(LocalizationManager.instance.GetLocalString(GAME_STRING.LIMIT_MAXHP), 1f, Color.yellow);
                 
@@ -151,6 +153,7 @@ namespace HideAndSeek
                     Notice.instance.Show(LocalizationManager.instance.GetLocalString(GAME_STRING.INC_BAG), 1f, Color.yellow);
                     GameManager.instance.dungeonGem -= price;
                     EnableBagSlot();
+                    SoundManager.instance.PlaySingle(skillSound);
                 }
                 else Notice.instance.Show(LocalizationManager.instance.GetLocalString(GAME_STRING.LIMIT_BAG), 1F, Color.white);
                 

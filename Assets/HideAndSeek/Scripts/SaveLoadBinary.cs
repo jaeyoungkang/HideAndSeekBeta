@@ -33,7 +33,7 @@ namespace HideAndSeek
     public static class SaveLoad
     {
         public static string fileName2 = "/timerecord.gd";
-        public static string fileName = "/games16.gd";
+        public static string fileName = "/dm.gd";
         public static List<GameInfo> savedGames = new List<GameInfo>();
 
         public static void SaveTime()

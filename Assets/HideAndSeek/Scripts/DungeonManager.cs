@@ -321,13 +321,13 @@ namespace HideAndSeek
             // 1  2  3  4
 
             //            이름,번호, 함정, 괴물, 괴물, 도둑, 보석, 아이템 드랍, 다음레벨, 클리어, 오픈, 쇼타일
-            level1.setup("1", 1, 16, 0, 2, 0, 0, 2, new ItemDropInfo[] { dropSetExtend20 }, new int[] { 2, 5 }, false, false, 6);
-            level2.setup("2", 2, 16, 0, 3, 0, 0, 3, new ItemDropInfo[] { dropSetExtend20 }, new int[] { 3, 6 }, false, true, 6);
-            level5.setup("3", 5, 16, 0, 3, 0, 0, 3, new ItemDropInfo[] { dropSetExtend20 }, new int[] { 6, 9 }, false, true, 6);
+            level1.setup("1", 1, 14, 0, 1, 0, 0, 2, new ItemDropInfo[] { dropSetExtend20 }, new int[] { 2, 5 }, false, false, 6);
+            level2.setup("2", 2, 16, 0, 2, 0, 0, 2, new ItemDropInfo[] { dropSetExtend20 }, new int[] { 3, 6 }, false, true, 6);
+            level5.setup("3", 5, 16, 0, 2, 0, 0, 2, new ItemDropInfo[] { dropSetExtend20 }, new int[] { 6, 9 }, false, true, 6);
 
-            level3.setup("4", 3, 16, 0, 4, 0, 0, 3, new ItemDropInfo[] { dropSetHeal50, dropSetDestroy10 }, new int[] { 7, 4 }, false, true, 5);
-            level6.setup("5", 6, 16, 0, 4, 0, 0, 3, new ItemDropInfo[] { dropSetHeal50, dropSetDestroy10 }, new int[] { 7, 10 }, false, true, 5);
-            level9.setup("6", 9, 16, 0, 4, 0, 0, 3, new ItemDropInfo[] { dropSetHeal50, dropSetDestroy10 }, new int[] { 10, 13 }, false, true, 5);
+            level3.setup("4", 3, 16, 2, 3, 0, 0, 3, new ItemDropInfo[] { dropSetHeal50, dropSetDestroy10 }, new int[] { 7, 4 }, false, true, 5);
+            level6.setup("5", 6, 16, 2, 3, 0, 0, 3, new ItemDropInfo[] { dropSetHeal50, dropSetDestroy10 }, new int[] { 7, 10 }, false, true, 5);
+            level9.setup("6", 9, 16, 2, 3, 0, 0, 3, new ItemDropInfo[] { dropSetHeal50, dropSetDestroy10 }, new int[] { 10, 13 }, false, true, 5);
 
             level4.setup("7", 4, 16, 2, 2, 2, 0, 3, new ItemDropInfo[] { dropSetRare10, dropSetShow50, dropSetDestroy10}, new int[] { 3,8 }, false, true, 5);
             level7.setup("8", 7, 16, 2, 2, 2, 0, 3, new ItemDropInfo[] { dropSetRare10, dropSetShow10, dropSetDestroy50 }, new int[] { 3,8,11 }, false, true, 5);

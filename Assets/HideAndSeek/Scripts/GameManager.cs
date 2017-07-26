@@ -226,6 +226,8 @@ namespace HideAndSeek
                     info.dungeonClearCount.Add(curDungeon.id, 1);
                 }
 
+                SaveLoad.Save();
+
                 Analytics.CustomEvent("Dungeon Clear", new Dictionary<string, object>
                 {
                     { "id", curDungeon.id},
@@ -1082,6 +1084,7 @@ namespace HideAndSeek
                 info.enableCount += 1;
                 Notice.instance.Show(LocalizationManager.instance.GetLocalString(GAME_STRING.GET_A_SHOVEL), 2f, Color.blue);
                 SaveLoad.SaveTime();
+                SaveLoad.Save();
             }
             else
             {

@@ -38,9 +38,9 @@ namespace HideAndSeek
         {
             if (instance == null)
             {
-                instance = this;
-//                locallanguage = Application.systemLanguage;
-                locallanguage = SystemLanguage.English;
+				instance = this;
+				locallanguage = Application.systemLanguage;
+//				locallanguage = SystemLanguage.English;              
                 SetupContents();
                 SetupUIStrings();
                 SetupDungeonStrings();

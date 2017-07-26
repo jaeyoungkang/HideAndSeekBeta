@@ -80,7 +80,7 @@ namespace HideAndSeek
                 int minute = (int)(remainTime / 60);
                 float remain = remainTime % 60;
                 string time = String.Format("{0:0}:{1:00}", minute, Mathf.Floor(remain));
-                remainTimeText = LocalizationManager.instance.GetLocalUIString(UI_STRING.LOBBY_TIME_REMAIN) + time;
+				remainTimeText = "("+LocalizationManager.instance.GetLocalUIString(UI_STRING.LOBBY_TIME_REMAIN) + time + ")";
             }
             timeText.text = remainTimeText;
 

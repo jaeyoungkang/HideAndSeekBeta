@@ -41,9 +41,9 @@ namespace HideAndSeek
                     + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_GET_ITEM) + GameManager.instance.dungeonPlayData.getItems.Count + "\n"
                     + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_USE_ITEM) + GameManager.instance.dungeonPlayData.useItems.Count + "\n"
                     + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_BUY_ITEM) + GameManager.instance.dungeonPlayData.butItems + "\n"
-                    + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_USE_ITEM) + GameManager.instance.dungeonPlayData.sellItems + "\n\n"
+					+ LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_SELL_ITEM) + GameManager.instance.dungeonPlayData.sellItems + "\n\n"
 
-                    + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_DESTROY_MONSTER) + GameManager.instance.dungeonPlayData.damagedByEnemyCount + "\n"
+                    + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_DAMAGED_MONSTER) + GameManager.instance.dungeonPlayData.damagedByEnemyCount + "\n"
                     + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_DAMAGED_TRAP) + GameManager.instance.dungeonPlayData.damagedBytrapCount + "\n"
                     + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_DAMAGED_TIME) + GameManager.instance.dungeonPlayData.damagedByTimeCount + "\n\n"
 
@@ -60,9 +60,9 @@ namespace HideAndSeek
                     + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_GET_ITEM) + GameManager.instance.dungeonPlayData.getItems.Count + "\n"
                     + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_USE_ITEM) + GameManager.instance.dungeonPlayData.useItems.Count + "\n"
                     + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_BUY_ITEM) + GameManager.instance.dungeonPlayData.butItems + "\n"
-                    + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_USE_ITEM) + GameManager.instance.dungeonPlayData.sellItems + "\n\n"
+                    + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_SELL_ITEM) + GameManager.instance.dungeonPlayData.sellItems + "\n\n"
 
-                    + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_DESTROY_MONSTER) + GameManager.instance.dungeonPlayData.damagedByEnemyCount + "\n"
+                    + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_DAMAGED_MONSTER) + GameManager.instance.dungeonPlayData.damagedByEnemyCount + "\n"
                     + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_DAMAGED_TRAP) + GameManager.instance.dungeonPlayData.damagedBytrapCount + "\n"
                     + LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.RESULT_DAMAGED_TIME) + GameManager.instance.dungeonPlayData.damagedByTimeCount + "\n\n"
 

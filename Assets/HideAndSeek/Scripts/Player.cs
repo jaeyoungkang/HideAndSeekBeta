@@ -66,7 +66,7 @@ namespace HideAndSeek
 
             if (GameManager.instance.timeLimit <= 0)
             {
-                Notice.instance.Show(LocalizationManager.instance.GetLocalString(GAME_STRING.DAMAGE_TIME), 1f, Color.red);
+                Notice.instance.Show(LocalizationManager.instance.GetLocalString(GAME_STRING.DAMAGE_TIME), 2f, Color.red);
                 GameManager.instance.timeLimit = 10;
                 LoseHP(1);
                 GameManager.instance.dungeonPlayData.damagedByTimeCount++;

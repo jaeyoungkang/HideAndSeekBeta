@@ -40,7 +40,7 @@ namespace HideAndSeek
             {
 				instance = this;
 				locallanguage = Application.systemLanguage;
-//				locallanguage = SystemLanguage.English;              
+//                locallanguage = SystemLanguage.English;              
                 SetupContents();
                 SetupUIStrings();
                 SetupDungeonStrings();
@@ -566,19 +566,19 @@ namespace HideAndSeek
             itemDiscriptions[ITEM_ID.DESTROY_4D] = new Dictionary<SystemLanguage, string>()
             {
                 {SystemLanguage.Korean, "상하좌우 1칸의 괴물이나 함정을 제거한다."},
-                {SystemLanguage.English,  "Destory monsters or traps from up, down, left, and right."},
+                {SystemLanguage.English,  "Destory monsters or traps from the four side.(a block) "},
             };
 
             itemDiscriptions[ITEM_ID.DESTROY_LR] = new Dictionary<SystemLanguage, string>()
             {
                 {SystemLanguage.Korean, "좌우 2칸씩 괴물이나 함정을 제거한다."},
-                {SystemLanguage.English, "Destory monsters or traps from left, and right. (two blocks)"},
+                {SystemLanguage.English, "Destory monsters or traps from left, right.(two blocks)"},
             };
 
             itemDiscriptions[ITEM_ID.DESTROY_UD] = new Dictionary<SystemLanguage, string>()
             {
                 {SystemLanguage.Korean,  "상하 2칸씩 괴물이나 함정을 제거한다."},
-                {SystemLanguage.English,  "Destory monsters or traps from up, and down. (two blocks)"},
+                {SystemLanguage.English,  "Destory monsters or traps from up, down.(two blocks)"},
             };
 
             itemDiscriptions[ITEM_ID.ADD_TIME] = new Dictionary<SystemLanguage, string>()

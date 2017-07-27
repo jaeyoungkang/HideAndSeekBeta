@@ -84,7 +84,11 @@ namespace HideAndSeek
             GameObject.Find("LevelInfoEnterButton").GetComponentInChildren<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.ENTER_BTN);
             GameObject.Find("LevelInfoReturnButton").GetComponentInChildren<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.RETURN_BTN);
 
+            GameObject.Find("DungeonMapLargeShop").GetComponentInChildren<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.ENTER_SHOP_BTN);            
             GameObject.Find("DungeonMapshop").GetComponentInChildren<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.ENTER_SHOP_BTN);
+
+            GameObject.Find("DungeonMapLeave").GetComponentInChildren<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.LEAVE_DUNGEON);
+            GameObject.Find("DungeonMapLargeLeave").GetComponentInChildren<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.LEAVE_DUNGEON);            
 
             GameObject.Find("ShopTitleText").GetComponentInChildren<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.SHOP_TITLE);
             GameObject.Find("ShopDisplayText").GetComponentInChildren<Text>().text = LocalizationManager.instance.GetLocalUIString(UI_STRING.SHOP_DISPLAY);

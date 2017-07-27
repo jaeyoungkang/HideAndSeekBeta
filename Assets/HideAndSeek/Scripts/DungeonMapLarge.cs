@@ -33,6 +33,7 @@ namespace HideAndSeek
             levelBtns[15].onClick.AddListener(() => { GameManager.instance.SelectLevel(16); });
 
             shopBtns.onClick.AddListener(GameManager.instance.EnterShop);
+            leavBtns.onClick.AddListener(GameManager.instance.GoToLobby);
         }
 
 

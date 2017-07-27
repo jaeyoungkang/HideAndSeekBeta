@@ -6,7 +6,7 @@ namespace HideAndSeek
 {
     public enum UI_STRING { FRONT_TITLE, FRONT_WARNING, FRONT_BUTTON,
     LOBBY_TITLE, LOBBY_BUTTON_SHOVEL, LOBBY_BUTTON_PURCHASE, LOBBY_TIME_REMAIN, PURCHASE_TITLE, PURCHASE_BTN, PURCHASE_NOTICE, RETURN_BTN, ENTER_BTN, ENTER_SHOP_BTN,
-    GOTO_LOBBY_BTN, GOTO_MAP_BTN, SHOP_TITLE, SHOP_DISPLAY, SHOP_BAG
+    GOTO_LOBBY_BTN, GOTO_MAP_BTN, SHOP_TITLE, SHOP_DISPLAY, SHOP_BAG, LEAVE_DUNGEON
     }
 
     public enum GAME_STRING { ROT, NO_SHOVEL, GEM_START, LIMIT_SHOVEL, GET_A_SHOVEL, WAIT, DAMAGE_TIME, FLOOR_SHOW_ALL, FLOOR_SHOW_ITEM, FLOOR_SHOW_NEAR, FLOOR_SHOW_MONSTER, FLOOR_SHOW_TRAP,
@@ -39,8 +39,8 @@ namespace HideAndSeek
             if (instance == null)
             {
 				instance = this;
-				locallanguage = Application.systemLanguage;
-//                locallanguage = SystemLanguage.English;              
+//				locallanguage = Application.systemLanguage;
+                locallanguage = SystemLanguage.English;              
                 SetupContents();
                 SetupUIStrings();
                 SetupDungeonStrings();
@@ -295,6 +295,14 @@ namespace HideAndSeek
                 {SystemLanguage.Korean, "특수 바닥 정보" },
                 {SystemLanguage.English,  "Inforamtion of speacial floors"},
             };
+
+            dungeonStrings[DUNGEON_STRING.CHAMBER_INFO_TILE_INFO] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean, "특수 바닥 정보" },
+                {SystemLanguage.English,  "Inforamtion of speacial floors"},
+            };
+
+            
         }
 
         void SetupUIStrings()
@@ -406,6 +414,12 @@ namespace HideAndSeek
                 {SystemLanguage.Korean,  "가방"},
                 {SystemLanguage.English,  "BAG"},
             };
+
+            uiStrings[UI_STRING.LEAVE_DUNGEON] = new Dictionary<SystemLanguage, string>()
+            {
+                {SystemLanguage.Korean,  "탐험포기"},
+                {SystemLanguage.English,  "Abandon"},
+            };            
         }
 
         void SetupItemStrings()

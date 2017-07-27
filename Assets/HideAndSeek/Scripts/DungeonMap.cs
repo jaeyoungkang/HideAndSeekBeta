@@ -9,6 +9,7 @@ namespace HideAndSeek
         public Image[] lineImages;
         public Button[] levelBtns;
         public Button shopBtns;
+        public Button leavBtns;
 
         void OnEnable()
         {
@@ -37,6 +38,7 @@ namespace HideAndSeek
             levelBtns[8].onClick.AddListener(() => { GameManager.instance.SelectLevel(9); });
 
             shopBtns.onClick.AddListener(GameManager.instance.EnterShop);
+            leavBtns.onClick.AddListener(GameManager.instance.GoToLobby);
         }
 
         protected void SetupBtns(Level[] levels)

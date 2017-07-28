@@ -7,6 +7,8 @@ namespace HideAndSeek
 {
     public class Controller : MonoBehaviour
     {
+        public GameObject itemDescriptionPage;
+        public Button helpBtn;
         public Button[] dirBtns;
         public Button[] slotBtns;
         private Player player;
@@ -34,6 +36,13 @@ namespace HideAndSeek
             slotBtns[3].onClick.AddListener(() => { UseItem(3); });
             slotBtns[4].onClick.AddListener(() => { UseItem(4); });
             slotBtns[5].onClick.AddListener(() => { UseItem(5); });
+
+            helpBtn.onClick.AddListener(OpenItemDescription);
+        }
+
+        void OpenItemDescription()
+        {
+            itemDescriptionPage.SetActive(true);
         }
 
         void Update()

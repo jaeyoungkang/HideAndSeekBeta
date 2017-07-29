@@ -19,6 +19,7 @@ namespace HideAndSeek
         public GameObject dungeonInfoPage;
         public GameObject levelInfoPage;
         public GameObject developerCommentsImage;
+        public GameObject escapeImage;
 
         public GameObject statusPanel;
 
@@ -41,6 +42,7 @@ namespace HideAndSeek
 
         public void InitUI()
         {
+            escapeImage = GameObject.Find("EscapeImage");
             developerCommentsImage = GameObject.Find("DeveloperImage");
             purchaseImage = GameObject.Find("PurchaseImage");
             titleImage = GameObject.Find("FrontPageImage");
@@ -121,9 +123,11 @@ namespace HideAndSeek
             bool bPlay = false;
             bool bMap = false;
             bool bMapLarge = false;
+            bool bEscape = false;
 
             switch (gameState)
             {
+                case GAME_STATE.ESCAPE: bEscape = true; break;
                 case GAME_STATE.DEVELOPER_COMMENTS: bDeveloper = true; break;
                 case GAME_STATE.PURCHASE: bPurchase = true; break;
                 case GAME_STATE.START: bTitle = true; break;
@@ -139,6 +143,7 @@ namespace HideAndSeek
                 case GAME_STATE.OVER: bResult = true; break;
             }
 
+            escapeImage.SetActive(bEscape);
             developerCommentsImage.SetActive(bDeveloper);
             purchaseImage.SetActive(bPurchase);
             shopImage.SetActive(bShop);

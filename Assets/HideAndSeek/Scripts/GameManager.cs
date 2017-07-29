@@ -9,7 +9,7 @@ using System.Collections.Generic;       //Allows us to use Lists.
 
 namespace HideAndSeek
 {    
-    public enum GAME_STATE { DEVELOPER_COMMENTS, PURCHASE, START, LOBBY, SHOP, DUNGEON_INFO, LEVEL, LEVEL_INFO, MAP, MAP_LARGE, PLAY, RESULT, OVER }
+    public enum GAME_STATE { ESCAPE, DEVELOPER_COMMENTS, PURCHASE, START, LOBBY, SHOP, DUNGEON_INFO, LEVEL, LEVEL_INFO, MAP, MAP_LARGE, PLAY, RESULT, OVER }
 
     public class GameManager : MonoBehaviour
     {
@@ -373,6 +373,7 @@ namespace HideAndSeek
                 { "id", curDungeon.id},
             });
 
+            SaveLoad.Save();
         }
 
         public void EnterShop()
@@ -500,8 +501,19 @@ namespace HideAndSeek
 
         public bool IsPlay() { return gameState == GAME_STATE.PLAY; }
 
+        public void QuitGame()
+        {
+            Application.Quit();
+        }
+
         void Update()
         {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                ChangeState(GAME_STATE.ESCAPE);
+                return;                
+            }
+
             if (gameState == GAME_STATE.PLAY)
             {
                 UpdateTimeLeft();

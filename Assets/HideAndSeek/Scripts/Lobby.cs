@@ -10,7 +10,7 @@ namespace HideAndSeek
     {
         public Text timeText;
         public Text coinText;
-        public Button watachAdBtn;
+//        public Button watachAdBtn;
         public Button purchaseBtn;
         public Button tutorialBtn;
         public Button[] dungeonBtns;
@@ -54,7 +54,7 @@ namespace HideAndSeek
             dungeonBtns[3].onClick.AddListener(() => { GameManager.instance.ShowDungeonInfo(3); });
             tutorialBtn.onClick.AddListener(() => { GameManager.instance.ShowDungeonInfo(100); });
 
-            watachAdBtn.onClick.AddListener(GameManager.instance.GetAShovel);
+ //           watachAdBtn.onClick.AddListener(GameManager.instance.GetAShovel);
             purchaseBtn.onClick.AddListener(GameManager.instance.ShowPurchase);
             developerComment.onClick.AddListener(GameManager.instance.ShowDeveloperComment);
 
@@ -82,6 +82,9 @@ namespace HideAndSeek
                 string time = String.Format("{0:0}:{1:00}", minute, Mathf.Floor(remain));
 				remainTimeText = "("+LocalizationManager.instance.GetLocalUIString(UI_STRING.LOBBY_TIME_REMAIN) + time + ")";
             }
+
+            if (GameManager.instance.info.enableCount >= 5) remainTimeText = "";
+
             timeText.text = remainTimeText;
 
             coinText.text = "X " +GameManager.instance.info.enableCount.ToString();

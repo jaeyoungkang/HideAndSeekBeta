@@ -337,8 +337,8 @@ namespace HideAndSeek
 
             uiStrings[UI_STRING.LOBBY_TIME_REMAIN] = new Dictionary<SystemLanguage, string>()
             {
-                {SystemLanguage.Korean,  "다음 획득 기회까지 남은시간 : "},
-                {SystemLanguage.English,  "Time remaining until next chance : "},
+                {SystemLanguage.Korean,  "새로운 도굴삽 획득까지 남은시간 : "},
+                {SystemLanguage.English,  "Time remaining until get a new shovel : "},
             };
 
             uiStrings[UI_STRING.PURCHASE_TITLE] = new Dictionary<SystemLanguage, string>()

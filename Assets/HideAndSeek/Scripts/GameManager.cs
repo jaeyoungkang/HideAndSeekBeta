@@ -13,7 +13,8 @@ namespace HideAndSeek
 
     public class GameManager : MonoBehaviour
     {
-
+        public float TIME_INTERVAL_GEN = 600f;
+        public DateTime preGenTime = new DateTime(2000, 1, 1, 0, 0, 0, 0).ToLocalTime();
         public string logfileName;
         public static GameManager instance = null;
         [HideInInspector]
@@ -320,6 +321,12 @@ namespace HideAndSeek
                     return;
                 }
                 info.enableCount--;
+
+                if(info.enableCount == 4)
+                {
+                    preGenTime = DateTime.Now.ToLocalTime();
+                    SaveLoad.SaveTime();
+                }
             }
             SoundManager.instance.PlaySingle(btnClick);
 
@@ -508,6 +515,13 @@ namespace HideAndSeek
 
         void Update()
         {
+            if(info.enableCount < 5)
+            {
+                DateTime now = DateTime.Now.ToLocalTime();
+                TimeSpan gen = now - preGenTime;
+                GetShovels((float)gen.TotalSeconds);
+            }            
+
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 ChangeState(GAME_STATE.ESCAPE);
@@ -1082,27 +1096,23 @@ namespace HideAndSeek
             StartCoroutine(DestroyEffect(targetEnemies));
         }
 
-        public void GetAShovel()
+        public void GetShovels(float delta)
         {
-            if(info.enableCount >= 5)
-            {
-                Notice.instance.Show(LocalizationManager.instance.GetLocalString(GAME_STRING.LIMIT_SHOVEL), 2f, Color.blue);
-                return;
-            }
+            if (info.enableCount >= 5) return;
+            if (TIME_INTERVAL_GEN > delta) return;
 
-            if (CheckTimeEnableToGet())
-            {
-                preGenTime = DateTime.Now.ToLocalTime();
-                info.enableCount += 1;
-                Notice.instance.Show(LocalizationManager.instance.GetLocalString(GAME_STRING.GET_A_SHOVEL), 2f, Color.blue);
-                SaveLoad.SaveTime();
-                SaveLoad.Save();
-            }
-            else
-            {
-                Notice.instance.Show(LocalizationManager.instance.GetLocalString(GAME_STRING.WAIT), 2f, Color.blue);
-            }
-        }
+            int shovels = (int)(delta / TIME_INTERVAL_GEN);
+
+            int shovelCountEnableToGet = 5 - info.enableCount;
+
+            if (shovels > shovelCountEnableToGet)
+                shovels = shovelCountEnableToGet;
+
+            info.enableCount += shovels;
+            preGenTime = DateTime.Now.ToLocalTime();
+            SaveLoad.SaveTime();
+            SaveLoad.Save();
+        }        
 
         public void ShowDeveloperComment()
         {
@@ -1114,20 +1124,6 @@ namespace HideAndSeek
         {
             SoundManager.instance.PlaySingle(btnClick);
             ChangeState(GAME_STATE.PURCHASE);
-        }
-
-        public float TIME_INTERVAL_GEN = 300f;
-        public DateTime preGenTime = new DateTime(2000, 1, 1, 0, 0, 0, 0).ToLocalTime();
-
-        public bool CheckTimeEnableToGet()
-        {
-            DateTime now = DateTime.Now.ToLocalTime();
-            TimeSpan gen = now - preGenTime;
-
-            if (gen.TotalSeconds > TIME_INTERVAL_GEN)
-                return true;
-
-            return false;
-        }
+        }        
     }
 }

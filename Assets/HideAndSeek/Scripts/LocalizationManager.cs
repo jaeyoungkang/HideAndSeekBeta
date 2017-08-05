@@ -41,8 +41,8 @@ namespace HideAndSeek
 				instance = this;
                 //                locallanguage = SystemLanguage.Japanese;
                 locallanguage = Application.systemLanguage;
-                if (locallanguage != SystemLanguage.Korean || locallanguage != SystemLanguage.Japanese ||
-                    locallanguage != SystemLanguage.Chinese || locallanguage != SystemLanguage.ChineseSimplified || locallanguage != SystemLanguage.ChineseTraditional)
+                if (locallanguage != SystemLanguage.Korean && locallanguage != SystemLanguage.Japanese &&
+                    locallanguage != SystemLanguage.Chinese && locallanguage != SystemLanguage.ChineseSimplified && locallanguage != SystemLanguage.ChineseTraditional)
                     locallanguage = SystemLanguage.English;
                 SetupContents();
                 SetupUIStrings();

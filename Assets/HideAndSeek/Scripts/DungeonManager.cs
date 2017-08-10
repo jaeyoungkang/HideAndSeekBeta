@@ -252,8 +252,8 @@ namespace HideAndSeek
 
             string chamberString = LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.CHAMBER);
             //            이름,번호, 함정, 괴물, 괴물, 도둑, 보석, 아이템 드랍, 다음레벨, 클리어, 오픈, 쇼타일
-            level1.setup(chamberString+1, 1, 14, 0, 0, 0, 0, 1,  new ItemDropInfo[] { dropSetHeal50,  }, new int[] { 2, 4 }, false, false, 6);
-            level2.setup(chamberString+2, 2, 14, 2, 0, 0, 0, 1,     new ItemDropInfo[] { dropSetShow50,  }, new int[] { 3,5 }, false, true, 6);
+            level1.setup(chamberString+1, 1, 14, 0, 0, 0, 0, 2,  new ItemDropInfo[] { dropSetHeal50,  }, new int[] { 2, 4 }, false, false, 6);
+            level2.setup(chamberString+2, 2, 14, 2, 0, 0, 0, 2,     new ItemDropInfo[] { dropSetShow50,  }, new int[] { 3,5 }, false, true, 6);
             level4.setup(chamberString+3, 4, 14, 2, 1, 0, 0, 2,     new ItemDropInfo[] { dropSetDestroy50,  }, new int[] { 5 }, false, true, 6);
             level3.setup(chamberString+4, 3, 16, 2, 1, 1, 0, 3,      new ItemDropInfo[] { dropSetShow50, dropSetRare10, dropSetDestroy10 }, new int[] { 6 }, false, true, 5);
             level5.setup(chamberString+5, 5, 16, 2, 2, 0, 0, 3,      new ItemDropInfo[] { dropSetDestroy50, dropSetRare10, dropSetShow10 }, new int[] { 6 }, false, true, 5);
@@ -279,8 +279,8 @@ namespace HideAndSeek
 
             string chamberString = LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.CHAMBER);
             //            이름,번호, 함정, 괴물, 괴물, 도둑, 보석, 아이템 드랍, 다음레벨, 클리어, 오픈, 쇼타일
-            level1.setup(chamberString+1, 1, 16, 0, 0, 0, 0, 1, new ItemDropInfo[] { dropSetHeal50,  }, new int[] { 2, 4 }, false, false, 5);
-            level2.setup(chamberString+2, 2, 16, 2, 0, 0, 0, 1, new ItemDropInfo[] { dropSetDestroy10,  }, new int[] { 5 }, false, true, 5);
+            level1.setup(chamberString+1, 1, 16, 0, 0, 0, 0, 2, new ItemDropInfo[] { dropSetHeal50,  }, new int[] { 2, 4 }, false, false, 5);
+            level2.setup(chamberString+2, 2, 16, 2, 0, 0, 0, 2, new ItemDropInfo[] { dropSetDestroy10,  }, new int[] { 5 }, false, true, 5);
             level4.setup(chamberString+3, 4, 16, 2, 1, 0, 0, 2, new ItemDropInfo[] { dropSetDestroy10,  }, new int[] { 5 }, false, true, 5);
             level5.setup(chamberString+4, 5, 16, 4, 1, 1, 0, 3, new ItemDropInfo[] { dropSetDestroy50, dropSetHeal10, dropSetShow10, dropSetTime20 }, new int[] { 6,8 }, false, true, 5);
             level6.setup(chamberString+5, 6, 16, 4, 1, 1, 0, 2, new ItemDropInfo[] { dropSetRare10, dropSetTime20 }, new int[] { 9 }, false, true, 5);
@@ -321,8 +321,8 @@ namespace HideAndSeek
             // 1  2  3  4
 
             //            이름,번호, 함정, 괴물, 괴물, 도둑, 보석, 아이템 드랍, 다음레벨, 클리어, 오픈, 쇼타일
-            level1.setup("1", 1, 16, 0, 0, 0, 0, 1, new ItemDropInfo[] { dropSetExtend20 }, new int[] { 2, 5 }, false, false, 5);
-            level2.setup("2", 2, 16, 2, 0, 0, 0, 1, new ItemDropInfo[] { dropSetExtend20 }, new int[] { 3, 6 }, false, true, 5);
+            level1.setup("1", 1, 16, 0, 0, 0, 0, 2, new ItemDropInfo[] { dropSetExtend20 }, new int[] { 2, 5 }, false, false, 5);
+            level2.setup("2", 2, 16, 2, 0, 0, 0, 2, new ItemDropInfo[] { dropSetExtend20 }, new int[] { 3, 6 }, false, true, 5);
             level5.setup("3", 5, 16, 2, 1, 0, 0, 2, new ItemDropInfo[] { dropSetExtend20 }, new int[] { 6, 9 }, false, true, 5);
 
             level3.setup("4", 3, 16, 2, 1, 1, 0, 2, new ItemDropInfo[] { dropSetHeal50, dropSetDestroy10 }, new int[] { 7, 4 }, false, true, 5);

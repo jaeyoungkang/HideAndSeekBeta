@@ -228,7 +228,10 @@ namespace HideAndSeek
         void SetTileColor(GameObject tile, Color color)
         {
             Color lerpedColor = tile.GetComponent<Renderer>().material.color;
-            lerpedColor = Color.Lerp(lerpedColor, color, 0.3f);
+            
+			if(color == Color.yellow) lerpedColor = Color.Lerp(lerpedColor, color, 0.8f);
+			else lerpedColor = Color.Lerp(lerpedColor, color, 0.4f);
+
             tile.GetComponent<Renderer>().material.color = lerpedColor;
         }
 

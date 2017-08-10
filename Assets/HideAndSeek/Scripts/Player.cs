@@ -11,6 +11,7 @@ namespace HideAndSeek
 
     public class Player : MovingObject
 	{
+        public bool playerMoving = false;
 		public float restartLevelDelay = 1f;
 		public int potionA = 10;
         public int potionB = 20;
@@ -29,6 +30,7 @@ namespace HideAndSeek
 
         public void Init()
         {
+            playerMoving = false;
             enabled = true;
             transform.position = new Vector3(0, 0, 0);            
         }
@@ -57,7 +59,9 @@ namespace HideAndSeek
                 case MOVE_DIR.RIGHT: AttemptMove<Enemy>(1, 0); break;
             }
         }
-		
+
+        Vector3 nextPos;
+
         private void Update ()
 		{
             if (GameManager.instance == null) return;
@@ -77,6 +81,13 @@ namespace HideAndSeek
                     { "Level id", GameManager.instance.GetDungeonInfo().GetCurLevel().id},
                     { "Damage point",  1},
                 });
+            }
+
+            
+            float sqrRemainingDistance = (transform.position - nextPos).sqrMagnitude;
+            if (playerMoving && sqrRemainingDistance < float.Epsilon)
+            {
+                playerMoving = false;
             }
 
             if (!GameManager.instance.playersTurn) return;            
@@ -132,6 +143,9 @@ namespace HideAndSeek
 
         protected override void AttemptMove <T> (int xDir, int yDir)
 		{
+            if (playerMoving) return;
+            playerMoving = false;
+
             GameManager.instance.ShowAllMap(false);
             GameManager.instance.StopTime(false);
 
@@ -139,9 +153,12 @@ namespace HideAndSeek
 			RaycastHit2D hit;
 			if (Move (xDir, yDir, out hit)) 
 			{
-                if(bHideMode == false) SoundManager.instance.RandomizeSfx (moveSound1, moveSound2);
+                nextPos = transform.position + new Vector3(xDir, yDir, 0);
+                if (bHideMode == false) SoundManager.instance.RandomizeSfx (moveSound1, moveSound2);
                 GameManager.instance.ShowMap(new Vector3(transform.position.x + xDir, transform.position.y + yDir, 0), checkPos(xDir, yDir));
                 CheckTrap(xDir, yDir);
+
+                playerMoving = true;
             }
             else
             {

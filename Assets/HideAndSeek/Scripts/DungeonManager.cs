@@ -228,10 +228,10 @@ namespace HideAndSeek
 
             string chamberString = LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.CHAMBER);
             //            이름,번호, 함정, 괴물, 괴물, 도둑, 보석, 아이템 드랍, 다음레벨, 클리어, 오픈, 쇼타일
-            level1.setup(chamberString+1, 1, 10, 0, 1, 0, 0, 1, new ItemDropInfo[] { dropSetRare10 }, new int[] { 2, 4 }, false, false, 7);
-            level2.setup(chamberString+2, 2, 10, 0, 2, 0, 0, 2, new ItemDropInfo[] { dropSetShow50 }, new int[] { 5 }, false, true, 6);
-            level4.setup(chamberString+3, 4, 10, 0, 2, 0, 0, 2, new ItemDropInfo[] { dropSetDestroy50, dropSetShow10 }, new int[] { 5 }, false, true, 6);
-            level5.setup(chamberString+4, 5, 12, 0, 3, 0, 0, 0, new ItemDropInfo[] { dropSetHeal50 }, new int[] {}, false, true, 6);
+            level1.setup(chamberString+1, 1, 12, 0, 0, 0, 0, 1, new ItemDropInfo[] { dropSetHeal50 }, new int[] { 2, 4 }, false, false, 6);
+            level2.setup(chamberString+2, 2, 14, 0, 0, 0, 0, 2, new ItemDropInfo[] { dropSetShow50 }, new int[] { 5 }, false, true, 5);
+            level4.setup(chamberString+3, 4, 14, 0, 1, 0, 0, 3, new ItemDropInfo[] { dropSetDestroy50 }, new int[] { 5 }, false, true, 5);
+            level5.setup(chamberString+4, 5, 14, 0, 2, 0, 0, 0, new ItemDropInfo[] { }, new int[] {}, false, true, 5);
 
             Level[] levels = { level1, level2, level4, level5 };
 
@@ -252,12 +252,12 @@ namespace HideAndSeek
 
             string chamberString = LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.CHAMBER);
             //            이름,번호, 함정, 괴물, 괴물, 도둑, 보석, 아이템 드랍, 다음레벨, 클리어, 오픈, 쇼타일
-            level1.setup(chamberString+1, 1, 12, 0, 1, 0, 0, 2,  new ItemDropInfo[] { dropSetHeal50,  }, new int[] { 2, 4 }, false, false, 6);
-            level2.setup(chamberString+2, 2, 16, 0, 1, 0, 0, 3,     new ItemDropInfo[] { dropSetShow50, dropSetExtend20 }, new int[] { 3,5 }, false, true, 6);
-            level4.setup(chamberString+3, 4, 16, 0, 1, 0, 0, 3,     new ItemDropInfo[] { dropSetDestroy50, dropSetExtend20 }, new int[] { 5 }, false, true, 6);
-            level3.setup(chamberString+4, 3, 14, 2, 2, 1, 0, 3,      new ItemDropInfo[] { dropSetShow50, dropSetRare10, dropSetDestroy10 }, new int[] { 6 }, false, true, 5);
-            level5.setup(chamberString+5, 5, 14, 2, 3, 0, 0, 3,      new ItemDropInfo[] { dropSetDestroy50, dropSetRare10, dropSetShow10 }, new int[] { 6 }, false, true, 5);
-            level6.setup(chamberString+6, 6, 12, 4, 3, 1, 0, 0,   new ItemDropInfo[] { dropSetHeal50, dropSetTime20 }, new int[] { }, false, true, 5);
+            level1.setup(chamberString+1, 1, 14, 0, 0, 0, 0, 1,  new ItemDropInfo[] { dropSetHeal50,  }, new int[] { 2, 4 }, false, false, 6);
+            level2.setup(chamberString+2, 2, 14, 2, 0, 0, 0, 1,     new ItemDropInfo[] { dropSetShow50,  }, new int[] { 3,5 }, false, true, 6);
+            level4.setup(chamberString+3, 4, 14, 2, 1, 0, 0, 2,     new ItemDropInfo[] { dropSetDestroy50,  }, new int[] { 5 }, false, true, 6);
+            level3.setup(chamberString+4, 3, 16, 2, 1, 1, 0, 3,      new ItemDropInfo[] { dropSetShow50, dropSetRare10, dropSetDestroy10 }, new int[] { 6 }, false, true, 5);
+            level5.setup(chamberString+5, 5, 16, 2, 2, 0, 0, 3,      new ItemDropInfo[] { dropSetDestroy50, dropSetRare10, dropSetShow10 }, new int[] { 6 }, false, true, 5);
+            level6.setup(chamberString+6, 6, 16, 4, 2, 1, 0, 0,   new ItemDropInfo[] { dropSetHeal50, dropSetTime20 }, new int[] { }, false, true, 5);
 
             Level[] levels = { level1, level2, level4, level3, level5, level6 };
 
@@ -279,13 +279,13 @@ namespace HideAndSeek
 
             string chamberString = LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.CHAMBER);
             //            이름,번호, 함정, 괴물, 괴물, 도둑, 보석, 아이템 드랍, 다음레벨, 클리어, 오픈, 쇼타일
-            level1.setup(chamberString+1, 1, 14, 0, 1, 0, 0, 2, new ItemDropInfo[] { dropSetHeal50, dropSetExtend20 }, new int[] { 2, 4 }, false, false, 6);
-            level2.setup(chamberString+2, 2, 14, 2, 2, 0, 0, 3, new ItemDropInfo[] { dropSetDestroy10, dropSetExtend20 }, new int[] { 5 }, false, true, 6);
-            level4.setup(chamberString+3, 4, 14, 2, 2, 0, 0, 3, new ItemDropInfo[] { dropSetDestroy10, dropSetExtend20 }, new int[] { 5 }, false, true, 6);
-            level5.setup(chamberString+4, 5, 12, 4, 2, 1, 0, 4, new ItemDropInfo[] { dropSetDestroy50, dropSetHeal10, dropSetShow10, dropSetTime20 }, new int[] { 6,8 }, false, true, 5);
-            level6.setup(chamberString+5, 6, 12, 4, 3, 1, 0, 4, new ItemDropInfo[] { dropSetRare10, dropSetTime20 }, new int[] { 9 }, false, true, 5);
-            level8.setup(chamberString+6, 8, 12, 4, 2, 2, 0, 4, new ItemDropInfo[] { dropSetRare10, dropSetTime20 }, new int[] { 9 }, false, true, 5);
-            level9.setup(chamberString+7, 9, 12, 6, 3, 2, 0, 0, new ItemDropInfo[] { dropSetShow50, dropSetHeal50 }, new int[] { }, false, true, 5);
+            level1.setup(chamberString+1, 1, 16, 0, 0, 0, 0, 1, new ItemDropInfo[] { dropSetHeal50,  }, new int[] { 2, 4 }, false, false, 5);
+            level2.setup(chamberString+2, 2, 16, 2, 0, 0, 0, 1, new ItemDropInfo[] { dropSetDestroy10,  }, new int[] { 5 }, false, true, 5);
+            level4.setup(chamberString+3, 4, 16, 2, 1, 0, 0, 2, new ItemDropInfo[] { dropSetDestroy10,  }, new int[] { 5 }, false, true, 5);
+            level5.setup(chamberString+4, 5, 16, 4, 1, 1, 0, 3, new ItemDropInfo[] { dropSetDestroy50, dropSetHeal10, dropSetShow10, dropSetTime20 }, new int[] { 6,8 }, false, true, 5);
+            level6.setup(chamberString+5, 6, 16, 4, 1, 1, 0, 2, new ItemDropInfo[] { dropSetRare10, dropSetTime20 }, new int[] { 9 }, false, true, 5);
+            level8.setup(chamberString+6, 8, 16, 4, 2, 0, 0, 2, new ItemDropInfo[] { dropSetRare10, dropSetTime20 }, new int[] { 9 }, false, true, 5);
+            level9.setup(chamberString+7, 9, 12, 6, 2, 2, 0, 0, new ItemDropInfo[] { dropSetShow50, dropSetHeal50 }, new int[] { }, false, true, 5);
 
             Level[] levels = { level1, level2, level4, level5, level6, level8, level9 };
 
@@ -321,31 +321,31 @@ namespace HideAndSeek
             // 1  2  3  4
 
             //            이름,번호, 함정, 괴물, 괴물, 도둑, 보석, 아이템 드랍, 다음레벨, 클리어, 오픈, 쇼타일
-            level1.setup("1", 1, 14, 0, 1, 0, 0, 2, new ItemDropInfo[] { dropSetExtend20 }, new int[] { 2, 5 }, false, false, 6);
-            level2.setup("2", 2, 16, 0, 2, 0, 0, 2, new ItemDropInfo[] { dropSetExtend20 }, new int[] { 3, 6 }, false, true, 6);
-            level5.setup("3", 5, 16, 0, 2, 0, 0, 2, new ItemDropInfo[] { dropSetExtend20 }, new int[] { 6, 9 }, false, true, 6);
+            level1.setup("1", 1, 16, 0, 0, 0, 0, 1, new ItemDropInfo[] { dropSetExtend20 }, new int[] { 2, 5 }, false, false, 5);
+            level2.setup("2", 2, 16, 2, 0, 0, 0, 1, new ItemDropInfo[] { dropSetExtend20 }, new int[] { 3, 6 }, false, true, 5);
+            level5.setup("3", 5, 16, 2, 1, 0, 0, 2, new ItemDropInfo[] { dropSetExtend20 }, new int[] { 6, 9 }, false, true, 5);
 
-            level3.setup("4", 3, 16, 2, 3, 0, 0, 3, new ItemDropInfo[] { dropSetHeal50, dropSetDestroy10 }, new int[] { 7, 4 }, false, true, 5);
-            level6.setup("5", 6, 16, 2, 3, 0, 0, 3, new ItemDropInfo[] { dropSetHeal50, dropSetDestroy10 }, new int[] { 7, 10 }, false, true, 5);
-            level9.setup("6", 9, 16, 2, 3, 0, 0, 3, new ItemDropInfo[] { dropSetHeal50, dropSetDestroy10 }, new int[] { 10, 13 }, false, true, 5);
+            level3.setup("4", 3, 16, 2, 1, 1, 0, 2, new ItemDropInfo[] { dropSetHeal50, dropSetDestroy10 }, new int[] { 7, 4 }, false, true, 5);
+            level6.setup("5", 6, 16, 2, 1, 1, 0, 2, new ItemDropInfo[] { dropSetHeal50, dropSetDestroy10 }, new int[] { 7, 10 }, false, true, 5);
+            level9.setup("6", 9, 16, 2, 1, 1, 0, 2, new ItemDropInfo[] { dropSetHeal50, dropSetDestroy10 }, new int[] { 10, 13 }, false, true, 5);
 
-            level4.setup("7", 4, 16, 2, 2, 2, 0, 3, new ItemDropInfo[] { dropSetRare10, dropSetShow50, dropSetDestroy10}, new int[] { 3,8 }, false, true, 5);
-            level7.setup("8", 7, 16, 2, 2, 2, 0, 3, new ItemDropInfo[] { dropSetRare10, dropSetShow10, dropSetDestroy50 }, new int[] { 3,8,11 }, false, true, 5);
-            level10.setup("9", 10, 16, 2, 2, 2, 0, 3, new ItemDropInfo[] { dropSetRare10, dropSetShow50, dropSetDestroy10 }, new int[] { 9,14,11}, false, true, 5);
-            level13.setup("10", 13, 16, 2, 2, 2, 0, 3, new ItemDropInfo[] { dropSetRare10, dropSetShow10, dropSetDestroy50 }, new int[] { 9,14}, false, true, 5);
+            level4.setup("7", 4, 18, 2, 1, 1, 0, 2, new ItemDropInfo[] { dropSetRare10, dropSetShow50, dropSetDestroy10}, new int[] { 3,8 }, false, true, 5);
+            level7.setup("8", 7, 16, 4, 2, 0, 0, 2, new ItemDropInfo[] { dropSetRare10, dropSetShow10, dropSetDestroy50 }, new int[] { 3,8,11 }, false, true, 5);
+            level10.setup("9", 10, 18, 2, 1, 1, 0, 2, new ItemDropInfo[] { dropSetRare10, dropSetShow50, dropSetDestroy10 }, new int[] { 9,14,11}, false, true, 5);
+            level13.setup("10", 13, 16, 4, 2, 0, 0, 2, new ItemDropInfo[] { dropSetRare10, dropSetShow10, dropSetDestroy50 }, new int[] { 9,14}, false, true, 5);
 
-            level8.setup("11", 8, 15, 4, 3, 2, 0, 4, new ItemDropInfo[] { dropSetTime20, dropSetExtend20 }, new int[] { 4,7,12 }, false, false, 6);
-            level11.setup("12", 11, 15, 4, 3, 2, 0, 4, new ItemDropInfo[] { dropSetTime20, dropSetExtend20 }, new int[] { 7,10,12,15 }, false, true, 6);
-            level14.setup("13", 14, 15, 4, 3, 2, 0, 4, new ItemDropInfo[] { dropSetTime20, dropSetExtend20 }, new int[] { 10,13,15 }, false, true, 6);
+            level8.setup("11", 8, 18, 2, 1, 2, 0, 4, new ItemDropInfo[] { dropSetTime20, dropSetExtend20 }, new int[] { 4,7,12 }, false, false, 6);
+            level11.setup("12", 11, 16, 4, 2, 1, 0, 4, new ItemDropInfo[] { dropSetTime20, dropSetExtend20 }, new int[] { 7,10,12,15 }, false, true, 6);
+            level14.setup("13", 14, 14, 6, 3, 0, 0, 4, new ItemDropInfo[] { dropSetTime20, dropSetExtend20 }, new int[] { 10,13,15 }, false, true, 6);
 
-            level12.setup("14", 12, 14, 6, 2, 3, 0, 4, new ItemDropInfo[] { dropSetRare10 }, new int[] { 8,11,16 }, false, true, 5);
-            level15.setup("15", 15, 14, 6, 2, 3, 0, 4, new ItemDropInfo[] { dropSetRare10 }, new int[] { 11,14,16 }, false, true, 5);
-            level16.setup("16", 16, 10, 10, 3, 3, 0, 0, new ItemDropInfo[] { }, new int[] {  }, false, true, 5);
+            level12.setup("14", 12, 14, 6, 2, 2, 0, 4, new ItemDropInfo[] { dropSetRare10 }, new int[] { 8,11,16 }, false, true, 5);
+            level15.setup("15", 15, 14, 6, 2, 2, 0, 4, new ItemDropInfo[] { dropSetRare10 }, new int[] { 11,14,16 }, false, true, 5);
+            level16.setup("16", 16, 10, 10, 2, 3, 0, 0, new ItemDropInfo[] { }, new int[] {  }, false, true, 5);
 
             Level[] levels = { level1, level2, level3, level4, level5, level6, level7, level8, level9, level10, level11, level12, level13, level14, level15, level16 };
 
             string dName = LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.HELLGATE);
-            Dungeon dungeonInfo = new Dungeon(dName, 4, 5, levels, 150, false, true, 3);
+            Dungeon dungeonInfo = new Dungeon(dName, 4, 5, levels, 150, false, true, 2);
 
             return dungeonInfo;
         }

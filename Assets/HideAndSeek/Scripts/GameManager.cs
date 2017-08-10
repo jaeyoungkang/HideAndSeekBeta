@@ -907,7 +907,13 @@ namespace HideAndSeek
 
         public void RemoveTrap(GameObject aTrap)
         {
-            if(Random.Range(0,4) == 1) DropGem(aTrap.transform.position);
+            int rValue = Random.Range(0, 5);
+            if (rValue == 1 || rValue == 2) DropGem(aTrap.transform.position);
+            else if(rValue == 3)
+            {
+                ITEM_ID[] dropItemList = { ITEM_ID.HEAL1, ITEM_ID.FRAGMENT_NEAR, ITEM_ID.HIDE };
+                DropItem(aTrap.transform.position, dropItemList);
+            }
 
             aTrap.SetActive(false);
             curTrapsOnStage.Remove(aTrap);

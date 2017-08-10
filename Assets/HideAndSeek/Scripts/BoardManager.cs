@@ -110,18 +110,22 @@ namespace HideAndSeek
             //gridPositionsExcept.Add(new Vector3(0f, 0f, 0f));
             gridPositionsExcept.Add(new Vector3(1f, 0f, 0f));
             gridPositionsExcept.Add(new Vector3(0f, 1f, 0f));
+            gridPositionsExcept.Add(new Vector3(1f, 1f, 0f));
 
             //gridPositionsExcept.Add(new Vector3(columns - 1, 0f, 0f));
             gridPositionsExcept.Add(new Vector3(columns - 2, 0f, 0f));
             gridPositionsExcept.Add(new Vector3(columns - 1, 1f, 0f));
+            gridPositionsExcept.Add(new Vector3(columns - 2, 1f, 0f));
 
             //gridPositionsExcept.Add(new Vector3(0f, rows - 1, 0f));
             gridPositionsExcept.Add(new Vector3(1f, rows - 1, 0f));
             gridPositionsExcept.Add(new Vector3(0f, rows - 2, 0f));
+            gridPositionsExcept.Add(new Vector3(1f, rows - 2, 0f));
 
             gridPositionsExcept.Add(new Vector3(columns-1, rows-1, 0f));
             gridPositionsExcept.Add(new Vector3(columns-2, rows-1, 0f));
             gridPositionsExcept.Add(new Vector3(columns-1, rows-2, 0f));
+            gridPositionsExcept.Add(new Vector3(columns - 2, rows - 2, 0f));
 
             grids.Add(gridPositions1);
             grids.Add(gridPositions2);

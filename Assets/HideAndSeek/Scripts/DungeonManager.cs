@@ -207,9 +207,9 @@ namespace HideAndSeek
 
             //            이름,번호, 함정, 괴물, 괴물, 도둑, 보석, 아이템 드랍, 다음레벨, 클리어, 오픈, 쇼타일
             string chamberString = LocalizationManager.instance.GetDungeonString(DUNGEON_STRING.CHAMBER);
-            level1.setup(chamberString + 1, 1, 27, 0, 0, 0, 0, 2, new ItemDropInfo[] { dropSetRare10 }, new int[] { 2 }, false, false, 7); // boardmanager에 하드코딩되어 있음
-            level2.setup(chamberString + 2, 2, 9, 0, 1, 0, 0, 2, new ItemDropInfo[] { dropSetDestroy50, dropSetShow50 }, new int[] { 3 }, false, true, 7); 
-            level3.setup(chamberString + 3, 3, 9, 0, 2, 0, 0, 0, new ItemDropInfo[] { dropSetHeal50 }, new int[] { }, false, true, 7);
+            level1.setup(chamberString + 1, 1, 27, 0, 0, 0, 0, 2, new ItemDropInfo[] { }, new int[] { 2 }, false, false, 7); // boardmanager에 하드코딩되어 있음
+            level2.setup(chamberString + 2, 2, 10, 0, 0, 0, 0, 2, new ItemDropInfo[] { }, new int[] { 3 }, false, true, 7); 
+            level3.setup(chamberString + 3, 3, 9, 0, 1, 0, 0, 0, new ItemDropInfo[] { dropSetHeal50 }, new int[] { }, false, true, 7);
 
             Level[] levels = { level1, level2, level3};
 

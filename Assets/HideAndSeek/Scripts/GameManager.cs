@@ -907,7 +907,7 @@ namespace HideAndSeek
 
         public void RemoveTrap(GameObject aTrap)
         {
-            int rValue = Random.Range(0, 5);
+            int rValue = Random.Range(0, 6);
             if (rValue == 1 || rValue == 2) DropGem(aTrap.transform.position);
             else if(rValue == 3)
             {
